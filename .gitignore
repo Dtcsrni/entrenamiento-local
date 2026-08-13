@@ -1,0 +1,51 @@
+# IDE y sistema
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Android/Gradle
+.gradle/
+**/build/
+local.properties
+*.apk
+*.aab
+*.jks
+*.keystore
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Datos, modelos y secretos
+.env
+.env.*
+!.env.example
+secrets/
+private/
+backups/
+models/
+*.db
+*.sqlite
+*.sqlite3
+*.onnx
+*.gguf
+*.safetensors
+*.pt
+*.pth
+
+# Datos personales y capturas
+personal-data/
+captures/
+photos/
+datasets/private/
+
+# Resultados derivados
+artifacts/
+reports/private/
+coverage/

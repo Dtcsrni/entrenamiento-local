@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/schemas/zepp-event-v1.json",
+  "title": "ZeppEvent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["eventId", "sourceDevice", "capturedAt", "sequence", "type", "payloadVersion", "payload"],
+  "properties": {
+    "eventId": { "type": "string", "format": "uuid" },
+    "sourceDevice": { "type": "string", "minLength": 1 },
+    "capturedAt": { "type": "string", "format": "date-time" },
+    "sequence": { "type": "integer", "minimum": 0 },
+    "type": { "type": "string", "minLength": 1 },
+    "payloadVersion": { "type": "integer", "minimum": 1 },
+    "payload": { "type": "object" }
+  }
+}

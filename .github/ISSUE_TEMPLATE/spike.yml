@@ -1,0 +1,27 @@
+name: Spike técnico
+description: Experimento acotado para reducir incertidumbre
+title: "[Spike]: "
+labels: [spike]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Pregunta que debe responderse
+    validations:
+      required: true
+  - type: textarea
+    id: procedure
+    attributes:
+      label: Procedimiento reproducible
+    validations:
+      required: true
+  - type: textarea
+    id: exit
+    attributes:
+      label: Criterio de salida
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidencia que se conservará

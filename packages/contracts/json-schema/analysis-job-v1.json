@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/schemas/analysis-job-v1.json",
+  "title": "AnalysisJob",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["jobId", "idempotencyKey", "status", "schemaVersion", "createdAt"],
+  "properties": {
+    "jobId": { "type": "string", "format": "uuid" },
+    "idempotencyKey": { "type": "string", "format": "uuid" },
+    "status": {
+      "enum": ["QUEUED", "RUNNING", "SUCCEEDED", "FAILED_RETRYABLE", "FAILED_PERMANENT", "CANCELLED"]
+    },
+    "schemaVersion": { "const": 1 },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "inputSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "modelVersion": { "type": "string" },
+    "pipelineVersion": { "type": "string" },
+    "warnings": { "type": "array", "items": { "type": "string" } }
+  }
+}
