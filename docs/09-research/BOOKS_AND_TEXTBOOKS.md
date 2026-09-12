@@ -39,6 +39,16 @@ Cuando se incorpore el PDF abierto de OpenStax, se registrará aquí:
 
 No se registrarán enlaces de torrents, repositorios de copias no autorizadas, `z-lib`, escaneos de terceros ni PDFs de procedencia desconocida.
 
+## Copias locales consideradas como referencia secundaria
+
+Estas copias fueron revisadas localmente el 12 de septiembre de 2026. Se consideran material de consulta contextual, no fuentes canónicas ni copias legales verificadas para distribución:
+
+- `Science_and_Development_of_Muscle_Hypertrophy_2016_1st_Edition_Brad_Schoenfeld.pdf`: edición de 2016, ISBN `978-1-4925-1960-7`.
+- `Essentials_of_Strength_Training_and_Conditioning_2016_4th_Edition_NSCA_Haff_Triplett.pdf`: 4.ª edición de 2016, ISBN `978-1-4925-0162-6`.
+- `Anthonys_Textbook_of_Anatomy_and_Physiology_2012_20th_Edition_Patton_Thibodeau.pdf`: 20.ª edición de 2012, ISBN `978-0-323-09600-3`.
+
+Podrán ayudar a localizar conceptos, capítulos y referencias históricas sobre hipertrofia, biomecánica, máquinas, programación y anatomía. Ninguna afirmación tomada de estas copias se incorporará a una rutina sin comprobarla contra fuentes científicas actuales y versionadas. Los PDF permanecen fuera del repositorio por derechos de autor y por su procedencia no verificada.
+
 ## Relación con la evidencia científica
 
 Los libros son material de consulta y formación. Las afirmaciones determinantes de las rutinas —por ejemplo, volumen, frecuencia, proximidad al fallo, descansos, calentamiento, seguridad y elección de máquinas— deben mapearse a fuentes primarias o síntesis científicas actuales conforme a [EVIDENCE_BASE_AND_ROUTINE_PROTOCOL.md](EVIDENCE_BASE_AND_ROUTINE_PROTOCOL.md). Para el marco general actual se mantiene como ancla la [position stand de ACSM sobre prescripción de ejercicio](https://pubmed.ncbi.nlm.nih.gov/41843416/), complementada con revisiones y meta-análisis específicos.
