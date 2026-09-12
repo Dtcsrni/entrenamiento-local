@@ -20,3 +20,13 @@ La matriz crecerá con la implementación. `Planned` significa que no existe tod
 | NFR-SEC-001 | RISK-003, RISK-010 | ADR-008 | TST-SEC-001 | Planned |
 | NFR-REL-001 | RISK-004 | ADR-003, ADR-004 | TST-REL-001 | Planned |
 | NFR-AI-001 | RISK-009 | ADR-006 | TST-AI-003 | Planned |
+
+## Evidencia científica y límites médicos
+
+| Requisito | Fuente/protocolo | Criterio de aceptación | Estado |
+|---|---|---|---|
+| RES-EVD-001 | EVIDENCE_BASE_AND_ROUTINE_PROTOCOL.md §1.1, §4 | Cada afirmación cuantitativa de una rutina tiene fuente, población, desenlace y limitaciones | Planned |
+| RES-EVD-002 | EVIDENCE_BASE_AND_ROUTINE_PROTOCOL.md §2, §4 | La ficha separa hecho, inferencia y decisión personal para todas las variables de prescripción | Planned |
+| RES-EVD-003 | EVIDENCE_BASE_AND_ROUTINE_PROTOCOL.md §6 | Las condiciones médicas usan evidencia clínica aplicable o quedan fuera de la automatización | Planned |
+| RES-EVD-004 | EVIDENCE_BASE_AND_ROUTINE_PROTOCOL.md §7 | Cada fuente tiene PMID/DOI o URL primaria, fecha, versión y limitaciones | Implemented |
+| RES-EVD-005 | EVIDENCE_BASE_AND_ROUTINE_PROTOCOL.md §5 | La prioridad de máquinas aparece como restricción/preferencia y no como superioridad universal | Planned |

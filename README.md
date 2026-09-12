@@ -30,6 +30,7 @@ Sistema personal Android para registrar entrenamiento, alimentación y suplement
 - [Ciclo de vida de IA](docs/07-ai/AI_MLOPS.md)
 - [Runbook operativo](docs/08-operations/RUNBOOK.md)
 - [Fuentes de investigación](docs/09-research/SOURCES.md)
+- [Base de evidencia y protocolo para rutinas](docs/09-research/EVIDENCE_BASE_AND_ROUTINE_PROTOCOL.md)
 - [Matriz de trazabilidad](docs/00-governance/TRACEABILITY.md)
 - [Registro de riesgos](docs/00-governance/RISK_REGISTER.md)
 - [Decisiones arquitectónicas](docs/03-architecture/adr/README.md)
