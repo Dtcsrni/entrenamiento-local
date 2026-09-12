@@ -8,20 +8,18 @@ La base canónica de trabajo para el Día 1 es la estructura visual y de navegac
 
 `canonicas/Rutina_Dia_1_Espalda_Biceps_CANONICA_BASE_V10.html`
 
-La v16 y la v20 quedan conservadas únicamente como archivo histórico. Sus contenidos, recursos y decisiones de diseño no se incorporarán automáticamente porque se descartaron por errores en la revisión visual.
+La v16 y la v20 fueron descartadas por errores en la revisión visual y se eliminaron de las fuentes activas. Los inventarios de `evidencia/` conservan únicamente el registro histórico de que fueron revisadas.
 
 ## Versiones conservadas
 
 | Día | Archivo local conservado | Estado documentado |
 |---|---|---|
-| Día 1 | `fuentes_locales/Rutina_Dia_1_Espalda_Biceps_Autocontenida_v20_VALIDADA_CON_CALENTAMIENTOS.html` | Versión histórica; no se usará como base porque fue descartada en la revisión visual. |
 | Día 2 | `fuentes_locales/Rutina_Dia_2_Pierna_Gluteo_Autocontenida_v6_mejoras_integradas.html` | Versión local final citada por el chat; 24 imágenes embebidas y sin URLs externas en el inventario realizado. |
-| Día 1 | `fuentes_locales/Rutina_Dia_1_Espalda_Biceps_Autocontenida_v16_FOTOS_REALES_MAQUINAS.html` | Versión histórica de comparación; no es la versión canónica. |
 | Día 1 | `fuentes_locales/Rutina_Dia_1_Espalda_Biceps_Autocontenida_v10_HEADER_REPARADO.html` | Fuente de la base canónica seleccionada; contiene recursos externos que se revisarán durante la unificación. |
 
 ## Recursos y evidencia
 
-- `recursos_embebidos/` contiene los 55 binarios extraídos de los cuatro HTML locales, identificados por su SHA-256.
+- `recursos_embebidos/` contiene los 55 binarios extraídos durante la auditoría inicial de los cuatro HTML locales, identificados por su SHA-256; se conservan como evidencia, aunque v16 y v20 ya fueron eliminadas de las fuentes activas.
 - `evidencia/html_local_inventory.json` registra tamaños, referencias de imágenes y URLs externas por HTML.
 - `evidencia/assets_embebidos_manifest.json` relaciona cada ocurrencia con su MIME, tamaño, hash y archivo extraído.
 - `evidencia/EXTRACCION_PROYECTO.md` conserva el contexto de procedencia y los pendientes conocidos.
