@@ -4,9 +4,9 @@ Este directorio conserva los materiales locales obtenidos durante la construcci�
 
 ## Base seleccionada para la unificación
 
-La base canónica de trabajo para el Día 1 es la estructura visual y de navegación de la v10:
+La base canónica de trabajo para el Día 1 es la estructura visual y de navegación de la antigua v10, renumerada ahora como v1:
 
-`canonicas/Rutina_Dia_1_Espalda_Biceps_CANONICA_BASE_V10.html`
+`canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html`
 
 La v16 y la v20 fueron descartadas por errores en la revisión visual y se eliminaron de las fuentes activas. Los inventarios de `evidencia/` conservan únicamente el registro histórico de que fueron revisadas.
 
