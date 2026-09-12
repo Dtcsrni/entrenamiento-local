@@ -5,6 +5,7 @@ Consultadas el 12 de septiembre de 2026. Las funciones comerciales y compatibili
 ## Protocolo normativo para rutinas
 
 - [Base de evidencia y protocolo para rutinas](EVIDENCE_BASE_AND_ROUTINE_PROTOCOL.md)
+- [Libros y textos de referencia para las rutinas](BOOKS_AND_TEXTBOOKS.md)
 
 Este protocolo es obligatorio para declarar una rutina como `EVIDENCE_REVIEWED`. La biblioteca científica específica de entrenamiento, salud pública, variables de sesión, máquinas, calentamiento y cribado médico se mantiene en ese documento para conservar una relación explícita entre afirmaciones y fuentes.
 
