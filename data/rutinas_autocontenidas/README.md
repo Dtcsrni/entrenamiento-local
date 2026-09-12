@@ -2,14 +2,22 @@
 
 Este directorio conserva los materiales locales obtenidos durante la construcción de las rutinas. Las copias de `fuentes_locales/` no fueron modificadas.
 
+## Base seleccionada para la unificación
+
+La base canónica de trabajo para el Día 1 es la estructura visual y de navegación de la v10:
+
+`canonicas/Rutina_Dia_1_Espalda_Biceps_CANONICA_BASE_V10.html`
+
+La v16 y la v20 quedan conservadas únicamente como archivo histórico. Sus contenidos, recursos y decisiones de diseño no se incorporarán automáticamente porque se descartaron por errores en la revisión visual.
+
 ## Versiones conservadas
 
 | Día | Archivo local conservado | Estado documentado |
 |---|---|---|
-| Día 1 | `fuentes_locales/Rutina_Dia_1_Espalda_Biceps_Autocontenida_v20_VALIDADA_CON_CALENTAMIENTOS.html` | Versión local disponible; el proyecto identificó una v21 posterior cuya descarga no pudo recuperarse. Contiene 24 imágenes embebidas y también enlaces externos. |
+| Día 1 | `fuentes_locales/Rutina_Dia_1_Espalda_Biceps_Autocontenida_v20_VALIDADA_CON_CALENTAMIENTOS.html` | Versión histórica; no se usará como base porque fue descartada en la revisión visual. |
 | Día 2 | `fuentes_locales/Rutina_Dia_2_Pierna_Gluteo_Autocontenida_v6_mejoras_integradas.html` | Versión local final citada por el chat; 24 imágenes embebidas y sin URLs externas en el inventario realizado. |
 | Día 1 | `fuentes_locales/Rutina_Dia_1_Espalda_Biceps_Autocontenida_v16_FOTOS_REALES_MAQUINAS.html` | Versión histórica de comparación; no es la versión canónica. |
-| Día 1 | `fuentes_locales/Rutina_Dia_1_Espalda_Biceps_Autocontenida_v10_HEADER_REPARADO.html` | Versión histórica de comparación; contiene recursos externos y no es la versión canónica. |
+| Día 1 | `fuentes_locales/Rutina_Dia_1_Espalda_Biceps_Autocontenida_v10_HEADER_REPARADO.html` | Fuente de la base canónica seleccionada; contiene recursos externos que se revisarán durante la unificación. |
 
 ## Recursos y evidencia
 
