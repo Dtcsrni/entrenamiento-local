@@ -15352,6 +15352,7 @@ button,
 a,
 input[type="checkbox"]{touch-action:manipulation}
 @media (pointer:coarse), (max-width:700px){
+  html,body,.page,main.cards,article.card{touch-action:pan-y pinch-zoom}
   html{scroll-behavior:smooth}
   body{overscroll-behavior-y:contain}
   .card{scroll-margin-top:1rem}
