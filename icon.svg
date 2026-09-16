@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title>Entrenamiento Local</title>
+  <rect width="512" height="512" rx="112" fill="#0b1220"/>
+  <path d="M128 180h48v152h-48zm208 0h48v152h-48zM96 224h48v64H96zm272 0h48v64h-48zM176 236h160v40H176z" fill="#7dd3fc"/>
+</svg>
