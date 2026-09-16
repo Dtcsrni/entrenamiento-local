@@ -15439,9 +15439,9 @@ button,
 a,
 input[type="checkbox"]{touch-action:manipulation}
 @media (pointer:coarse), (max-width:700px){
-  html,body,.page,main.cards,article.card{touch-action:pan-y pinch-zoom}
-  html{scroll-behavior:smooth}
-  body{overscroll-behavior-y:contain}
+  html,body{touch-action:pan-y pinch-zoom!important;overflow-y:auto!important;overscroll-behavior-y:auto!important;-webkit-overflow-scrolling:touch}
+  .page,main.cards,article.card{touch-action:pan-y pinch-zoom!important}
+  html{scroll-behavior:auto!important}
   .card{scroll-margin-top:1rem}
   .exerciseSetButtons{gap:.55rem}
   .setButton{min-width:48px!important;min-height:48px!important;padding:.55rem .7rem!important;font-size:.76rem!important}

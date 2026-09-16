@@ -1,4 +1,4 @@
-const CACHE_NAME = 'entrenamiento-local-v2';
+const CACHE_NAME = 'entrenamiento-local-v3';
 const PRECACHE = [
   './',
   './index.html',
