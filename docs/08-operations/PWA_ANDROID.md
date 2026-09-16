@@ -10,8 +10,8 @@ La raíz del repositorio contiene una PWA estática (`index.html`, `manifest.web
 4. Con Internet, abrir `Preparar las tres rutinas` y esperar a que termine.
 5. En el gimnasio, abrir la PWA instalada sin conexión.
 
-La primera preparación debe hacerse mientras hay Internet. El service worker no sustituye la revisión de licencia de los medios. Los tres HTML canónicos conservan referencias a `artifacts/`, que está excluido del repositorio; esos medios se mostrarán offline solo después de publicar recursos con procedencia y redistribución aprobadas.
+La primera preparación debe hacerse mientras hay Internet. El service worker no sustituye la revisión de procedencia de los medios. Los recursos referenciados por los tres HTML canónicos se publican por autorización expresa del propietario para este uso personal; esta autorización no debe interpretarse como una licencia general para reutilizar los medios fuera de este proyecto.
 
 ## Estado de publicación
 
-La PWA no necesita backend ni credenciales. El host debe servir la raíz por HTTPS para que Android permita la instalación y el almacenamiento offline. No se debe publicar `artifacts/` mediante una excepción de `.gitignore` sin revisar antes sus términos de uso.
+La PWA no necesita backend ni credenciales. El host debe servir la raíz por HTTPS para que Android permita la instalación y el almacenamiento offline. Solo se copian a `data/rutinas_autocontenidas/medios_publicados/` los archivos referenciados por las tres rutinas; el resto de `artifacts/` continúa excluido por `.gitignore`.
