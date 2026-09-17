@@ -15762,6 +15762,12 @@ body{height:auto!important;min-height:100%!important;overflow-x:hidden!important
   var toggle = doc.getElementById('summaryToggle');
   var requestedExercise = '';
 
+  function isActiveExercise(button){
+    var tracker = doc.querySelector('.exerciseTracker[data-exercise="' + button.dataset.exercise + '"]');
+    var start = tracker && tracker.querySelector('.startExerciseButton');
+    return Boolean(tracker && !tracker.classList.contains('exerciseDone') && start && normalize(start.textContent) === 'ejercicio iniciado');
+  }
+
   function alignSummary(exerciseNumber){
     if (!list) return;
     var buttons = Array.from(list.querySelectorAll('.summaryExercise'));
@@ -15769,7 +15775,7 @@ body{height:auto!important;min-height:100%!important;overflow-x:hidden!important
     var target = exerciseNumber
       ? buttons.find(function(button){ return button.dataset.exercise === exerciseNumber; })
       : null;
-    if (!target) target = buttons.find(function(button){ return !button.classList.contains('isDone'); }) || buttons[buttons.length - 1];
+    if (!target) target = buttons.find(isActiveExercise) || buttons.find(function(button){ var status = button.querySelector('.summaryExerciseState'); return !button.classList.contains('isDone') && status && status.textContent.trim().indexOf('0/') !== 0; }) || buttons.find(function(button){ return !button.classList.contains('isDone'); }) || buttons[buttons.length - 1];
     buttons.forEach(function(button){
       button.classList.toggle('isCurrent', button === target);
     });
