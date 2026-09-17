@@ -27,7 +27,7 @@ Las aplicaciones existentes fragmentan entrenamiento, nutrición, suplementos y 
 
 - Cardio inicial, rutina y cardio final.
 - Rutinas manuales, editables y sugeridas.
-- Catálogo versionado de máquinas de Fitlovers Pachuca, sujeto a verificación física.
+- Catálogo versionado de máquinas del gimnasio, sujeto a verificación física.
 - Series, repeticiones, cargas, RIR/RPE, descanso y notas.
 - Alimentos por texto, voz, búsqueda, código de barras, OCR y fotografía.
 - Componentes y porciones editables con procedencia e incertidumbre.

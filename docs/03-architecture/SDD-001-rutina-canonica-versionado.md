@@ -29,7 +29,7 @@ La representación mínima que debe poder reconstruirse desde una rutina es:
 
 ```text
 CanonicalRoutine
-├─ routineId             # fitlovers-day{N}-series-v{V}
+├─ routineId             # entrenamiento-day{N}-series-v{V}
 ├─ dayNumber
 ├─ routineVersion
 ├─ title

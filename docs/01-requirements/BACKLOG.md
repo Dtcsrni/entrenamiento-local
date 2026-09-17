@@ -25,7 +25,7 @@ No contiene fechas. Las estimaciones se incorporarán después de medir los mile
 - [ ] Recetas y comidas habituales.
 - [ ] Suplementos, recordatorios e inventario.
 - [ ] Pipeline asíncrono de fotografía.
-- [ ] Catálogo verificado de Fitlovers Pachuca.
+- [ ] Catálogo verificado de máquinas del gimnasio.
 - [ ] Motor explicable de rutina.
 - [ ] Health Connect.
 - [ ] Detección contextual del gimnasio.

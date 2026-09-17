@@ -373,8 +373,8 @@ def main() -> None:
     source = SOURCE.read_text(encoding="utf-8")
 
     head = template[: template.index("</head>") + len("</head>")]
-    head = head.replace("data-label=\"Día 1 · Espalda + Bíceps · FitLovers v1 responsive\"", "data-label=\"Día 2 · Pierna + Glúteo · FitLovers v1 responsive\"")
-    head = head.replace("<title>Día 1 · Espalda + Bíceps · FitLovers · v1 responsive</title>", "<title>Día 2 · Pierna + Glúteo · FitLovers · v1 responsive</title>")
+    head = head.replace("data-label=\"Día 1 · Espalda + Bíceps · v1 responsive\"", "data-label=\"Día 2 · Pierna + Glúteo · v1 responsive\"")
+    head = head.replace("<title>Día 1 · Espalda + Bíceps · v1 responsive</title>", "<title>Día 2 · Pierna + Glúteo · v1 responsive</title>")
     head = head.replace("</head>", '''<style data-fix="day2-lower-body-visuals">
 .muscleDayIcon.lower{border-color:rgba(100,215,255,.55)!important;color:#64D7FF!important;background:rgba(100,215,255,.09)!important}
 .warmupStep.cardio,.warmupStep.mobility{grid-template-columns:1fr!important}

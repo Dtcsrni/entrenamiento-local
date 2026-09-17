@@ -65,6 +65,6 @@ Este protocolo es obligatorio para declarar una rutina como `EVIDENCE_REVIEWED`.
 ## Límites
 
 - La arquitectura interna de productos comerciales no es pública; no se atribuyen implementaciones no verificadas.
-- El inventario de Fitlovers Pachuca requiere levantamiento físico.
+- El inventario del gimnasio requiere levantamiento físico.
 - El hardware y runtime de Tezkatli deben medirse de nuevo antes de seleccionar modelos.
 - La compatibilidad Amazfit Active debe comprobarse en el dispositivo.

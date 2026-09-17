@@ -284,8 +284,8 @@ def main() -> None:
     head = replace_all(
         head,
         {
-            'data-label="Día 1 · Espalda + Bíceps · FitLovers v1 responsive"': 'data-label="Día 3 · Pecho + Hombro + Tríceps · FitLovers v1 responsive"',
-            "<title>Día 1 · Espalda + Bíceps · FitLovers · v1 responsive</title>": "<title>Día 3 · Pecho + Hombro + Tríceps · FitLovers · v1 responsive</title>",
+            'data-label="Día 1 · Espalda + Bíceps · v1 responsive"': 'data-label="Día 3 · Pecho + Hombro + Tríceps · v1 responsive"',
+            "<title>Día 1 · Espalda + Bíceps · v1 responsive</title>": "<title>Día 3 · Pecho + Hombro + Tríceps · v1 responsive</title>",
             'data-fix="day1-gif-candidates"': 'data-fix="day3-gif-layout"',
         },
     )

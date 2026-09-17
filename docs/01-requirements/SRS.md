@@ -47,7 +47,7 @@ Definir requisitos verificables para el sistema Entrenamiento Local. Este docume
 - **FUN-ROU-002 · P1:** el sistema deberá proponer rutinas compatibles con objetivo, tiempo, historial y equipo.
 - **FUN-ROU-003 · P1:** toda propuesta deberá presentar razones y alternativas.
 - **FUN-ROU-004 · P1:** el usuario deberá marcar ejercicios como preferidos, menos recomendados, temporalmente no disponibles o excluidos.
-- **FUN-GYM-001 · P1:** el sistema deberá detectar una posible llegada a Fitlovers Pachuca y solicitar confirmación antes de iniciar.
+- **FUN-GYM-001 · P1:** el sistema deberá detectar una posible llegada al gimnasio y solicitar confirmación antes de iniciar.
 - **FUN-GYM-002 · P0:** el catálogo del gimnasio deberá ser editable, versionado y distinguir verificado de inferido.
 - **FUN-GYM-003 · P1:** el estado temporal de una máquina no deberá modificar su existencia en el catálogo.
 
@@ -148,6 +148,6 @@ Definir requisitos verificables para el sistema Entrenamiento Local. Este docume
 
 - Capacidad exacta y software final de Tezkatli.
 - API level y compatibilidad real del Amazfit Active.
-- Inventario físico de Fitlovers Pachuca.
+- Inventario físico del gimnasio.
 - Umbral personal aceptable de error en porciones.
 - Frecuencia y política final de respaldos.
