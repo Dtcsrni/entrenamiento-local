@@ -14976,7 +14976,7 @@ body::before,body::after{animation:none!important}
     if(!item || !visual) return;
     const box = make("div","gifProof");
     box.dataset.gifProof = "true";
-    box.dataset.mediaStatus = item.status || "CANDIDATE_PENDING_LICENSE_REVIEW";
+    box.dataset.mediaStatus = item.status || "CANDIDATE_REVIEW";
     box.dataset.mediaKind = item.kind || "gif";
     if(item.sourceUrl) box.dataset.sourceUrl = item.sourceUrl;
     const frame = make("div","gifFrame");
@@ -15634,9 +15634,9 @@ button,
 a,
 input[type="checkbox"]{touch-action:manipulation}
 @media (pointer:coarse), (max-width:700px){
-  html,body,.page,main.cards,article.card{touch-action:pan-y pinch-zoom}
-  html{scroll-behavior:smooth}
-  body{overscroll-behavior-y:contain}
+  html,body{touch-action:pan-y pinch-zoom!important;overflow-y:auto!important;overscroll-behavior-y:auto!important;-webkit-overflow-scrolling:touch}
+  .page,main.cards,article.card{touch-action:pan-y pinch-zoom!important}
+  html{scroll-behavior:auto!important}
   .card{scroll-margin-top:1rem}
   .exerciseSetButtons{gap:.55rem}
   .setButton{min-width:48px!important;min-height:48px!important;padding:.55rem .7rem!important;font-size:.76rem!important}
@@ -15841,8 +15841,46 @@ body{height:auto!important;min-height:100%!important;overflow-x:hidden!important
 .startExerciseButton,.completeSetButton,.machinePendingToggle,.summaryExercise,.warmupTrackerActions button,.summaryReset,.newMotivation,.soundToggle{ -webkit-tap-highlight-color:transparent }
 @media(max-width:700px){.startExerciseButton{min-height:52px!important;min-width:0!important;padding:.68rem .8rem!important;font-size:.8rem!important}.exerciseTrackerHead>span:first-child::before{width:1rem;height:1rem;font-size:.7rem}.techStepTitle::before{margin-right:.22rem}.warmupTimingGrid span{min-height:2.1rem}}
 @media(prefers-reduced-motion:reduce){.startExerciseButton,.completeSetButton{transition:none}}
-</style>
-
+</style><script data-fix="mobile-reference-clarity-v1">
+(function(){
+  var normalize = function(value){
+    return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  };
+  var localVisuals = [
+    {prefix:'maquina de curl de biceps', src:'../medios_publicados/ejercicios-compartido/images/0592-b6hQYMb-machine-only.webp'},
+    {prefix:'curl de biceps maquina inicio real', src:'../medios_publicados/ejercicios-compartido/images/0592-b6hQYMb.jpg'},
+    {prefix:'anatomia 3d del biceps braquial', src:'../recursos_embebidos/b963bc266356a83bea4fe9909f0516c0c3a1543c06c8a17d24ca9d674fe3c759.png'}
+  ];
+  var refresh = function(){
+    document.querySelectorAll('.techStep.warning .techStepTitle').forEach(function(title){
+      if (title.dataset.singleWarning === '1') return;
+      var clean = title.textContent.replace(/^\s*⚠\s*/,'').trim();
+      if (title.textContent !== clean) title.textContent = clean;
+      title.dataset.singleWarning = '1';
+    });
+    document.querySelectorAll('img').forEach(function(img){
+      var label = normalize(img.getAttribute('alt'));
+      var visual = localVisuals.find(function(candidate){ return label.indexOf(candidate.prefix) === 0; });
+      if (!visual || img.dataset.localVisualFix === visual.src) return;
+      img.dataset.localVisualFix = visual.src;
+      img.src = visual.src;
+    });
+    var toggle = document.getElementById('summaryToggle');
+    var body = document.getElementById('summaryBody');
+    var compact = window.matchMedia && window.matchMedia('(pointer:coarse), (max-width:700px)').matches;
+    if (compact && toggle && body && toggle.dataset.mobileCollapsed !== '1') {
+      toggle.setAttribute('aria-expanded','false');
+      body.hidden = true;
+      toggle.dataset.mobileCollapsed = '1';
+    }
+  };
+  refresh();
+  if (window.MutationObserver && document.body) {
+    new MutationObserver(refresh).observe(document.body,{childList:true,subtree:true});
+  }
+  window.addEventListener('resize',refresh,{passive:true});
+})();
+</script>
 <script data-fix="summary-auto-scroll-and-phase-completeness-v1">
 (function(){
   var doc = document;
@@ -15993,5 +16031,6 @@ body{height:auto!important;min-height:100%!important;overflow-x:hidden!important
 })();
 
 </script>
+
 </body>
 </html>

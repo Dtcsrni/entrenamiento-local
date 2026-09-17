@@ -1,16 +1,24 @@
 # Consulta de rutinas en Android
 
-La raíz del repositorio contiene una PWA estática (`index.html`, `manifest.webmanifest` y `sw.js`). La PWA muestra los tres HTML canónicos y usa un service worker para conservar la pantalla, las rutinas y los recursos que el servidor entregue correctamente.
+La raíz del repositorio contiene una PWA estática (`index.html`, `manifest.webmanifest` y `sw.js`). La PWA muestra los tres HTML canónicos y precachea sus recursos locales publicados para que las sesiones sigan disponibles sin conexión.
 
 ## Uso en Android
 
 1. Publicar el repositorio con un host HTTPS de archivos estáticos, por ejemplo GitHub Pages.
 2. Abrir la URL publicada en Chrome para Android.
 3. Pulsar `Instalar en Android` si aparece el botón, o usar el menú de Chrome → `Añadir a pantalla de inicio`.
-4. Con Internet, abrir `Preparar las tres rutinas` y esperar a que termine.
+4. Con Internet, abrir `Preparar sesiones` y esperar a que termine la primera sincronización.
 5. En el gimnasio, abrir la PWA instalada sin conexión.
 
-La primera preparación debe hacerse mientras hay Internet. El service worker no sustituye la revisión de procedencia de los medios. Los recursos referenciados por los tres HTML canónicos se publican por autorización expresa del propietario para este uso personal; esta autorización no debe interpretarse como una licencia general para reutilizar los medios fuera de este proyecto.
+La instalación del service worker precachea la portada, las tres rutinas y los medios locales referenciados por ellas. La acción `Preparar sesiones` permite forzar una sincronización completa cuando haya conexión.
+
+## Actualización desde el repositorio
+
+Al abrir la PWA con conexión, `index.html` solicita una comprobación de actualización de `sw.js` sin usar la caché HTTP. El service worker usa navegación `network-first`: obtiene la versión publicada más reciente y la guarda; si no hay red, sirve la última versión disponible en caché. Cuando cambia el service worker, activa la nueva caché inmediatamente y elimina la anterior. En cada sincronización también actualiza los recursos precacheados.
+
+Por tanto, el flujo de actualización es: publicar cambios en el repositorio, abrir la PWA una vez con conexión y volver a usarla sin conexión. No es necesario borrar datos ni reinstalarla.
+
+Antes de publicar cambios en una rutina canónica o en `medios_publicados/`, regenerar el inventario con `python scripts/build_pwa_service_worker.py`. El workflow de validación compara el resultado generado con `sw.js` y rechaza publicaciones desactualizadas.
 
 ## Estado de publicación
 

@@ -1,5 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
-  <title>Entrenamiento Local</title>
-  <rect width="512" height="512" rx="112" fill="#0b1220"/>
-  <path d="M128 180h48v152h-48zm208 0h48v152h-48zM96 224h48v64H96zm272 0h48v64h-48zM176 236h160v40H176z" fill="#7dd3fc"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Entrenamiento</title>
+  <desc id="desc">Monograma E turquesa sobre un fondo oscuro con detalle de energía.</desc>
+  <defs>
+    <linearGradient id="background" x1="72" y1="48" x2="440" y2="464" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#17353b"/>
+      <stop offset=".48" stop-color="#12252e"/>
+      <stop offset="1" stop-color="#0d1420"/>
+    </linearGradient>
+    <linearGradient id="mark" x1="140" y1="140" x2="370" y2="372" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#b0ffea"/>
+      <stop offset=".48" stop-color="#73e6cf"/>
+      <stop offset="1" stop-color="#37c7ad"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientTransform="translate(256 170) rotate(90) scale(250)">
+      <stop stop-color="#73e6cf" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#73e6cf" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#background)"/>
+  <circle cx="256" cy="170" r="246" fill="url(#glow)"/>
+  <rect x="70" y="70" width="372" height="372" rx="88" fill="none" stroke="#b0ffea" stroke-opacity=".13" stroke-width="3"/>
+  <circle cx="386" cy="126" r="7" fill="#f6c56b"/>
+  <path d="M138 136h236v54H204v42h148v48H204v42h170v54H138z" fill="url(#mark)"/>
+  <path d="M138 136h66v236h-66z" fill="#b0ffea" fill-opacity=".28"/>
+  <path d="M138 136h236v14H138z" fill="#fff" fill-opacity=".22"/>
 </svg>

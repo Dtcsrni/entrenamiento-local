@@ -96,17 +96,17 @@ def build_warmup(template: str) -> str:
   <div class="warmupSteps">
     <article class="warmupStep cardio">
       <div class="warmupMedia warmupMediaStrip warmupTextStrip" role="list" aria-label="Opciones de cardio suave">
-        <div class="warmupVisual warmupMotionCard" role="listitem"><img class="warmupMotionGif warmupGif" src="../../../artifacts/ejercicios-compartido/videos/2141-rjtuP6X.gif" alt="GIF de caminata en elíptica con movimiento continuo y ritmo suave" loading="lazy"/><img class="warmupFallback" src="../../../artifacts/ejercicios-compartido/images/2141-rjtuP6X.jpg" alt="" aria-hidden="true" hidden/><span class="warmupMediaLabel">ELÍPTICA</span></div>
-        <div class="warmupVisual warmupMotionCard" role="listitem"><img class="warmupMotionGif warmupGif" src="../../../artifacts/ejercicios-compartido/videos/0798-a8VDgLw.gif" alt="GIF de pedaleo suave en bicicleta fija" loading="lazy"/><img class="warmupFallback" src="../../../artifacts/ejercicios-compartido/images/0798-a8VDgLw.jpg" alt="" aria-hidden="true" hidden/><span class="warmupMediaLabel">BICI</span></div>
-        <div class="warmupVisual warmupMotionCard" role="listitem"><img class="warmupMotionGif warmupGif" src="../../../artifacts/ejercicios-compartido/videos/3666-rjiM4L3.gif" alt="GIF de caminata en caminadora inclinada a ritmo suave" loading="lazy"/><img class="warmupFallback" src="../../../artifacts/ejercicios-compartido/images/3666-rjiM4L3.jpg" alt="" aria-hidden="true" hidden/><span class="warmupMediaLabel">CAMINADORA</span></div>
+        <div class="warmupVisual warmupMotionCard" role="listitem"><img class="warmupMotionGif warmupGif" src="../medios_publicados/ejercicios-compartido/videos/2141-rjtuP6X.gif" alt="GIF de caminata en elíptica con movimiento continuo y ritmo suave" loading="lazy"/><img class="warmupFallback" src="../medios_publicados/ejercicios-compartido/images/2141-rjtuP6X.jpg" alt="" aria-hidden="true" hidden/><span class="warmupMediaLabel">ELÍPTICA</span></div>
+        <div class="warmupVisual warmupMotionCard" role="listitem"><img class="warmupMotionGif warmupGif" src="../medios_publicados/ejercicios-compartido/videos/0798-a8VDgLw.gif" alt="GIF de pedaleo suave en bicicleta fija" loading="lazy"/><img class="warmupFallback" src="../medios_publicados/ejercicios-compartido/images/0798-a8VDgLw.jpg" alt="" aria-hidden="true" hidden/><span class="warmupMediaLabel">BICI</span></div>
+        <div class="warmupVisual warmupMotionCard" role="listitem"><img class="warmupMotionGif warmupGif" src="../medios_publicados/ejercicios-compartido/videos/3666-rjiM4L3.gif" alt="GIF de caminata en caminadora inclinada a ritmo suave" loading="lazy"/><img class="warmupFallback" src="../medios_publicados/ejercicios-compartido/images/3666-rjiM4L3.jpg" alt="" aria-hidden="true" hidden/><span class="warmupMediaLabel">CAMINADORA</span></div>
       </div>
       <div class="warmupCopy"><div class="warmupIndex">01 · CARDIO</div><h3>Cardio suave</h3><p><strong class="timeCue">5–8 min</strong> · elige una máquina y mantén un ritmo conversacional; evita intervalos y fatiga local antes del primer ejercicio.</p></div>
     </article>
     <article class="warmupStep mobility">
       <div class="warmupMedia warmupMediaPair warmupMotionPair" role="list" aria-label="Movilidad dinámica de cadera, rodilla y tobillo sin equipo">
-        <div class="warmupVisual warmupMotionCard" role="listitem"><img class="warmupMotionGif warmupGif" src="../../../artifacts/ejercicios-compartido/videos/1512-qBcKorM.gif" alt="GIF de movilidad dinámica de cadera y rodilla en cuadrupedia, con rango controlado" loading="lazy"/><img class="warmupFallback" src="../../../artifacts/ejercicios-compartido/images/1512-qBcKorM.jpg" alt="" aria-hidden="true" hidden/><span class="warmupMediaLabel">CADERA</span></div>
-        <div class="warmupVisual warmupMotionCard" role="listitem"><img class="warmupMotionGif warmupGif" src="../../../artifacts/rutinas_autocontenidas/dia2_media_generated/ankle_circles_real_mymichigan.gif" alt="GIF filmado de círculos de tobillo: pie elevado, círculos controlados y regreso sin rebotes" loading="lazy"/><img class="warmupFallback" src="../../../artifacts/rutinas_autocontenidas/dia2_media_generated/ankle_circles_real_mymichigan.jpg" alt="" aria-hidden="true" hidden/><span class="warmupMediaLabel">TOBILLO</span></div>
-        <div class="warmupVisual warmupMotionCard" role="listitem"><img class="warmupMotionGif warmupGif" src="../../../artifacts/ejercicios-compartido/videos/0257-X7jbxra.gif" alt="GIF de círculos de rodilla controlados, sin rebotes" loading="lazy"/><img class="warmupFallback" src="../../../artifacts/ejercicios-compartido/images/0257-X7jbxra.jpg" alt="" aria-hidden="true" hidden/><span class="warmupMediaLabel">RODILLA</span></div>
+        <div class="warmupVisual warmupMotionCard" role="listitem"><img class="warmupMotionGif warmupGif" src="../medios_publicados/ejercicios-compartido/videos/1512-qBcKorM.gif" alt="GIF de movilidad dinámica de cadera y rodilla en cuadrupedia, con rango controlado" loading="lazy"/><img class="warmupFallback" src="../medios_publicados/ejercicios-compartido/images/1512-qBcKorM.jpg" alt="" aria-hidden="true" hidden/><span class="warmupMediaLabel">CADERA</span></div>
+        <div class="warmupVisual warmupMotionCard" role="listitem"><img class="warmupMotionGif warmupGif" src="../medios_publicados/rutinas_autocontenidas/dia2_media_generated/ankle_circles_real_mymichigan.gif" alt="GIF filmado de círculos de tobillo: pie elevado, círculos controlados y regreso sin rebotes" loading="lazy"/><img class="warmupFallback" src="../medios_publicados/rutinas_autocontenidas/dia2_media_generated/ankle_circles_real_mymichigan.jpg" alt="" aria-hidden="true" hidden/><span class="warmupMediaLabel">TOBILLO</span></div>
+        <div class="warmupVisual warmupMotionCard" role="listitem"><img class="warmupMotionGif warmupGif" src="../medios_publicados/ejercicios-compartido/videos/0257-X7jbxra.gif" alt="GIF de círculos de rodilla controlados, sin rebotes" loading="lazy"/><img class="warmupFallback" src="../medios_publicados/ejercicios-compartido/images/0257-X7jbxra.jpg" alt="" aria-hidden="true" hidden/><span class="warmupMediaLabel">RODILLA</span></div>
       </div>
       <div class="warmupCopy"><div class="warmupIndex">02 · MOVILIDAD</div><h3>Cadera, rodilla y tobillo</h3><p><strong class="timeCue">3–5 min</strong> · realiza movimientos dinámicos lentos y cómodos, sin rebotes ni dolor. La movilidad prepara el patrón; no busca fatigar ni forzar el rango.</p></div>
     </article>
@@ -194,8 +194,8 @@ def build_gif_script(template: str) -> str:
 (function(){
   const media = [
     {
-      gif:"../../../artifacts/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form.gif",
-      thumbnail:"../../../artifacts/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form.jpg",
+      gif:"../medios_publicados/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form.gif",
+      thumbnail:"../medios_publicados/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form.jpg",
       key:"HIP THRUST",
       kind:"video",
       label:"VIDEO · DEMOSTRACIÓN REAL",
@@ -205,40 +205,40 @@ def build_gif_script(template: str) -> str:
       note:"Recorte del panel CORRECT FORM de la demostración oficial: muestra repeticiones completas en máquina, con espalda apoyada, pies estables y extensión de cadera sin compensar con la zona lumbar."
     },
     {
-      gif:"../../../artifacts/ejercicios-compartido/videos/0743-Qa55kX1.gif",
-      thumbnail:"../../../artifacts/ejercicios-compartido/images/0743-Qa55kX1.jpg",
+      gif:"../medios_publicados/ejercicios-compartido/videos/0743-Qa55kX1.gif",
+      thumbnail:"../medios_publicados/ejercicios-compartido/images/0743-Qa55kX1.jpg",
       key:"HACK SQUAT",
       kind:"gif",
       label:"GIF · patrón guiado",
       alt:"GIF ilustrado de hack squat guiada: descenso y ascenso con espalda y hombros apoyados"
     },
     {
-      gif:"../../../artifacts/ejercicios-compartido/videos/0739-10Z2DXU.gif",
-      thumbnail:"../../../artifacts/ejercicios-compartido/images/0739-10Z2DXU.jpg",
+      gif:"../medios_publicados/ejercicios-compartido/videos/0739-10Z2DXU.gif",
+      thumbnail:"../medios_publicados/ejercicios-compartido/images/0739-10Z2DXU.jpg",
       key:"PRENSA DE PIERNAS",
       kind:"gif",
       label:"GIF · patrón guiado",
       alt:"GIF ilustrado de prensa de piernas inclinada: flexión y extensión controladas"
     },
     {
-      gif:"../../../artifacts/ejercicios-compartido/videos/0599-Zg3XY7P.gif",
-      thumbnail:"../../../artifacts/ejercicios-compartido/images/0599-Zg3XY7P.jpg",
+      gif:"../medios_publicados/ejercicios-compartido/videos/0599-Zg3XY7P.gif",
+      thumbnail:"../medios_publicados/ejercicios-compartido/images/0599-Zg3XY7P.jpg",
       key:"CURL FEMORAL EN MÁQUINA",
       kind:"gif",
       label:"GIF · patrón guiado",
       alt:"GIF ilustrado de curl femoral sentado en máquina: flexión y regreso controlado de rodilla"
     },
     {
-      gif:"../../../artifacts/ejercicios-compartido/videos/0585-my33uHU.gif",
-      thumbnail:"../../../artifacts/ejercicios-compartido/images/0585-my33uHU.jpg",
+      gif:"../medios_publicados/ejercicios-compartido/videos/0585-my33uHU.gif",
+      thumbnail:"../medios_publicados/ejercicios-compartido/images/0585-my33uHU.jpg",
       key:"EXTENSIÓN DE PIERNAS",
       kind:"gif",
       label:"GIF · patrón guiado",
       alt:"GIF ilustrado de extensión de piernas en máquina: extensión y descenso controlados"
     },
     {
-      gif:"../../../artifacts/ejercicios-compartido/videos/0605-ykUOVze.gif",
-      thumbnail:"../../../artifacts/ejercicios-compartido/images/0605-ykUOVze.jpg",
+      gif:"../medios_publicados/ejercicios-compartido/videos/0605-ykUOVze.gif",
+      thumbnail:"../medios_publicados/ejercicios-compartido/images/0605-ykUOVze.jpg",
       key:"PANTORRILLAS DE PIE",
       kind:"gif",
       label:"GIF · patrón guiado",
@@ -258,7 +258,7 @@ def build_gif_script(template: str) -> str:
     if(!item || !visual) return;
     const box = make("div","gifProof");
     box.dataset.gifProof = "true";
-    box.dataset.mediaStatus = item.status || "CANDIDATE_PENDING_LICENSE_REVIEW";
+    box.dataset.mediaStatus = item.status || "CANDIDATE_REVIEW";
     box.dataset.mediaKind = item.kind || "gif";
     if(item.sourceUrl) box.dataset.sourceUrl = item.sourceUrl;
     const frame = make("div","gifFrame");
@@ -323,9 +323,9 @@ def enforce_machine_hip_thrust_visuals(card: str) -> str:
     card = preserve_machine_hip_thrust_card(card)
     phase, phase_start, phase_end = extract_div_block(card, '<div class="phaseRow">')
     replacement = '''<div class="phaseRow machinePhaseImages" aria-label="Guía estática del recorrido del hip thrust en máquina">
-<div class="phaseCol"><div class="phaseLabel">Inicio · abajo</div><div class="machinePhasePanel"><div class="machinePhaseVisual"><img src="../../../artifacts/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form_inicio.jpg" alt="Inicio abajo del hip thrust en máquina Booty Builder: espalda alta apoyada, cadera flexionada, pelvis abajo y pies firmes" loading="lazy"/><span class="phasePositionCue">PELVIS ABAJO</span></div><strong>Inicio · cadera flexionada</strong><small>Espalda alta apoyada, pelvis abajo, pies firmes y almohadilla o cinturón estable sobre la cadera.</small></div></div>
+<div class="phaseCol"><div class="phaseLabel">Inicio · abajo</div><div class="machinePhasePanel"><div class="machinePhaseVisual"><img src="../medios_publicados/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form_inicio.jpg" alt="Inicio abajo del hip thrust en máquina Booty Builder: espalda alta apoyada, cadera flexionada, pelvis abajo y pies firmes" loading="lazy"/><span class="phasePositionCue">PELVIS ABAJO</span></div><strong>Inicio · cadera flexionada</strong><small>Espalda alta apoyada, pelvis abajo, pies firmes y almohadilla o cinturón estable sobre la cadera.</small></div></div>
 <div class="swap" aria-hidden="true">↕</div>
-<div class="phaseCol"><div class="phaseLabel">Final · arriba</div><div class="machinePhasePanel"><div class="machinePhaseVisual"><img src="../../../artifacts/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form_final.jpg" alt="Final arriba del hip thrust en máquina Booty Builder: cadera extendida con tronco y muslos alineados" loading="lazy"/><span class="phasePositionCue">CADERA EXTENDIDA</span></div><strong>Final · tronco y muslos alineados</strong><small>Sube hasta extender la cadera, aprieta glúteos sin arquear la zona lumbar y regresa con control.</small></div></div>
+<div class="phaseCol"><div class="phaseLabel">Final · arriba</div><div class="machinePhasePanel"><div class="machinePhaseVisual"><img src="../medios_publicados/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form_final.jpg" alt="Final arriba del hip thrust en máquina Booty Builder: cadera extendida con tronco y muslos alineados" loading="lazy"/><span class="phasePositionCue">CADERA EXTENDIDA</span></div><strong>Final · tronco y muslos alineados</strong><small>Sube hasta extender la cadera, aprieta glúteos sin arquear la zona lumbar y regresa con control.</small></div></div>
 </div>'''
     return card[:phase_start] + replacement + card[phase_end:]
 

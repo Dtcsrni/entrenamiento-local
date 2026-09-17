@@ -31,6 +31,17 @@ class RoutineMediaValidationTests(unittest.TestCase):
             errors = validate_path(html)
         self.assertTrue(any("medio faltante" in error for error in errors))
 
+    def test_ignored_artifacts_reference_is_reported(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT / "tmp") as directory:
+            root = Path(directory)
+            html = root / "routine.html"
+            html.write_text(
+                '<img src="../../artifacts/hidden.gif" alt="GIF fuera de publicación">',
+                encoding="utf-8",
+            )
+            errors = validate_path(html)
+        self.assertTrue(any("ruta no publicable bajo artifacts" in error for error in errors))
+
     def test_content_image_without_alt_is_reported(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT / "tmp") as directory:
             root = Path(directory)

@@ -18,3 +18,7 @@ jobs:
           python-version: "3.12"
       - name: Validate repository contracts and documentation
         run: python scripts/validate_repository.py
+      - name: Verify generated PWA service worker
+        run: |
+          python scripts/build_pwa_service_worker.py
+          git diff --exit-code -- sw.js

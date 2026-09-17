@@ -1,13 +1,13 @@
 {
-  "name": "Entrenamiento Local",
+  "name": "Entrenamiento",
   "short_name": "Entrenamiento",
   "description": "Rutinas visuales para consultar en el gimnasio.",
   "lang": "es-MX",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0b1220",
-  "theme_color": "#0b1220",
+  "background_color": "#10161f",
+  "theme_color": "#10161f",
   "icons": [
     {
       "src": "./icon.svg",

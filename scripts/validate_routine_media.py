@@ -82,9 +82,11 @@ def resolve_local(path: Path, reference: str) -> tuple[Path | None, str | None]:
         return None, None
     try:
         resolved = (path.parent / reference).resolve()
-        resolved.relative_to(ROOT)
+        relative = resolved.relative_to(ROOT)
     except (OSError, ValueError) as exc:
         return None, f"ruta fuera del repositorio o inválida {reference!r}: {exc}"
+    if relative.parts and relative.parts[0] == "artifacts":
+        return None, f"ruta no publicable bajo artifacts {reference!r}"
     return resolved, None
 
 
