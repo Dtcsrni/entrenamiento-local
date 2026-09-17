@@ -442,6 +442,9 @@ def main() -> None:
     tail = template[tail_start: template.rfind("</body>")]
     tail = re.sub(r'<script data-fix="day1-gif-candidates">.*?</script>', build_gif_script(template), tail, count=1, flags=re.S)
     tail = tail.replace('data-fix="day1-warmup-guide"', 'data-fix="day2-warmup-guide"')
+    tail = tail.replace("fitlovers-day1-series-v1", "fitlovers-day2-series-v1")
+    tail = tail.replace("fitlovers-day1-sound-v1", "fitlovers-day2-sound-v1")
+    tail = tail.replace("fitlovers-day1-motivation-v1", "fitlovers-day2-motivation-v1")
 
     body = "\n".join([
         "<body>",

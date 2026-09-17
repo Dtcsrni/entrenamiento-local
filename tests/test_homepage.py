@@ -5,6 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).parents[1]
 INDEX = ROOT / "index.html"
+CANONICAL = ROOT / "data" / "rutinas_autocontenidas" / "canonicas"
 
 
 class HomepageContractTests(unittest.TestCase):
@@ -48,6 +49,19 @@ class HomepageContractTests(unittest.TestCase):
         self.assertIn("updateViaCache: 'none'", self.html)
         self.assertIn("registration.update()", self.html)
         self.assertIn("type: 'SYNC_APP'", self.html)
+
+    def test_canonical_routines_use_distinct_progress_storage_keys(self):
+        keys = []
+        for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
+            source = path.read_text(encoding="utf-8")
+            marker = "const storageKey = '"
+            start = source.index(marker) + len(marker)
+            keys.append(source[start:source.index("'", start)])
+        self.assertEqual(len(keys), 3)
+        self.assertEqual(len(set(keys)), 3)
+        self.assertIn("day1", keys[0])
+        self.assertIn("day2", keys[1])
+        self.assertIn("day3", keys[2])
 
 
 if __name__ == "__main__":
