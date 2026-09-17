@@ -15640,7 +15640,7 @@ body{height:auto!important;min-height:100%!important;overflow-x:hidden!important
     if (doc.querySelector('style[data-fix="summary-auto-scroll-and-phase-completeness-v1"]')) return;
     var style = doc.createElement('style');
     style.dataset.fix = 'summary-auto-scroll-and-phase-completeness-v1';
-    style.textContent = '.summaryExercise.isCurrent{border-color:rgba(101,242,221,.78);box-shadow:0 0 0 1px rgba(101,242,221,.28),0 0 12px rgba(101,242,221,.16)}.sessionSummaryList{touch-action:pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}';
+    style.textContent = '.summaryExercise.isCurrent{border-color:rgba(101,242,221,.78);box-shadow:0 0 0 1px rgba(101,242,221,.28),0 0 12px rgba(101,242,221,.16)}.sessionSummaryList{touch-action:pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}.card.exerciseFinished::after{content:"✓ COMPLETADO";position:absolute;inset:0;z-index:5;display:grid!important;place-items:center;pointer-events:none;background:linear-gradient(135deg,rgba(5,18,28,.62),rgba(19,104,100,.28));border:1px solid rgba(101,242,221,.36);color:rgba(223,255,248,.82);font-family:var(--font-ui);font-size:clamp(1rem,3vw,1.7rem);font-weight:950;letter-spacing:.16em;text-shadow:0 2px 12px rgba(0,0,0,.5);animation:completedExerciseVeil .5s ease both}@keyframes completedExerciseVeil{from{opacity:0}to{opacity:1}}@media(prefers-reduced-motion:reduce){.card.exerciseFinished::after{animation:none}}';
     doc.head.appendChild(style);
   }
 
