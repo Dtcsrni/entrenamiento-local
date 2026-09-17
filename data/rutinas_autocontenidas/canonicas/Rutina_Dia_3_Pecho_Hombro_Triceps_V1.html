@@ -15611,7 +15611,7 @@ body{height:auto!important;min-height:100%!important;overflow-x:hidden!important
         var labels = Array.from(candidate.querySelectorAll('.phaseLabel')).map(function(label){
           return normalize(label.textContent);
         });
-        return labels.some(function(label){ return label.indexOf('inicio') === 0; }) &&
+        return labels.some(function(label){ return label.slice(-6) === 'inicio'; }) &&
           !labels.some(function(label){ return label.indexOf('final') === 0; });
       });
       if (!row) return;
