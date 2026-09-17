@@ -1,0 +1,175 @@
+{
+  "day": "Día 1",
+  "status": "CANDIDATES_PENDING_LICENSE_REVIEW",
+  "source_repository": "https://github.com/hasaneyldrm/exercises-dataset",
+  "source_commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+  "media_rights_holder": "Gym visual",
+  "required_attribution": "© Gym visual — https://gymvisual.com/",
+  "license_note": "El dataset declara que los GIF y miniaturas son medios de Gym visual, limitados a 180×180 y sujetos a sus términos. Este manifiesto no concede licencia propia para redistribuirlos.",
+  "items": [
+    {
+      "exercise_number": 1,
+      "exercise": "Jalón al pecho",
+      "dataset_id": "0197",
+      "dataset_name": "cable pulldown (pro lat bar)",
+      "equipment": "cable",
+      "gif": "artifacts/ejercicios-compartido/videos/0197-qdRxqCj.gif",
+      "thumbnail": "artifacts/ejercicios-compartido/images/0197-qdRxqCj.jpg",
+      "sha256_gif": "c31616695af60740d47a7f67be708ecd238bfc943a0f51baf0ba03adeac315c3",
+      "dimensions": "180x180",
+      "frames": 12,
+      "status": "CANDIDATE_PENDING_LICENSE_REVIEW"
+    },
+    {
+      "exercise_number": 2,
+      "exercise": "Remo alto unilateral",
+      "dataset_id": "1356",
+      "dataset_name": "lever one arm lateral high row",
+      "equipment": "leverage machine",
+      "gif": "artifacts/ejercicios-compartido/videos/1356-OIFMAp1.gif",
+      "thumbnail": "artifacts/ejercicios-compartido/images/1356-OIFMAp1.jpg",
+      "sha256_gif": "61896e22a09302cdb69da352e7db7e71d16c761771c266df498d0d6b6f66073f",
+      "dimensions": "180x180",
+      "frames": 12,
+      "status": "CANDIDATE_PENDING_LICENSE_REVIEW"
+    },
+    {
+      "exercise_number": 3,
+      "exercise": "Remo horizontal en máquina",
+      "dataset_id": "1350",
+      "dataset_name": "lever seated row",
+      "equipment": "leverage machine",
+      "gif": "artifacts/ejercicios-compartido/videos/1350-7I6LNUG.gif",
+      "thumbnail": "artifacts/ejercicios-compartido/images/1350-7I6LNUG.jpg",
+      "sha256_gif": "96000790878fe1238847466d0f3b81fbcaf6586e9555df38aad41727759c7cbd",
+      "dimensions": "180x180",
+      "frames": 12,
+      "status": "CANDIDATE_PENDING_LICENSE_REVIEW"
+    },
+    {
+      "exercise_number": 4,
+      "exercise": "Apertura inversa en máquina",
+      "dataset_id": "0602",
+      "dataset_name": "lever seated reverse fly",
+      "equipment": "leverage machine",
+      "gif": "artifacts/ejercicios-compartido/videos/0602-myfUsKf.gif",
+      "thumbnail": "artifacts/ejercicios-compartido/images/0602-myfUsKf.jpg",
+      "sha256_gif": "67982491ac142252217ee9157cef9c3ed558149157b7a07a99de2b94a2bef8cf",
+      "dimensions": "180x180",
+      "frames": 12,
+      "status": "CANDIDATE_PENDING_LICENSE_REVIEW"
+    },
+    {
+      "exercise_number": 5,
+      "exercise": "Curl de bíceps en máquina",
+      "dataset_id": "0592",
+      "dataset_name": "lever preacher curl",
+      "equipment": "leverage machine",
+      "gif": "artifacts/ejercicios-compartido/videos/0592-b6hQYMb.gif",
+      "thumbnail": "artifacts/ejercicios-compartido/images/0592-b6hQYMb.jpg",
+      "sha256_gif": "121b5c6398ce40fc6a2a375c62af100c3be69796cb2df2d89820426f8696e8df",
+      "dimensions": "180x180",
+      "frames": 12,
+      "status": "CANDIDATE_PENDING_LICENSE_REVIEW"
+    },
+    {
+      "exercise_number": 6,
+      "exercise": "Press de pecho ligero",
+      "dataset_id": "0577",
+      "dataset_name": "lever chest press",
+      "equipment": "leverage machine",
+      "gif": "artifacts/ejercicios-compartido/videos/0577-T0yTjgW.gif",
+      "thumbnail": "artifacts/ejercicios-compartido/images/0577-T0yTjgW.jpg",
+      "sha256_gif": "789515907e5001da8ced127bcf8969e7ab265f25545bf7f0a80dbb6f0da213b0",
+      "dimensions": "180x180",
+      "frames": 12,
+      "status": "CANDIDATE_PENDING_LICENSE_REVIEW"
+    }
+  ],
+  "warmup_items": [
+    {
+      "step": 1,
+      "label": "Cardio moderado",
+      "dataset_id": "2141",
+      "dataset_name": "walk elliptical cross trainer",
+      "gif": "artifacts/ejercicios-compartido/videos/2141-rjtuP6X.gif",
+      "thumbnail": "artifacts/ejercicios-compartido/images/2141-rjtuP6X.jpg",
+      "additional_gifs": [
+        {
+          "dataset_id": "0798",
+          "dataset_name": "stationary bike walk",
+          "gif": "artifacts/ejercicios-compartido/videos/0798-a8VDgLw.gif",
+          "thumbnail": "artifacts/ejercicios-compartido/images/0798-a8VDgLw.jpg",
+          "status": "CANDIDATE_PENDING_LICENSE_REVIEW"
+        },
+        {
+          "dataset_id": "3666",
+          "dataset_name": "walking on incline treadmill",
+          "gif": "artifacts/ejercicios-compartido/videos/3666-rjiM4L3.gif",
+          "thumbnail": "artifacts/ejercicios-compartido/images/3666-rjiM4L3.jpg",
+          "status": "CANDIDATE_PENDING_LICENSE_REVIEW"
+        }
+      ],
+      "status": "CANDIDATE_PENDING_LICENSE_REVIEW"
+    },
+    {
+      "step": 2,
+    "label": "Movilidad y activación de hombros",
+    "dataset_id": null,
+    "dataset_name": "Filmed standing arm circles + shoulder rolls",
+    "source_pages": [
+      "https://tenor.com/view/arm-circles-gif-21819709",
+      "https://tenor.com/view/shoulder-rolls-gif-13087517817471476069",
+      "https://www.dvidshub.net/video/551356/arm-circles",
+      "https://www.nhsinform.scot/illnesses-and-conditions/muscle-bone-and-joints/arm-shoulder-and-hand-problems-and-conditions/exercises-for-shoulder-problems"
+    ],
+    "animation_format": "gif",
+    "gifs": [
+      {
+        "path": "artifacts/ejercicios-compartido/videos/warmup-arm-circles-filmed.gif",
+        "thumbnail": "artifacts/ejercicios-compartido/images/warmup-arm-circles-filmed.jpg",
+        "source_page": "https://tenor.com/view/arm-circles-gif-21819709",
+        "sha256": "6F2B02DC76145516176756D8E3ED229CFCAE7BD7628F5A678188877A69359E33"
+      },
+      {
+        "path": "artifacts/ejercicios-compartido/videos/warmup-shoulder-rolls-filmed.gif",
+        "thumbnail": "artifacts/ejercicios-compartido/images/warmup-shoulder-rolls-filmed.jpg",
+        "source_page": "https://tenor.com/view/shoulder-rolls-gif-13087517817471476069",
+        "sha256": "78ADBF1FCB45549C41E226DC5BC07434CF65E5FC655D9D2E4F128C49146D4F79"
+      }
+    ],
+    "movements": [
+      "Standing arm circles forward and backward, without equipment",
+      "Standing shoulder circles: elevate, carry back, lower and return forward, without equipment"
+    ],
+    "status": "LOCAL_GIF_PENDING_LICENSE_REVIEW"
+    },
+    {
+      "step": 3,
+      "label": "Serie de aproximación del jalón",
+      "dataset_id": "0197",
+      "dataset_name": "cable pulldown (pro lat bar)",
+      "gif": "artifacts/ejercicios-compartido/videos/0197-qdRxqCj.gif",
+      "thumbnail": "artifacts/ejercicios-compartido/images/0197-qdRxqCj.jpg",
+      "status": "CANDIDATE_PENDING_LICENSE_REVIEW"
+    }
+  ],
+  "static_images": [
+    {
+      "exercise_number": 1,
+      "exercise": "Jalón al pecho",
+      "position": "inicio",
+      "source_page": "https://www.strengthlog.com/lat-pulldown-with-pronated-grip/",
+      "image_url": "https://i0.wp.com/www.strengthlog.com/wp-content/uploads/2023/03/Lat-pulldown-starting-position.jpg?resize=700%2C700&ssl=1",
+      "status": "REMOTE_REFERENCE_PENDING_LOCALIZATION_AND_LICENSE_REVIEW"
+    },
+    {
+      "exercise_number": 1,
+      "exercise": "Jalón al pecho",
+      "position": "final",
+      "source_page": "https://www.strengthlog.com/lat-pulldown-with-pronated-grip/",
+      "image_url": "https://i0.wp.com/www.strengthlog.com/wp-content/uploads/2023/03/Lat-pulldown-bottom-position.jpg?resize=700%2C700&ssl=1",
+      "status": "REMOTE_REFERENCE_PENDING_LOCALIZATION_AND_LICENSE_REVIEW"
+    }
+  ]
+}

@@ -46,16 +46,16 @@
     },
     {
       "exercise": "Press de hombro en máquina",
-      "repo_id": "0603",
-      "repo_name": "lever shoulder press",
+      "repo_id": "2318",
+      "repo_name": "lever shoulder press v. 3",
       "equipment": "leverage machine",
       "target": "delts",
       "secondary_muscles": "triceps, chest",
-      "claimed_project_key": "0603-ayEBhYW",
-      "claimed_key_exists": false,
-      "verified_key": "0603-67n3r98",
-      "verified_gif": "0603-67n3r98.gif",
-      "verified_image": "0603-67n3r98.jpg",
+      "claimed_project_key": "2318-dNFYIU1",
+      "claimed_key_exists": true,
+      "verified_key": "2318-dNFYIU1",
+      "verified_gif": "2318-dNFYIU1.gif",
+      "verified_image": "2318-dNFYIU1.jpg",
       "attribution": "© Gym visual — https://gymvisual.com/"
     },
     {

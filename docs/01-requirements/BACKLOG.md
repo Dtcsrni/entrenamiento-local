@@ -10,8 +10,9 @@ No contiene fechas. Las estimaciones se incorporarán después de medir los mile
 - [ ] SPIKE-004 Construir muestra alimentaria pesada.
 - [ ] SPIKE-005 Validar Room, process death y outbox.
 - [ ] Crear esqueleto Gradle y aplicación Android mínima.
+- [x] Crear liveness server local; readiness, red privada y workers quedan pendientes de SPIKE-002/SPIKE-003.
 - [ ] Crear backend y health check privado.
-- [ ] Implementar contratos y validación de esquemas.
+- [x] Implementar contratos y validación de esquemas.
 - [ ] Implementar `WorkoutSession` y máquina de estados.
 - [ ] Implementar registro de series local.
 - [ ] Implementar respaldo/restauración mínimo.

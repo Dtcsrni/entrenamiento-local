@@ -4,9 +4,11 @@ Este directorio conserva los materiales locales obtenidos durante la construcci�
 
 ## Base seleccionada para la unificación
 
-La base canónica de trabajo para el Día 1 es la estructura visual y de navegación de la antigua v10, renumerada ahora como v1:
+La plantilla canónica vigente para nuevas rutinas es la estructura visual, funcional y de navegación de esta versión del Día 1:
 
 `canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html`
+
+Este archivo es la fuente de verdad de la plantilla: conserva la interacción, el seguimiento, el calentamiento, la iconografía y la adaptación táctil. Los generadores de otras rutinas deben tomarlo como `TEMPLATE` sin duplicar una segunda plantilla.
 
 La v16 y la v20 fueron descartadas por errores en la revisión visual y se eliminaron de las fuentes activas. Los inventarios de `evidencia/` conservan únicamente el registro histórico de que fueron revisadas.
 
@@ -16,6 +18,8 @@ La v16 y la v20 fueron descartadas por errores en la revisión visual y se elimi
 |---|---|---|
 | Día 2 | `fuentes_locales/Rutina_Dia_2_Pierna_Gluteo_Autocontenida_v6_mejoras_integradas.html` | Versión local final citada por el chat; 24 imágenes embebidas y sin URLs externas en el inventario realizado. |
 | Día 1 | `fuentes_locales/Rutina_Dia_1_Espalda_Biceps_Autocontenida_v10_HEADER_REPARADO.html` | Fuente de la base canónica seleccionada; contiene recursos externos que se revisarán durante la unificación. |
+
+La versión canónica trabajada del Día 2 es `canonicas/Rutina_Dia_2_Pierna_Gluteo_V1.html`; su contenido y límites se documentan en `DIA_2_CONTENIDO_Y_MAQUETACION.md` y `evidencia/dia2_media_manifest.json`.
 
 ## Recursos y evidencia
 

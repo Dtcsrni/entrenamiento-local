@@ -19,6 +19,7 @@ Sistema personal Android para registrar entrenamiento, alimentación y suplement
 
 - [Acta del proyecto](docs/00-governance/PROJECT_CHARTER.md)
 - [Plan de desarrollo](docs/00-governance/DEVELOPMENT_PLAN.md)
+- [Desarrollo asistido por IA](docs/00-governance/AI_ASSISTED_DEVELOPMENT.md)
 - [Especificación de requisitos](docs/01-requirements/SRS.md)
 - [Casos de uso](docs/01-requirements/USE_CASES.md)
 - [Backlog inicial](docs/01-requirements/BACKLOG.md)
@@ -54,6 +55,8 @@ tests/                    Pruebas de contrato, E2E, hardware y rendimiento
 
 ```powershell
 python scripts/validate_repository.py
+python scripts/validate_contracts.py
+python -m unittest discover -s tests -p "test_*.py"
 ```
 
 ## Privacidad

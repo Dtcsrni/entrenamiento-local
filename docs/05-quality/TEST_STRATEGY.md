@@ -33,6 +33,7 @@ Demostrar comportamiento, no solo cobertura. La evidencia debe vincularse con re
 - **TST-AI-001:** caída de Tezkatli deja trabajo recuperable.
 - **TST-AI-002:** toda respuesta contiene procedencia completa.
 - **TST-AI-003:** autorización de escritura rechaza actor IA.
+- **TST-CON-001:** esquemas válidos aceptan ejemplos mínimos y rechazan formatos, estados y propiedades inválidas.
 - **TST-GYM-001:** histéresis evita eventos repetidos.
 - **TST-WEA-001:** desconexión/reenvío/deduplicación en reloj real.
 - **TST-SEC-001:** servicio no es alcanzable públicamente.

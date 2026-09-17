@@ -1,0 +1,9 @@
+{
+  "eventId": "33333333-3333-4333-8333-333333333333",
+  "sourceDevice": "synthetic-watch",
+  "capturedAt": "2026-08-23T12:00:00Z",
+  "sequence": 0,
+  "type": "SESSION_STARTED",
+  "payloadVersion": 1,
+  "payload": {}
+}
