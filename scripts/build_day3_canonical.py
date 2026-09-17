@@ -195,7 +195,7 @@ def build_card(item: dict[str, object], index: int) -> str:
     static_final = f"{repo}-final.jpg"
     series = int(item["series"])
     next_button = (
-        f'<button type="button" class="nextExerciseCue" data-next="{index + 1}" hidden><span class="nextArrow" aria-hidden="true">↓</span> Siguiente: {EXERCISES[index]["title"].title()}</button>'
+        f'<button type="button" class="nextExerciseCue" data-next="{index + 2}" hidden><span class="nextArrow" aria-hidden="true">↓</span> Siguiente: {EXERCISES[index + 1]["title"].title()}</button>'
         if index < len(EXERCISES) - 1
         else ""
     )

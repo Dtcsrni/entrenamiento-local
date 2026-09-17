@@ -4,6 +4,12 @@
 
 Demostrar comportamiento, no solo cobertura. La evidencia debe vincularse con requisitos y riesgos.
 
+La descomposición documental vigente está en
+[`docs/00-governance/TDD_SDD_SERIES.md`](../00-governance/TDD_SDD_SERIES.md).
+Los casos `TST-CAN-*`, `TST-UI-*`, `TST-MED-*` y `TST-BLD-*` son la primera
+extensión para las rutinas HTML canónicas; los casos `TST-TRN-*` en adelante
+se conservan para la aplicación Android y los servicios previstos.
+
 ## Capas
 
 | Capa | Ejemplos | Frecuencia |

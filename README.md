@@ -33,6 +33,7 @@ Sistema personal Android para registrar entrenamiento, alimentación y suplement
 - [Fuentes de investigación](docs/09-research/SOURCES.md)
 - [Base de evidencia y protocolo para rutinas](docs/09-research/EVIDENCE_BASE_AND_ROUTINE_PROTOCOL.md)
 - [Matriz de trazabilidad](docs/00-governance/TRACEABILITY.md)
+- [Serie TDD y SDD](docs/00-governance/TDD_SDD_SERIES.md)
 - [Registro de riesgos](docs/00-governance/RISK_REGISTER.md)
 - [Decisiones arquitectónicas](docs/03-architecture/adr/README.md)
 
