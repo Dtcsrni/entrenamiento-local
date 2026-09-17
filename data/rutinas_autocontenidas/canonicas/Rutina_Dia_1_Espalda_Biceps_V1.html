@@ -15652,7 +15652,7 @@ body{height:auto!important;min-height:100%!important;overflow-x:hidden!important
     return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
   };
   var localVisuals = [
-    {prefix:'maquina de curl de biceps', src:'../medios_publicados/ejercicios-compartido/images/0592-b6hQYMb.jpg'},
+    {prefix:'maquina de curl de biceps', src:'../medios_publicados/ejercicios-compartido/images/0592-b6hQYMb-machine-only.webp'},
     {prefix:'curl de biceps maquina inicio real', src:'../medios_publicados/ejercicios-compartido/images/0592-b6hQYMb.jpg'},
     {prefix:'anatomia 3d del biceps braquial', src:'../recursos_embebidos/b963bc266356a83bea4fe9909f0516c0c3a1543c06c8a17d24ca9d674fe3c759.png'}
   ];
@@ -15685,5 +15685,129 @@ body{height:auto!important;min-height:100%!important;overflow-x:hidden!important
   }
   window.addEventListener('resize',refresh,{passive:true});
 })();
-</script></body>
+</script>
+<script data-fix="summary-auto-scroll-and-phase-completeness-v1">
+(function(){
+  var doc = document;
+  var mediaBase = '../medios_publicados/ejercicios-compartido/';
+  var machineOnlyCurl = mediaBase + 'images/0592-b6hQYMb-machine-only.webp';
+  var finalAssets = {
+    '3': {
+      src: mediaBase + 'images/1350-7I6LNUG-final.png',
+      alt: 'REMO HORIZONTAL EN MÁQUINA · posición final estática'
+    },
+    '5': {
+      src: mediaBase + 'images/0592-b6hQYMb-final.png',
+      alt: 'CURL DE BÍCEPS EN MÁQUINA · posición final estática'
+    }
+  };
+
+  function normalize(value){
+    return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  }
+
+  function repairMachineReference(){
+    doc.querySelectorAll('.machineRefBox img').forEach(function(img){
+      var label = normalize(img.getAttribute('alt'));
+      if (label.indexOf('maquina de curl de biceps') === 0) {
+        img.src = machineOnlyCurl;
+        img.dataset.machineOnlyFix = '1';
+      }
+    });
+  }
+
+  function repairMissingFinals(){
+    Object.keys(finalAssets).forEach(function(number){
+      var tracker = doc.querySelector('.exerciseTracker[data-exercise="' + number + '"]');
+      var card = tracker && tracker.closest('article.card, .card');
+      if (!card) return;
+      var row = Array.from(card.querySelectorAll('.phaseRow')).find(function(candidate){
+        var labels = Array.from(candidate.querySelectorAll('.phaseLabel')).map(function(label){
+          return normalize(label.textContent);
+        });
+        return labels.some(function(label){ return label.indexOf('inicio') === 0; }) &&
+          !labels.some(function(label){ return label.indexOf('final') === 0; });
+      });
+      if (!row) return;
+      var asset = finalAssets[number];
+      var col = doc.createElement('div');
+      col.className = 'phaseCol';
+      var label = doc.createElement('div');
+      label.className = 'phaseLabel';
+      label.textContent = 'Final · imagen estática';
+      var photo = doc.createElement('div');
+      photo.className = 'photo techZoom';
+      var image = doc.createElement('img');
+      image.className = 'realphoto';
+      image.loading = 'lazy';
+      image.decoding = 'async';
+      image.alt = asset.alt;
+      image.src = asset.src;
+      photo.appendChild(image);
+      col.appendChild(label);
+      col.appendChild(photo);
+      row.appendChild(col);
+    });
+  }
+
+  function installSummaryStyle(){
+    if (doc.querySelector('style[data-fix="summary-auto-scroll-and-phase-completeness-v1"]')) return;
+    var style = doc.createElement('style');
+    style.dataset.fix = 'summary-auto-scroll-and-phase-completeness-v1';
+    style.textContent = '.summaryExercise.isCurrent{border-color:rgba(101,242,221,.78);box-shadow:0 0 0 1px rgba(101,242,221,.28),0 0 12px rgba(101,242,221,.16)}';
+    doc.head.appendChild(style);
+  }
+
+  var list = doc.getElementById('sessionSummaryList');
+  var toggle = doc.getElementById('summaryToggle');
+  var requestedExercise = '';
+
+  function alignSummary(exerciseNumber){
+    if (!list) return;
+    var buttons = Array.from(list.querySelectorAll('.summaryExercise'));
+    if (!buttons.length) return;
+    var target = exerciseNumber
+      ? buttons.find(function(button){ return button.dataset.exercise === exerciseNumber; })
+      : null;
+    if (!target) target = buttons.find(function(button){ return !button.classList.contains('isDone'); }) || buttons[buttons.length - 1];
+    buttons.forEach(function(button){
+      button.classList.toggle('isCurrent', button === target);
+    });
+    var listRect = list.getBoundingClientRect();
+    var targetRect = target.getBoundingClientRect();
+    if (targetRect.top < listRect.top) {
+      list.scrollTop -= listRect.top - targetRect.top;
+    } else if (targetRect.bottom > listRect.bottom) {
+      list.scrollTop += targetRect.bottom - listRect.bottom;
+    }
+  }
+
+  function scheduleAlignment(){
+    window.requestAnimationFrame(function(){
+      var selected = requestedExercise;
+      requestedExercise = '';
+      alignSummary(selected);
+    });
+  }
+
+  repairMachineReference();
+  repairMissingFinals();
+  installSummaryStyle();
+
+  if (list) {
+    new MutationObserver(scheduleAlignment).observe(list, {childList:true, subtree:true});
+    list.addEventListener('click', function(event){
+      var button = event.target.closest('.summaryExercise');
+      if (!button) return;
+      requestedExercise = button.dataset.exercise || '';
+      window.setTimeout(scheduleAlignment, 0);
+    });
+    if (toggle) toggle.addEventListener('click', function(){ window.setTimeout(scheduleAlignment, 0); });
+    window.addEventListener('resize', scheduleAlignment, {passive:true});
+    scheduleAlignment();
+  }
+})();
+
+</script>
+</body>
 </html>
