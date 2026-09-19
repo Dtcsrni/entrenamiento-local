@@ -15,7 +15,7 @@ CARDS_4_5 = r'''<!-- 4 -->
 <div class="zone">HOMBRO · DELTOIDES POSTERIOR</div><div class="chipRow"><span class="infoChip chipExercise">Ejercicio 4</span><span class="infoChip">HOMBRO</span><span class="infoChip">DELTOIDES POSTERIOR</span></div>
 <div class="machinePill"><span class="pillText">butterfly reverse · apoyo de pecho</span></div>
 </div>
-<div class="visual"><div class="phaseRow">
+<div class="visual"><div class="referenceRow"><div class="machineRefBox"><img alt="Máquina de apertura inversa para deltoides posterior, sin persona" class="realphoto" loading="lazy" src="../medios_publicados/ejercicios-compartido/images/3025-butterfly-reverse-front.jpg"/><span class="refTag">VISTA AISLADA · REFERENCIA DE MÁQUINA</span></div></div><div class="phaseRow">
 <div class="phaseCol"><div class="phaseLabel">Inicio</div><div class="photo techZoom"><img alt="Apertura inversa en máquina, posición inicial" class="realphoto" loading="lazy" src="../medios_publicados/ejercicios-compartido/images/0602-myfUsKf.jpg"/></div></div>
 <div class="swap" aria-hidden="true">→</div>
 <div class="phaseCol"><div class="phaseLabel">Final</div><div class="photo techZoom"><img alt="Apertura inversa en máquina, referencia final" class="realphoto" loading="lazy" src="../medios_publicados/ejercicios-compartido/images/3025-butterfly-reverse-front.jpg"/></div></div>
@@ -31,7 +31,7 @@ CARDS_4_5 = r'''<!-- 4 -->
 <div class="zone">BRAZO · BÍCEPS</div><div class="chipRow"><span class="infoChip chipExercise">Ejercicio 5</span><span class="infoChip">BRAZO</span><span class="infoChip">BÍCEPS</span></div>
 <div class="machinePill"><span class="pillText">curl tipo preacher · brazo apoyado</span></div>
 </div>
-<div class="visual"><div class="phaseRow">
+<div class="visual"><div class="referenceRow"><div class="machineRefBox"><img alt="Máquina de curl de bíceps con apoyo, sin persona" class="realphoto" loading="lazy" src="../medios_publicados/ejercicios-compartido/images/0592-b6hQYMb-machine-only.webp"/><span class="refTag">VISTA AISLADA · REFERENCIA DE MÁQUINA</span></div></div><div class="phaseRow">
 <div class="phaseCol"><div class="phaseLabel">Inicio</div><div class="photo techZoom"><img alt="Curl de bíceps en máquina, posición inicial" class="realphoto" loading="lazy" src="../medios_publicados/ejercicios-compartido/images/0592-b6hQYMb-start.jpg"/></div></div>
 <div class="swap" aria-hidden="true">→</div>
 <div class="phaseCol"><div class="phaseLabel">Final</div><div class="photo techZoom"><img alt="Curl de bíceps en máquina, posición final" class="realphoto" loading="lazy" src="../medios_publicados/ejercicios-compartido/images/0592-b6hQYMb-final.png"/></div></div>
@@ -67,6 +67,46 @@ def main() -> None:
         source = source[:second] + source[second:].replace(e3_next, 'data-next="6" hidden><span class="nextArrow" aria-hidden="true">↓</span> Siguiente: 06 · Press de pecho complementario</button>', 1)
     source = source.replace('Siguiente: 03 · Remo horizontal</button>', 'Siguiente: 03 · Remo horizontal en máquina</button>', 1)
     source = source.replace('images/0592-b6hQYMb-start.jpg', 'images/0592-b6hQYMb.jpg', 1)
+    card3_start = source.index('<!-- 3 -->')
+    card3_end = source.index('<!-- 4 -->', card3_start)
+    card3 = source[card3_start:card3_end]
+    card3 = card3.replace('American Fitness · contracción', 'Inicio · brazos extendidos · pecho apoyado', 1)
+    card3 = card3.replace('https://www.mayoclinic.org/healthy-lifestyle/fitness/multimedia/biceps-curl/vid-20084690', 'https://www.youtube.com/watch?v=Jl0r78dnqGU', 1)
+    card3 = card3.replace('▶ VIDEO TÉCNICO · Curl de bíceps', '▶ VIDEO TÉCNICO · Remo horizontal', 1)
+    card3 = card3.replace('10–15 rep.', '8–12 rep.', 1)
+    card3 = card3.replace('1.5–2 min', '2–2.5 min', 1)
+    card3 = card3.replace('6–8 min', '7–9 min', 1)
+    card3 = card3.replace('Alinea el codo con el eje de giro de la máquina. Apoya completamente la parte posterior del brazo, hombros relajados y muñecas rectas.', 'Centra el pecho sobre el apoyo y regula el asiento para alcanzar los agarres con brazos extendidos. Pies firmes, cuello neutro y abdomen activo.', 1)
+    card3 = card3.replace('Flexiona el codo sin despegar el brazo del apoyo. Sube hasta una contracción fuerte y cómoda, manteniendo antebrazo y muñeca alineados.', 'Rema hacia las costillas o el abdomen alto. Lleva los codos atrás de forma natural y acompaña con las escápulas sin despegar el pecho del soporte.', 1)
+    card3 = card3.replace('Exhala al subir, pausa brevemente y desciende en <strong class="timeCue">2–3 s</strong> hasta casi extender el codo. Mantén tensión continua sin dejar caer la carga.', 'Exhala al tirar, pausa brevemente atrás y vuelve en <strong class="timeCue">2–3 s</strong>. Deja que las escápulas avancen de forma controlada al final del retorno.', 1)
+    card3 = card3.replace('Levantar los hombros, adelantar el codo, doblar las muñecas, rebotar en la parte baja o sacrificar el recorrido por demasiado peso.', 'Dar tirones con el torso, hiperextender la espalda baja, encoger los hombros o golpear la carga al terminar cada repetición.', 1)
+    if '<div class="phaseLabel">Final' not in card3:
+        final_phase = '''<div class="swap" aria-hidden="true">→</div><div class="phaseCol"><div class="phaseLabel">Final</div><div class="photo techZoom"><img alt="REMO HORIZONTAL EN MÁQUINA · posición final estática" class="realphoto" loading="lazy" src="../medios_publicados/medios_publicados/ejercicios-compartido/images/1350-7I6LNUG-final.png" onerror="this.onerror=null;this.src=this.dataset.fallback" data-fallback="../medios_publicados/ejercicios-compartido/images/1350-7I6LNUG-final.png"/></div><div class="source">Final · codos atrás · pecho apoyado</div></div>'''
+        final_phase = final_phase.replace('../medios_publicados/medios_publicados/', '../medios_publicados/')
+        marker = '</div><div class="videoProof">'
+        if marker not in card3:
+            raise RuntimeError('No se encontró el cierre de la fase del ejercicio 3')
+        card3 = card3.replace(marker, final_phase + marker, 1)
+    source = source[:card3_start] + card3 + source[card3_end:]
+    for marker, reference in (
+        (
+            '<!-- 4 -->',
+            '<div class="referenceRow"><div class="machineRefBox"><img alt="Máquina de apertura inversa para deltoides posterior, sin persona" class="realphoto" loading="lazy" src="../medios_publicados/ejercicios-compartido/images/3025-butterfly-reverse-front.jpg"/><span class="refTag">VISTA AISLADA · REFERENCIA DE MÁQUINA</span></div></div>',
+        ),
+        (
+            '<!-- 5 -->',
+            '<div class="referenceRow"><div class="machineRefBox"><img alt="Máquina de curl de bíceps con apoyo, sin persona" class="realphoto" loading="lazy" src="../medios_publicados/ejercicios-compartido/images/0592-b6hQYMb-machine-only.webp"/><span class="refTag">VISTA AISLADA · REFERENCIA DE MÁQUINA</span></div></div>',
+        ),
+    ):
+        start = source.index(marker)
+        end = source.index(f'<!-- {int(marker[5]) + 1} -->', start) if marker != '<!-- 5 -->' else source.index('<!-- 6 -->', start)
+        card = source[start:end]
+        if 'class="machineRefBox"' not in card:
+            anchor = '<div class="visual">'
+            if anchor not in card:
+                raise RuntimeError(f'No se encontró el bloque visual de {marker}')
+            card = card.replace(anchor, anchor + reference, 1)
+            source = source[:start] + card + source[end:]
     if 'src="../../../progress-store.js"' not in source:
         source = source.replace('</head>', '<script src="../../../progress-store.js"></script>\n</head>', 1)
     legacy_save = "  const save = () => { try { localStorage.setItem(storageKey, JSON.stringify(state)); } catch (_) {} };"

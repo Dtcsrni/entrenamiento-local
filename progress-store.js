@@ -18,6 +18,7 @@
   };
 
   let databasePromise;
+  const writeQueues = new Map();
 
   const emit = (name, detail = {}) => {
     window.dispatchEvent(new CustomEvent(name, { detail }));
@@ -73,6 +74,15 @@
       tx.onerror = () => reject(tx.error || new Error('Transacción de almacenamiento fallida'));
       tx.onabort = () => reject(tx.error || new Error('Transacción de almacenamiento cancelada'));
     });
+  }
+
+  function enqueueWrite(routineId, operation) {
+    const previous = writeQueues.get(routineId) || Promise.resolve();
+    const next = previous.catch(() => {}).then(operation);
+    writeQueues.set(routineId, next.finally(() => {
+      if (writeQueues.get(routineId) === next) writeQueues.delete(routineId);
+    }));
+    return next;
   }
 
   function readFallback() {
@@ -161,20 +171,22 @@
 
   async function capture(payload) {
     const record = normalizeSnapshot(payload);
-    try {
-      const db = await openDatabase();
-      await transaction(db, [PROGRESS_STORE, SESSION_STORE], 'readwrite', (tx) => {
-        tx.objectStore(PROGRESS_STORE).put(record);
-        if (record.sessionId) tx.objectStore(SESSION_STORE).put(toSession(record));
-      });
-      emit('training-progress-updated', { source: 'indexeddb', record });
-      return { source: 'indexeddb', record };
-    } catch (error) {
-      writeFallback(record);
-      emit('training-storage-error', { error, fallback: true });
-      emit('training-progress-updated', { source: 'localstorage', record });
-      return { source: 'localstorage', record };
-    }
+    return enqueueWrite(record.routineId, async () => {
+      try {
+        const db = await openDatabase();
+        await transaction(db, [PROGRESS_STORE, SESSION_STORE], 'readwrite', (tx) => {
+          tx.objectStore(PROGRESS_STORE).put(record);
+          if (record.sessionId) tx.objectStore(SESSION_STORE).put(toSession(record));
+        });
+        emit('training-progress-updated', { source: 'indexeddb', record });
+        return { source: 'indexeddb', record };
+      } catch (error) {
+        writeFallback(record);
+        emit('training-storage-error', { error, fallback: true });
+        emit('training-progress-updated', { source: 'localstorage', record });
+        return { source: 'localstorage', record };
+      }
+    });
   }
 
   function legacySnapshots() {
@@ -191,7 +203,7 @@
   async function readDatabase() {
     try {
       const db = await openDatabase();
-      return await transaction(db, [PROGRESS_STORE, SESSION_STORE], 'readonly', (tx) => {
+      const databaseData = await transaction(db, [PROGRESS_STORE, SESSION_STORE], 'readonly', (tx) => {
         const progressRequest = tx.objectStore(PROGRESS_STORE).getAll();
         const sessionsRequest = tx.objectStore(SESSION_STORE).getAll();
         return { progressRequest, sessionsRequest };
@@ -199,6 +211,18 @@
         progress: progressRequest.result || [],
         sessions: sessionsRequest.result || [],
       }));
+      const fallback = readFallback();
+      const progress = new Map();
+      [...Object.values(fallback.progress), ...databaseData.progress].forEach((record) => {
+        const current = progress.get(record.routineId);
+        if (!current || (record.updatedAt || 0) >= (current.updatedAt || 0)) progress.set(record.routineId, record);
+      });
+      const sessions = new Map();
+      [...Object.values(fallback.sessions), ...databaseData.sessions].forEach((session) => {
+        const current = sessions.get(session.sessionId);
+        if (!current || (session.updatedAt || 0) >= (current.updatedAt || 0)) sessions.set(session.sessionId, session);
+      });
+      return { progress: [...progress.values()], sessions: [...sessions.values()] };
     } catch (_) {
       const fallback = readFallback();
       return { progress: Object.values(fallback.progress), sessions: Object.values(fallback.sessions) };

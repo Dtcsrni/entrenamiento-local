@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -60,6 +61,39 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
         self.assertNotIn(
             "confirma directamente la identidad de la máquina del gimnasio", source
         )
+
+    def test_day1_has_machine_only_reference_and_two_phases_per_exercise(self) -> None:
+        source = (CANONICAL / "Rutina_Dia_1_Espalda_Biceps_V1.html").read_text(
+            encoding="utf-8"
+        )
+        self.assertEqual(
+            len(re.findall(r'<div[^>]*class="[^"]*machineRefBox[^"]*"', source)),
+            6,
+        )
+        self.assertEqual(source.count('<div class="phaseLabel">Inicio'), 6)
+        self.assertEqual(source.count('<div class="phaseLabel">Final'), 6)
+        self.assertIn("3025-butterfly-reverse-front.jpg", source)
+        self.assertIn("0592-b6hQYMb-machine-only.webp", source)
+
+    def test_day1_row_has_matching_media_and_metrics(self) -> None:
+        source = (CANONICAL / "Rutina_Dia_1_Espalda_Biceps_V1.html").read_text(
+            encoding="utf-8"
+        )
+        card = source[source.index("<!-- 3 -->") : source.index("<!-- 4 -->")]
+        self.assertIn("▶ VIDEO TÉCNICO · Remo horizontal", card)
+        self.assertIn("Jl0r78dnqGU", card)
+        self.assertIn("8–12 rep.", card)
+        self.assertIn("2–2.5 min", card)
+        self.assertIn("7–9 min", card)
+
+    def test_all_routines_have_explicit_rest_transition_and_alert_contract(self) -> None:
+        for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
+            source = path.read_text(encoding="utf-8")
+            self.assertIn("startSeriesButton", source)
+            self.assertIn("restPhase", source)
+            self.assertIn("restNotifiedAt", source)
+            self.assertIn("navigator.vibrate", source)
+            self.assertIn("timing.timingVersion = 4", source)
 
 
 if __name__ == "__main__":

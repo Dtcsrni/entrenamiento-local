@@ -1,9 +1,10 @@
-const CACHE_NAME = 'entrenamiento-pwa-b70d680b05e6';
+const CACHE_NAME = 'entrenamiento-pwa-8dfa56236b07';
 const PRECACHE = [
   './',
   './index.html',
   './manifest.webmanifest',
   './icon.svg',
+  './progress-store.js',
   './data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html',
   './data/rutinas_autocontenidas/canonicas/Rutina_Dia_2_Pierna_Gluteo_V1.html',
   './data/rutinas_autocontenidas/canonicas/Rutina_Dia_3_Pecho_Hombro_Triceps_V1.html',
@@ -38,6 +39,7 @@ const PRECACHE = [
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/1299-jHAnWmT-final.jpg',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/1299-jHAnWmT-machine-only.png',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/1299-jHAnWmT-start.jpg',
+  './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/1350-7I6LNUG-final.png',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/1350-7I6LNUG.jpg',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/1356-OIFMAp1.jpg',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/1512-qBcKorM.jpg',
@@ -79,8 +81,7 @@ const PRECACHE = [
   './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form.jpg',
   './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form_final.jpg',
   './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form_inicio.jpg',
-  './data/rutinas_autocontenidas/recursos_embebidos/b963bc266356a83bea4fe9909f0516c0c3a1543c06c8a17d24ca9d674fe3c759.png',
-  './progress-store.js'
+  './data/rutinas_autocontenidas/recursos_embebidos/b963bc266356a83bea4fe9909f0516c0c3a1543c06c8a17d24ca9d674fe3c759.png'
 ];
 
 const ROUTINE_URLS = [

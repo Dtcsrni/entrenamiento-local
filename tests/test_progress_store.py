@@ -26,6 +26,11 @@ class ProgressStoreContractTests(unittest.TestCase):
         self.assertIn("requestPersistence", self.source)
         self.assertIn("training-progress-updated", self.source)
 
+    def test_progress_store_serializes_writes_and_merges_fallback(self):
+        self.assertIn("writeQueues", self.source)
+        self.assertIn("enqueueWrite", self.source)
+        self.assertIn("Object.values(fallback.progress)", self.source)
+
 
 if __name__ == "__main__":
     unittest.main()
