@@ -120,6 +120,9 @@ async function refreshApplication() {{
   const cache = await caches.open(CACHE_NAME);
   await Promise.allSettled(PRECACHE.map((url) => refresh(new Request(url), cache)));
   await Promise.allSettled(ROUTINE_URLS.map((url) => refreshRoutine(url, cache)));
+  const updatedAt = Date.now();
+  const clients = await self.clients.matchAll({{ type: 'window', includeUncontrolled: true }});
+  clients.forEach((client) => client.postMessage({{ type: 'APP_UPDATED', updatedAt, cacheName: CACHE_NAME }}));
 }}
 
 self.addEventListener('install', (event) => {{

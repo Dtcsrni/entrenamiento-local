@@ -11,11 +11,13 @@
     day1: { label: 'Día 1 · Espalda + Bíceps', totalExercises: 6, totalSeries: 20 },
     day2: { label: 'Día 2 · Pierna + Glúteo', totalExercises: 6, totalSeries: 20 },
     day3: { label: 'Día 3 · Pecho + Hombro + Tríceps', totalExercises: 7, totalSeries: 22 },
+    day4: { label: 'Día 4 · Pierna equilibrada', totalExercises: 7, totalSeries: 20 },
   };
   const LEGACY_KEYS = {
     day1: 'fitlovers-day1-series-v1',
     day2: 'fitlovers-day2-series-v1',
     day3: 'fitlovers-day3-series-v1',
+    day4: 'fitlovers-day4-series-v1',
   };
 
   const pad = value => String(value).padStart(2, '0');

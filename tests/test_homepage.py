@@ -36,6 +36,15 @@ class HomepageContractTests(unittest.TestCase):
         for path in routine_paths:
             self.assertIn(path, self.html)
 
+    def test_homepage_summary_matches_all_four_routines(self):
+        self.assertIn("Cuatro sesiones claras", self.html)
+        self.assertIn('<span class="plan-pill">4 días · 82 series</span>', self.html)
+        self.assertIn('<div class="stat"><strong>4</strong><span>sesiones para rotar</span></div>', self.html)
+        self.assertIn('<div class="stat"><strong>82</strong><span>series efectivas programadas</span></div>', self.html)
+        self.assertIn('<span class="hero-card-label">Plan completo</span>', self.html)
+        self.assertIn('<h2 id="nextSessionTitle">4 días</h2>', self.html)
+        self.assertIn('href="#routines">Ver las 4 sesiones</a>', self.html)
+
     def test_homepage_uses_four_local_visual_references(self):
         image_paths = (
             "1350-7I6LNUG.jpg",
@@ -61,6 +70,19 @@ class HomepageContractTests(unittest.TestCase):
         self.assertIn("updateViaCache: 'none'", self.html)
         self.assertIn("registration.update()", self.html)
         self.assertIn("type: 'SYNC_APP'", self.html)
+        self.assertIn("event.data?.type === 'APP_UPDATED'", self.html)
+        self.assertIn("navigator.serviceWorker.addEventListener('message'", self.html)
+
+    def test_homepage_hides_install_button_when_app_is_already_installed(self):
+        self.assertIn("display-mode: standalone", self.html)
+        self.assertIn("navigator.standalone === true", self.html)
+        self.assertIn("window.addEventListener('appinstalled'", self.html)
+        self.assertIn("installButton.hidden = isInstalled() || !deferredInstallPrompt", self.html)
+
+    def test_homepage_shows_last_successful_update(self):
+        self.assertIn('id="updateState"', self.html)
+        self.assertIn("gymratik-last-update-v1", self.html)
+        self.assertIn("Actualizado:", self.html)
 
     def test_homepage_exposes_persistent_progress_dashboard(self):
         self.assertIn('src="./progress-store.js"', self.html)

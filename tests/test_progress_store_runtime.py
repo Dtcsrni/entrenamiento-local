@@ -66,6 +66,8 @@ vm.runInNewContext(source, context);
 window.TrainingProgressStore.getDashboard().then((dashboard) => {
   assert.strictEqual(dashboard.recordedSeries, 0);
   assert.strictEqual(dashboard.todaySeries, 0);
+  assert.strictEqual(dashboard.routines.length, 4);
+  assert.strictEqual(dashboard.routines.find((routine) => routine.routineId === 'day4').totalSeries, 20);
   assert.ok(dashboard.routines.every((routine) => Number.isFinite(routine.doneSeries)));
   assert.ok(dashboard.routines.every((routine) => !Object.values(routine).includes(undefined)));
   console.log(JSON.stringify({ ok: true }));
