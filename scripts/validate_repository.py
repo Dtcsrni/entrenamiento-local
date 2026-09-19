@@ -8,6 +8,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+CANONICAL_ROUTINES_DIR = ROOT / "data" / "rutinas_autocontenidas" / "canonicas"
 ID_PATTERN = re.compile(
     r"\b(?:NEED|SYS|FUN-[A-Z]+|NFR-[A-Z]+|TST-[A-Z]+|ADR|RISK|SPIKE)-\d{3}\b"
 )
@@ -111,12 +112,25 @@ def validate_sensitive_names(errors: list[str]) -> None:
             errors.append(f"Archivo sensible o pesado versionable: {path.relative_to(ROOT)}")
 
 
+def validate_routine_media(errors: list[str]) -> None:
+    """Incluye la integridad de medios en la puerta general del repositorio."""
+    try:
+        from validate_routine_media import validate_path
+    except ImportError as exc:
+        errors.append(f"No se pudo cargar el validador de medios de rutinas: {exc}")
+        return
+
+    for path in sorted(CANONICAL_ROUTINES_DIR.glob("*.html")):
+        errors.extend(validate_path(path))
+
+
 def main() -> int:
     errors: list[str] = []
     validate_json(errors)
     validate_markdown_links(errors)
     validate_identifiers(errors)
     validate_sensitive_names(errors)
+    validate_routine_media(errors)
 
     if errors:
         print("VALIDATION_FAILED")

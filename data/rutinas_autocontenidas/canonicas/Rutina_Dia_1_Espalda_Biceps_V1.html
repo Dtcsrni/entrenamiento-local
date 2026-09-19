@@ -2650,7 +2650,8 @@ body::before,body::after{animation:none!important}
   .referenceRow{grid-template-columns:1fr!important}
   .referenceRow .machineRefBox{height:165px!important}
 }
-</style></head>
+</style><script src="../../../progress-store.js"></script>
+</head>
 <body>
 <div class="page">
 <header class="hero">
@@ -15092,7 +15093,22 @@ body::before,body::after{animation:none!important}
     if (saved && typeof saved === 'object') state = saved;
     soundEnabled = localStorage.getItem(soundKey) !== 'off';
   } catch (_) {}
-  const save = () => { try { localStorage.setItem(storageKey, JSON.stringify(state)); } catch (_) {} };
+  const routineId = storageKey.match(/day\d+/)?.[0] || 'day1';
+  const plannedSeries = trackers.reduce((sum, tracker) => sum + (tracker.dataset.seriesKeys || '').trim().split(/\s+/).filter(Boolean).length, 0);
+  const publishProgress = () => {
+    window.TrainingProgressStore?.capture({
+      routineId,
+      state,
+      totalExercises: trackers.length,
+      totalSeries: plannedSeries
+    });
+  };
+  const save = () => {
+    try { localStorage.setItem(storageKey, JSON.stringify(state)); }
+    catch (error) { window.dispatchEvent(new CustomEvent('training-storage-error', { detail: { error } })); }
+    publishProgress();
+  };
+  publishProgress();
   const pulse = button => {
     button.classList.remove('seriesPulse');
     void button.offsetWidth;

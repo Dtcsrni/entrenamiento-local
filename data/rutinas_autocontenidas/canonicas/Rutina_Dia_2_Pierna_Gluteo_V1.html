@@ -2650,7 +2650,8 @@ body::before,body::after{animation:none!important}
   .referenceRow{grid-template-columns:1fr!important}
   .referenceRow .machineRefBox{height:165px!important}
 }
-</style><style data-fix="day2-lower-body-visuals">
+</style><script src="../../../progress-store.js"></script>
+<style data-fix="day2-lower-body-visuals">
 .muscleDayIcon.lower{border-color:rgba(100,215,255,.55)!important;color:#64D7FF!important;background:rgba(100,215,255,.09)!important}
 .warmupStep.cardio,.warmupStep.mobility{grid-template-columns:1fr!important}
 .warmupStep.cardio .warmupMedia,.warmupStep.mobility .warmupMedia{height:112px!important;min-height:112px!important}
@@ -15261,7 +15262,22 @@ body::before,body::after{animation:none!important}
     if (saved && typeof saved === 'object') state = saved;
     soundEnabled = localStorage.getItem(soundKey) !== 'off';
   } catch (_) {}
-  const save = () => { try { localStorage.setItem(storageKey, JSON.stringify(state)); } catch (_) {} };
+  const routineId = storageKey.match(/day\d+/)?.[0] || 'day1';
+  const plannedSeries = trackers.reduce((sum, tracker) => sum + (tracker.dataset.seriesKeys || '').trim().split(/\s+/).filter(Boolean).length, 0);
+  const publishProgress = () => {
+    window.TrainingProgressStore?.capture({
+      routineId,
+      state,
+      totalExercises: trackers.length,
+      totalSeries: plannedSeries
+    });
+  };
+  const save = () => {
+    try { localStorage.setItem(storageKey, JSON.stringify(state)); }
+    catch (error) { window.dispatchEvent(new CustomEvent('training-storage-error', { detail: { error } })); }
+    publishProgress();
+  };
+  publishProgress();
   const pulse = button => {
     button.classList.remove('seriesPulse');
     void button.offsetWidth;

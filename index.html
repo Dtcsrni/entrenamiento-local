@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#10161f">
   <meta name="description" content="Rutinas visuales para entrenar en el gimnasio con calentamiento, técnica y registro de series.">
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="icon" href="./icon.svg" type="image/svg+xml">
-  <title>Entrenamiento · Rutinas</title>
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="icon" href="./icon.svg" type="image/svg+xml">
+    <script src="./progress-store.js"></script>
+    <title>Entrenamiento · Rutinas</title>
   <style data-home-redesign="v1">
     :root { color-scheme: dark; --bg:#10161f; --bg-deep:#0b1017; --panel:#18212d; --panel-strong:#202c3a; --text:#f5f8f7; --muted:#a9b7c5; --soft:#758698; --line:rgba(185,209,224,.16); --accent:#73e6cf; --accent-strong:#37c7ad; --warm:#f6c56b; --focus:#9edfff; --shadow:0 24px 60px rgba(0,0,0,.25); }
     * { box-sizing:border-box; }
@@ -47,6 +48,18 @@
     .stat { padding:20px 22px; background:rgba(24,33,45,.88); }
     .stat strong { display:block; margin-bottom:3px; color:var(--text); font-size:1.65rem; letter-spacing:-.04em; }
     .stat span { color:var(--muted); font-size:.8rem; }
+    .progress-dashboard { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .progress-card { padding:19px 20px; border:1px solid rgba(115,230,207,.2); border-radius:17px; background:linear-gradient(145deg,rgba(31,52,61,.92),rgba(24,33,45,.9)); }
+    .progress-card strong { display:block; color:var(--accent); font-size:2rem; letter-spacing:-.06em; line-height:1; }
+    .progress-card span { display:block; margin-top:8px; color:var(--muted); font-size:.78rem; }
+    .progress-actions { display:flex; align-items:center; justify-content:space-between; gap:15px; margin-top:15px; }
+    .progress-note { min-height:1.35em; margin:0; color:var(--muted); font-size:.8rem; }
+    .routine-progress-list { display:grid; gap:10px; margin-top:15px; }
+    .routine-progress-item { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:6px 14px; align-items:center; padding:14px 16px; border:1px solid var(--line); border-radius:15px; background:rgba(24,33,45,.7); }
+    .routine-progress-item span { min-width:0; overflow:hidden; color:var(--text); font-size:.86rem; font-weight:800; text-overflow:ellipsis; white-space:nowrap; }
+    .routine-progress-item strong { color:var(--accent); font-size:.8rem; }
+    .progress-meter { grid-column:1 / -1; height:7px; overflow:hidden; border-radius:999px; background:rgba(185,209,224,.13); }
+    .progress-meter span { display:block; width:0; height:100%; border-radius:inherit; background:linear-gradient(90deg,var(--accent-strong),var(--accent)); transition:width .25s ease; }
     section { padding:74px 0 0; }
     .section-head { display:flex; align-items:end; justify-content:space-between; gap:24px; margin-bottom:22px; }
     .section-head h2 { margin-bottom:0; font-size:clamp(1.8rem,4vw,2.65rem); letter-spacing:-.055em; }
@@ -74,7 +87,7 @@
     footer { padding:56px 0 36px; color:var(--soft); font-size:.78rem; }
     footer p { max-width:70ch; margin-bottom:0; }
     @media (max-width:820px) { .hero { grid-template-columns:1fr; min-height:0; padding-top:42px; } h1 { max-width:11ch; } .hero-card { max-width:620px; } .routine-grid { grid-template-columns:repeat(2,1fr); } .routine-card:last-child { grid-column:span 2; } .routine-card:last-child .routine-visual { aspect-ratio:2.1; } }
-    @media (max-width:560px) { .shell { width:min(100% - 24px,1120px); } .topbar { padding-top:17px; } .plan-pill { display:none; } .hero { gap:34px; padding:46px 0 52px; } h1 { font-size:clamp(3.2rem,17vw,5.5rem); } .hero-copy { font-size:.98rem; } .hero-card { padding:23px; border-radius:19px; } .hero-card h2 { font-size:2.5rem; } .stats { grid-template-columns:1fr; } .stat { padding:15px 18px; } .stat strong { display:inline; margin-right:7px; font-size:1.3rem; } .stat span { font-size:.78rem; } section { padding-top:54px; } .section-head { display:block; } .section-head p { margin-top:8px; text-align:left; } .routine-grid { grid-template-columns:1fr; gap:13px; } .routine-card:last-child { grid-column:auto; } .routine-card:last-child .routine-visual,.routine-visual { aspect-ratio:1.75; } .offline-card { display:block; padding:22px; } .offline-actions { justify-content:flex-start; margin-top:20px; } #cacheStatus { text-align:left; } }
+    @media (max-width:560px) { .shell { width:min(100% - 24px,1120px); } .topbar { padding-top:17px; } .plan-pill { display:none; } .hero { gap:34px; padding:46px 0 52px; } h1 { font-size:clamp(3.2rem,17vw,5.5rem); } .hero-copy { font-size:.98rem; } .hero-card { padding:23px; border-radius:19px; } .hero-card h2 { font-size:2.5rem; } .stats,.progress-dashboard { grid-template-columns:1fr; } .stat { padding:15px 18px; } .stat strong { display:inline; margin-right:7px; font-size:1.3rem; } .stat span { font-size:.78rem; } section { padding-top:54px; } .section-head { display:block; } .section-head p { margin-top:8px; text-align:left; } .progress-actions { align-items:flex-start; flex-direction:column; } .routine-grid { grid-template-columns:1fr; gap:13px; } .routine-card:last-child { grid-column:auto; } .routine-card:last-child .routine-visual,.routine-visual { aspect-ratio:1.75; } .offline-card { display:block; padding:22px; } .offline-actions { justify-content:flex-start; margin-top:20px; } #cacheStatus { text-align:left; } }
     @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; transition:none !important; } }
   </style>
 </head>
@@ -100,6 +113,16 @@
         </aside>
       </section>
       <section aria-label="Resumen del plan"><div class="stats"><div class="stat"><strong>3</strong><span>sesiones para rotar</span></div><div class="stat"><strong>62</strong><span>series efectivas programadas</span></div><div class="stat"><strong>100%</strong><span>guías con calentamiento</span></div></div></section>
+      <section aria-labelledby="progressTitle">
+        <div class="section-head"><div><p class="eyebrow">Registro local</p><h2 id="progressTitle">Tu avance</h2></div><p>El progreso se conserva en este dispositivo y se resume aquí al volver de cada rutina.</p></div>
+        <div class="progress-dashboard" aria-live="polite">
+          <div class="progress-card"><strong id="progressRecordedSeries">0</strong><span>series registradas</span></div>
+          <div class="progress-card"><strong id="progressCompletedSessions">0</strong><span>sesiones completadas</span></div>
+          <div class="progress-card"><strong id="progressPlanPercent">0%</strong><span>avance del plan actual</span></div>
+        </div>
+        <div id="routineProgressList" class="routine-progress-list" aria-label="Avance por rutina"></div>
+        <div class="progress-actions"><p id="progressNote" class="progress-note" role="status">Aún no hay series registradas en este dispositivo.</p><button id="persistButton" class="button secondary" type="button">Proteger almacenamiento</button></div>
+      </section>
       <section id="routines" aria-labelledby="routinesTitle">
         <div class="section-head"><div><p class="eyebrow">Elige tu siguiente paso</p><h2 id="routinesTitle">Tus sesiones</h2></div><p>Abre una tarjeta para ver la secuencia, los descansos y los controles de registro.</p></div>
         <div class="routine-grid">
@@ -122,7 +145,37 @@
     const installButton = document.querySelector('#installButton');
     const cacheButton = document.querySelector('#cacheButton');
     const cacheStatus = document.querySelector('#cacheStatus');
+    const progressRecordedSeries = document.querySelector('#progressRecordedSeries');
+    const progressCompletedSessions = document.querySelector('#progressCompletedSessions');
+    const progressPlanPercent = document.querySelector('#progressPlanPercent');
+    const routineProgressList = document.querySelector('#routineProgressList');
+    const progressNote = document.querySelector('#progressNote');
+    const persistButton = document.querySelector('#persistButton');
     let deferredInstallPrompt;
+
+    function formatLastActivity(timestamp) {
+      if (!timestamp) return '';
+      return new Intl.DateTimeFormat('es-MX', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(timestamp));
+    }
+
+    function renderProgress(dashboard) {
+      progressRecordedSeries.textContent = String(dashboard.recordedSeries);
+      progressCompletedSessions.textContent = String(dashboard.sessionsCompleted);
+      progressPlanPercent.textContent = `${dashboard.currentPlanPercent}%`;
+      routineProgressList.innerHTML = dashboard.routines.map((routine) => `
+        <div class="routine-progress-item">
+          <span>${routine.label}</span><strong>${routine.doneSeries}/${routine.totalSeries}</strong>
+          <div class="progress-meter" role="progressbar" aria-label="${routine.label}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${routine.percent}"><span style="width:${routine.percent}%"></span></div>
+        </div>`).join('');
+      progressNote.textContent = dashboard.lastActivity
+        ? `Último registro: ${formatLastActivity(dashboard.lastActivity)}`
+        : 'Aún no hay series registradas en este dispositivo.';
+    }
+
+    async function refreshProgress() {
+      if (!window.TrainingProgressStore) return;
+      renderProgress(await window.TrainingProgressStore.getDashboard());
+    }
 
     function updateConnectionState() {
       const online = navigator.onLine;
@@ -165,6 +218,18 @@
     window.addEventListener('online', updateConnectionState);
     window.addEventListener('offline', updateConnectionState);
     cacheButton.addEventListener('click', prepareOffline);
+    persistButton.addEventListener('click', async () => {
+      persistButton.disabled = true;
+      const granted = await window.TrainingProgressStore?.requestPersistence();
+      progressNote.textContent = granted
+        ? 'El navegador protegió este almacenamiento contra limpieza automática.'
+        : 'El navegador no concedió protección adicional; conserva una copia del dispositivo.';
+      persistButton.disabled = false;
+    });
+    window.addEventListener('training-progress-updated', refreshProgress);
+    window.addEventListener('training-storage-error', () => {
+      progressNote.textContent = 'No se pudo guardar el avance en este momento.';
+    });
     window.addEventListener('beforeinstallprompt', (event) => {
       event.preventDefault();
       deferredInstallPrompt = event;
@@ -178,6 +243,10 @@
       installButton.hidden = true;
     });
     updateConnectionState();
+    refreshProgress().catch((error) => {
+      progressNote.textContent = 'No se pudo leer el avance guardado.';
+      console.error('Progress dashboard failed', error);
+    });
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js', { scope: './', updateViaCache: 'none' }).then((registration) => {
         registration.update().catch((error) => console.error('Service worker update check failed', error));

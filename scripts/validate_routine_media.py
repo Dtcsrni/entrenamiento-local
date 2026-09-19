@@ -13,7 +13,7 @@ CANONICAL_DIR = ROOT / "data" / "rutinas_autocontenidas" / "canonicas"
 LOCAL_REFERENCE = re.compile(r"(?:\.\./|\.\\|/|[A-Za-z]:[\\/])")
 MEDIA_SUFFIXES = {".gif", ".jpg", ".jpeg", ".png", ".webp"}
 SCRIPT_MEDIA = re.compile(
-    r"(?:src|staticSrc|gif|thumbnail|path)\s*:\s*[\"']([^\"']+\.(?:gif|jpg|jpeg|png|webp)(?:\?[^\"']*)?)[\"']",
+    r"(?:src|staticSrc|static-src|fallback|gif|thumbnail|path|portrait)\s*:\s*[\"']([^\"']+\.(?:gif|jpg|jpeg|png|webp)(?:\?[^\"']*)?)[\"']",
     flags=re.I,
 )
 DAY1_MEDIA_KEYS = (
@@ -44,6 +44,7 @@ class MediaParser(HTMLParser):
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
         self.images: list[ImageReference] = []
+        self.attribute_references: list[str] = []
         self.depth = 0
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
@@ -51,6 +52,9 @@ class MediaParser(HTMLParser):
         if tag.lower() != "img":
             return
         attr_map = dict(attrs)
+        for name, value in attrs:
+            if name.casefold() in {"src", "data-static-src", "data-fallback", "poster"} and value:
+                self.attribute_references.append(value)
         src = attr_map.get("src") or ""
         if not src:
             return
@@ -69,6 +73,7 @@ class MediaParser(HTMLParser):
 
 def local_references(text: str, parser: MediaParser) -> list[str]:
     references = [image.path for image in parser.images]
+    references.extend(parser.attribute_references)
     references.extend(
         match.group(1)
         for match in SCRIPT_MEDIA.finditer(text)

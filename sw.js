@@ -1,4 +1,4 @@
-const CACHE_NAME = 'entrenamiento-pwa-0f54911e7a89';
+const CACHE_NAME = 'entrenamiento-pwa-b70d680b05e6';
 const PRECACHE = [
   './',
   './index.html',
@@ -79,7 +79,8 @@ const PRECACHE = [
   './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form.jpg',
   './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form_final.jpg',
   './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form_inicio.jpg',
-  './data/rutinas_autocontenidas/recursos_embebidos/b963bc266356a83bea4fe9909f0516c0c3a1543c06c8a17d24ca9d674fe3c759.png'
+  './data/rutinas_autocontenidas/recursos_embebidos/b963bc266356a83bea4fe9909f0516c0c3a1543c06c8a17d24ca9d674fe3c759.png',
+  './progress-store.js'
 ];
 
 const ROUTINE_URLS = [

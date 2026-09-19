@@ -12,6 +12,12 @@ La raíz del repositorio contiene una PWA estática (`index.html`, `manifest.web
 
 La instalación del service worker precachea la portada, las tres rutinas y los medios locales referenciados por ellas. La acción `Preparar sesiones` permite forzar una sincronización completa cuando haya conexión.
 
+## Persistencia del avance
+
+El avance de series se guarda en `IndexedDB`, separado de la caché del service worker. La portada lee esa base local para mostrar series registradas, sesiones completadas y avance por rutina. Los registros antiguos de `localStorage` se migran al primer acceso sin cambiar las claves de compatibilidad de las rutinas.
+
+Si `IndexedDB` no está disponible o una transacción falla, la aplicación usa un respaldo compacto en `localStorage` y muestra el estado de error en la portada. `Proteger almacenamiento` solicita al navegador persistencia adicional; no sustituye una copia externa y el usuario puede perder los datos al borrar los datos del sitio, usar navegación privada o cambiar de dispositivo. La exportación/importación aún no forma parte del contrato actual.
+
 ## Actualización desde el repositorio
 
 Al abrir la PWA con conexión, `index.html` solicita una comprobación de actualización de `sw.js` sin usar la caché HTTP. El service worker usa navegación `network-first`: obtiene la versión publicada más reciente y la guarda; si no hay red, sirve la última versión disponible en caché. Cuando cambia el service worker, activa la nueva caché inmediatamente y elimina la anterior. En cada sincronización también actualiza los recursos precacheados.

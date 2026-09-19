@@ -51,6 +51,16 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
             errors = validate_path(path)
         self.assertTrue(any("apunta a 1; se esperaba 2" in error for error in errors))
 
+    def test_day3_does_not_keep_day1_media_repairs(self) -> None:
+        source = (CANONICAL / "Rutina_Dia_3_Pecho_Hombro_Triceps_V1.html").read_text(
+            encoding="utf-8"
+        )
+        self.assertNotIn("machineOnlyCurl", source)
+        self.assertNotIn("finalAssets", source)
+        self.assertNotIn(
+            "confirma directamente la identidad de la máquina del gimnasio", source
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

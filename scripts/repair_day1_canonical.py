@@ -67,6 +67,31 @@ def main() -> None:
         source = source[:second] + source[second:].replace(e3_next, 'data-next="6" hidden><span class="nextArrow" aria-hidden="true">↓</span> Siguiente: 06 · Press de pecho complementario</button>', 1)
     source = source.replace('Siguiente: 03 · Remo horizontal</button>', 'Siguiente: 03 · Remo horizontal en máquina</button>', 1)
     source = source.replace('images/0592-b6hQYMb-start.jpg', 'images/0592-b6hQYMb.jpg', 1)
+    if 'src="../../../progress-store.js"' not in source:
+        source = source.replace('</head>', '<script src="../../../progress-store.js"></script>\n</head>', 1)
+    legacy_save = "  const save = () => { try { localStorage.setItem(storageKey, JSON.stringify(state)); } catch (_) {} };"
+    progress_save = """  const routineId = storageKey.match(/day\\d+/)?.[0] || 'day1';
+  const plannedSeries = trackers.reduce((sum, tracker) => sum + (tracker.dataset.seriesKeys || '').trim().split(/\\s+/).filter(Boolean).length, 0);
+  const publishProgress = (force = false) => {
+    const hasActivity = Object.keys(state).some((key) => /^e\\d+s\\d+$/.test(key) && state[key] === true) || Boolean(state.__timing?.sessionStartedAt);
+    if (!force && !hasActivity) return;
+    window.TrainingProgressStore?.capture({
+      routineId,
+      state,
+      totalExercises: trackers.length,
+      totalSeries: plannedSeries
+    });
+  };
+  const save = () => {
+    try { localStorage.setItem(storageKey, JSON.stringify(state)); }
+    catch (error) { window.dispatchEvent(new CustomEvent('training-storage-error', { detail: { error } })); }
+    publishProgress(true);
+  };
+  publishProgress();"""
+    if legacy_save in source:
+        source = source.replace(legacy_save, progress_save, 1)
+    elif 'const publishProgress = () =>' not in source:
+        raise RuntimeError("No se encontró el guardado de progreso esperado")
     marker = f"{newline}<!-- 6 -->"
     if marker not in source:
         raise RuntimeError("No se encontró el punto de inserción antes de la tarjeta 6")

@@ -216,7 +216,7 @@ def build_card(item: dict[str, object], index: int) -> str:
 <div class="visual">
 <div class="referenceRow">
 <div class="machineRefBox"><img alt="Vista aislada de la máquina asociada al patrón {title.lower()}" src="../medios_publicados/ejercicios-compartido/images/{repo}-machine-only.png" loading="lazy"/><span class="refTag">VISTA AISLADA · ILUSTRACIÓN DE APOYO</span></div>
-<div class="muscleRefBox"><div class="muscleInfo"><span class="primary"><span class="muscleTag">ENFOQUE</span> {str(item["focus"])}</span><span class="secondary">La vista aislada editada es apoyo visual; confirma directamente la identidad de la máquina del gimnasio.</span></div></div>
+<div class="muscleRefBox"><div class="muscleInfo"><span class="primary"><span class="muscleTag">ENFOQUE</span> {str(item["focus"])}</span><span class="secondary">La vista aislada editada es apoyo visual; no confirma la identidad del equipo instalado en el gimnasio.</span></div></div>
 </div>
 <div class="photoTitleRow"><b>POSICIÓN Y RECORRIDO</b></div>
 <div class="phaseRow">
@@ -240,6 +240,24 @@ def build_day3_script(template: str) -> str:
     tail = template[tail_start : template.rfind("</body>")]
     tail = re.sub(r'<script data-fix="day1-gif-candidates">.*?</script>', '', tail, count=1, flags=re.S)
     tail = re.sub(r'<footer class="sessionFooter".*?</footer>', '', tail, count=1, flags=re.S)
+    # El template de Día 1 conserva un script de reparación de medios históricos.
+    # Sus rutas de remo/curl no pertenecen a Día 3 y podrían sobrescribir sus
+    # finales estáticos; se conserva únicamente la parte genérica de resumen.
+    tail = re.sub(
+        r'  var mediaBase = .*?  function normalize',
+        '  function normalize',
+        tail,
+        count=1,
+        flags=re.S,
+    )
+    tail = re.sub(
+        r'  function repairMachineReference\(\).*?\n  function installSummaryStyle',
+        '  function installSummaryStyle',
+        tail,
+        count=1,
+        flags=re.S,
+    )
+    tail = tail.replace('  repairMachineReference();\n  repairMissingFinals();\n', '')
     tail = tail.replace('data-fix="day1-warmup-guide"', 'data-fix="day3-warmup-guide"')
     tail = tail.replace("/6 ejercicios", "/7 ejercicios")
     tail = tail.replace("de 6", "de 7")
@@ -256,9 +274,28 @@ def build_day3_script(template: str) -> str:
   const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.querySelectorAll('.day3ExerciseGif').forEach(function(img){
     const staticSrc = img.dataset.staticSrc;
-    const useStatic = function(){ if(staticSrc && img.src !== new URL(staticSrc, document.baseURI).href){ img.src = staticSrc; } };
+    let staticAttempted = false;
+    const staticUrl = staticSrc ? new URL(staticSrc, document.baseURI).href : '';
+    const useStatic = function(){
+      if(staticAttempted || !staticUrl) return;
+      staticAttempted = true;
+      img.hidden = false;
+      img.style.display = '';
+      img.src = staticUrl;
+    };
+    const showBroken = function(){
+      if(!staticAttempted && staticUrl){ useStatic(); return; }
+      img.hidden = true;
+      img.style.display = 'none';
+      const fallback = img.closest('.photo')?.querySelector('.brokenFallback');
+      if(fallback) fallback.style.display = 'flex';
+    };
+    // El template asigna un onerror genérico que oculta la imagen. Día 3 usa
+    // un fallback estático explícito, por lo que este manejador lo reemplaza.
+    img.onerror = null;
+    img.addEventListener('error', showBroken);
     if(reduced) useStatic();
-    img.addEventListener('error', useStatic, {once:true});
+    else if(img.complete && img.naturalWidth === 0) showBroken();
   });
 })();
 </script>'''
@@ -397,6 +434,10 @@ def main() -> None:
         raise ValueError("El estado inicial o el almacenamiento conserva referencias del Día 1")
     if '<script data-fix="day1-gif-candidates">' in body:
         raise ValueError("No debe quedar el inyector de GIFs del Día 1")
+    if "machineOnlyCurl" in body or "finalAssets" in body:
+        raise ValueError("No deben quedar reparaciones de medios específicas del Día 1")
+    if "confirma directamente la identidad de la máquina del gimnasio" in body:
+        raise ValueError("La vista aislada no debe presentarse como confirmación del equipo real")
     OUTPUT.write_text(head + body, encoding="utf-8", newline="\n")
     print(f"GENERATED {OUTPUT.relative_to(ROOT)} bytes={OUTPUT.stat().st_size}")
 

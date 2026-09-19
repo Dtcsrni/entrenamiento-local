@@ -50,6 +50,12 @@ class HomepageContractTests(unittest.TestCase):
         self.assertIn("registration.update()", self.html)
         self.assertIn("type: 'SYNC_APP'", self.html)
 
+    def test_homepage_exposes_persistent_progress_dashboard(self):
+        self.assertIn('src="./progress-store.js"', self.html)
+        self.assertIn('progressRecordedSeries', self.html)
+        self.assertIn('TrainingProgressStore', self.html)
+        self.assertIn('persistButton', self.html)
+
     def test_canonical_routines_use_distinct_progress_storage_keys(self):
         keys = []
         for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
@@ -62,6 +68,12 @@ class HomepageContractTests(unittest.TestCase):
         self.assertIn("day1", keys[0])
         self.assertIn("day2", keys[1])
         self.assertIn("day3", keys[2])
+
+    def test_canonical_routines_publish_progress_to_shared_store(self):
+        for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
+            source = path.read_text(encoding="utf-8")
+            self.assertIn('src="../../../progress-store.js"', source)
+            self.assertIn('TrainingProgressStore?.capture', source)
 
 
 if __name__ == "__main__":

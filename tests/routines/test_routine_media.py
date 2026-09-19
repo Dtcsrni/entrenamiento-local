@@ -31,6 +31,30 @@ class RoutineMediaValidationTests(unittest.TestCase):
             errors = validate_path(html)
         self.assertTrue(any("medio faltante" in error for error in errors))
 
+    def test_derived_static_media_reference_is_reported(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT / "tmp") as directory:
+            root = Path(directory)
+            image = root / "motion.gif"
+            image.write_bytes(b"fixture")
+            html = root / "routine.html"
+            html.write_text(
+                '<img src="motion.gif" data-static-src="missing.jpg" alt="GIF con respaldo">',
+                encoding="utf-8",
+            )
+            errors = validate_path(html)
+        self.assertTrue(any("medio faltante" in error and "missing.jpg" in error for error in errors))
+
+    def test_script_portrait_media_reference_is_reported(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT / "tmp") as directory:
+            root = Path(directory)
+            html = root / "routine.html"
+            html.write_text(
+                '<script>const quote = { portrait: "retratos/missing.jpg" };</script>',
+                encoding="utf-8",
+            )
+            errors = validate_path(html)
+        self.assertTrue(any("medio faltante" in error and "missing.jpg" in error for error in errors))
+
     def test_ignored_artifacts_reference_is_reported(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT / "tmp") as directory:
             root = Path(directory)
