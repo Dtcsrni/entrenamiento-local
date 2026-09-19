@@ -3,7 +3,7 @@
 ## 1. Propósito y significado local
 
 Este documento define la serie de documentos que gobernará los siguientes
-incrementos de Entrenamiento Local. En este repositorio:
+incrementos de Gymratic. En este repositorio:
 
 - **SDD** significa *Software Design Description*: diseño de software. Describe
   responsabilidades, datos, interfaces, estados, invariantes y decisiones de
@@ -23,7 +23,7 @@ La serie cubre dos capas relacionadas pero no intercambiables:
 
 1. **Rutinas canónicas actuales:** HTML autocontenido, builders, manifiestos de
    medios, PWA y comportamiento interactivo de calentamiento, progreso y reset.
-2. **Producto Entrenamiento Local previsto:** Android local-first, Room,
+2. **Producto Gymratic previsto:** Android local-first, Room,
    outbox, contratos, Tezkatli, nutrición, IA, Zepp, Health Connect,
    recuperación, seguridad y operación.
 
@@ -83,7 +83,7 @@ observabilidad, seguridad, migración/compatibilidad y pruebas asociadas.
 | SDD-002 | **Plantilla visual y máquina de estados de la ficha.** Estructura de tarjeta, progreso, calentamiento general/específico, bloqueos, descanso, navegación siguiente y reset delegado. | `Rutina_Dia_1...V1.html`, `UX_FLOWS`, decisiones previas de `timingVersion === 3` | Partial |
 | [SDD-003](../03-architecture/SDD-003-medios-fallback-procedencia-tecnica.md) | **Medios, fallback y procedencia técnica.** Contrato único de manifiesto, relación ejercicio–recurso, `sourceUrl`, fuente, versión, SHA-256, alt, miniatura y `prefers-reduced-motion`. | `*_media_manifest.json`, `data/rutinas_autocontenidas/README.md` | In progress |
 | SDD-004 | **Generación, validación y publicación PWA.** Builders deterministas, idempotencia, detección de drift, inventario local, service worker y límites de publicación personal. | `build_day2_canonical.py`, `build_day3_canonical.py`, `validate_repository.py`, `PWA_ANDROID.md` | Partial |
-| SDD-005 | **Entrenamiento local-first.** `WorkoutSession`, fases, `PerformedSet`, revisiones, temporizador, Room como fuente operativa y recuperación tras process death. | `SRS` FUN-TRN-001..009, `DATA_MODEL`, ADR-003 | Planned |
+| SDD-005 | **Gymratic local-first.** `WorkoutSession`, fases, `PerformedSet`, revisiones, temporizador, Room como fuente operativa y recuperación tras process death. | `SRS` FUN-TRN-001..009, `DATA_MODEL`, ADR-003 | Planned |
 | SDD-006 | **Sincronización, contratos y recuperación.** Outbox transaccional, estados, claves de idempotencia, reordenamiento, duplicación, tombstones, exportación y restauración. | `SYNC_AND_AI`, ADR-004, ADR-011, JSON Schema | Planned |
 | SDD-007 | **Captura nutricional e IA como borrador.** Routing, calidad de entrada, catálogo, procedencia por componente, jobs, validación de esquema, incertidumbre y confirmación humana. | `SRS` FUN-NUT/FUN-AI, `AI_MLOPS`, ADR-006/007/009 | Planned |
 | SDD-008 | **Integraciones externas condicionadas.** Tezkatli privado, Health Connect, Zepp/Amazfit y sus adaptadores anticorrupción; ningún dispositivo externo es fuente definitiva sin PoC. | `ARCHITECTURE`, `USE_CASES`, ADR-008/010/012 | Planned |

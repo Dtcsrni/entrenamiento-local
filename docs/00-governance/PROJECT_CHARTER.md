@@ -2,7 +2,7 @@
 
 ## Identificación
 
-- **Nombre provisional:** Entrenamiento Local
+- **Nombre del producto:** Gymratic
 - **Usuario:** una sola persona
 - **Plataforma mínima objetivo:** Realme GT 6
 - **Wearable objetivo:** Amazfit Active original

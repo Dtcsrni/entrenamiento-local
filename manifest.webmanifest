@@ -1,7 +1,8 @@
 {
-  "name": "Entrenamiento",
-  "short_name": "Entrenamiento",
-  "description": "Rutinas visuales para consultar en el gimnasio.",
+  "id": "./",
+  "name": "Gymratic",
+  "short_name": "Gymratic",
+  "description": "Rutinas visuales y seguimiento de entrenamiento para el gimnasio.",
   "lang": "es-MX",
   "start_url": "./",
   "scope": "./",

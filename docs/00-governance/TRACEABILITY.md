@@ -31,7 +31,7 @@ La matriz crecerá con la implementación. `Planned` significa que no existe tod
 | SDD-002 · Plantilla y máquina de estados UI | FUN-TRN-001, FUN-TRN-006, NFR-USA-001 | TDD-003 / `TST-CAN-003`, `TST-UI-*` | Partial |
 | SDD-003 · Medios y procedencia | NFR-SEC-002, NFR-PRI-002, límites de evidencia | TDD-004 / `TST-MED-*` | In progress |
 | SDD-004 · Builders y PWA | NFR-COM-001, RISK-011 | TDD-001/TDD-005 / `TST-BLD-001` | Partial |
-| SDD-005 · Entrenamiento local-first | FUN-TRN-001..009, RISK-004 | TDD-006 / `TST-TRN-*`, `TST-REL-001` | Planned |
+| SDD-005 · Gymratic local-first | FUN-TRN-001..009, RISK-004 | TDD-006 / `TST-TRN-*`, `TST-REL-001` | Planned |
 | SDD-006 · Outbox y recuperación | FUN-SYN-001..004, FUN-EXP-001..002, RISK-004/RISK-014 | TDD-007 / `TST-SYN-*`, `TST-REC-001` | Planned |
 | SDD-007 · Nutrición e IA | FUN-NUT-001..009, FUN-AI-001..006, RISK-002/RISK-009/RISK-012 | TDD-008 / `TST-NUT-*`, `TST-AI-*` | Planned |
 | SDD-008 · Integraciones externas | FUN-WEA-001..004, FUN-HC-001..002, RISK-001/RISK-003 | TDD-009 / `TST-WEA-*` | Planned |

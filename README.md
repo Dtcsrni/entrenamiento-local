@@ -1,4 +1,4 @@
-# Entrenamiento Local
+# Gymratic
 
 Sistema personal Android para registrar entrenamiento, alimentación y suplementos, con funcionamiento local-first, integración auxiliar con Amazfit Active e inferencia pesada privada en el equipo Tezkatli.
 

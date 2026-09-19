@@ -16,7 +16,12 @@ class HomepageContractTests(unittest.TestCase):
 
     def test_public_brand_does_not_include_local(self):
         self.assertNotIn("Entrenamiento Local", self.html)
-        self.assertEqual(self.manifest["name"], "Entrenamiento")
+        self.assertEqual(self.manifest["id"], "./")
+        self.assertEqual(self.manifest["name"], "Gymratic")
+        self.assertEqual(self.manifest["short_name"], "Gymratic")
+        self.assertIn("Gymratic · Rutinas", self.html)
+        self.assertIn('aria-label="Gymratic, inicio"', self.html)
+        self.assertNotIn("<title>Entrenamiento", self.html)
 
     def test_homepage_exposes_all_canonical_routines(self):
         routine_paths = (
@@ -42,6 +47,9 @@ class HomepageContractTests(unittest.TestCase):
         self.assertIn('id="title"', icon)
         self.assertIn('id="desc"', icon)
         self.assertIn('id="mark"', icon)
+        self.assertIn("Gymratic", icon)
+        self.assertIn("markGradient", icon)
+        self.assertNotIn("Monograma E", icon)
         self.assertNotIn("Entrenamiento Local", icon)
         self.assertEqual(self.manifest["icons"][0]["purpose"], "any maskable")
 

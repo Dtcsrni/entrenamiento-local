@@ -4,11 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#10161f">
+  <meta name="application-name" content="Gymratic">
+  <meta name="apple-mobile-web-app-title" content="Gymratic">
   <meta name="description" content="Rutinas visuales para entrenar en el gimnasio con calentamiento, técnica y registro de series.">
     <link rel="manifest" href="./manifest.webmanifest">
     <link rel="icon" href="./icon.svg" type="image/svg+xml">
     <script src="./progress-store.js"></script>
-    <title>Entrenamiento · Rutinas</title>
+    <title>Gymratic · Rutinas</title>
   <style data-home-redesign="v1">
     :root { color-scheme: dark; --bg:#10161f; --bg-deep:#0b1017; --panel:#18212d; --panel-strong:#202c3a; --text:#f5f8f7; --muted:#a9b7c5; --soft:#758698; --line:rgba(185,209,224,.16); --accent:#73e6cf; --accent-strong:#37c7ad; --warm:#f6c56b; --focus:#9edfff; --shadow:0 24px 60px rgba(0,0,0,.25); }
     * { box-sizing:border-box; }
@@ -21,6 +23,7 @@
     .topbar { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:26px 0 18px; }
     .brand { display:inline-flex; align-items:center; gap:10px; color:var(--text); font-size:.92rem; font-weight:900; letter-spacing:.08em; text-decoration:none; text-transform:uppercase; }
     .brand-mark { display:grid; width:28px; height:28px; place-items:center; border-radius:9px; color:#09231e; background:var(--accent); font-size:.88rem; font-weight:950; }
+    .brand-mark::after { content:"G"; }
     .topbar-meta { display:flex; align-items:center; gap:10px; }
     .plan-pill,.status { display:inline-flex; align-items:center; gap:8px; min-height:34px; padding:6px 11px; border:1px solid var(--line); border-radius:999px; color:var(--muted); background:rgba(16,22,31,.65); font-size:.75rem; font-weight:800; }
     .status::before { width:7px; height:7px; border-radius:50%; background:var(--accent); content:""; }
@@ -88,7 +91,7 @@
 <body>
   <div class="shell">
     <header class="topbar">
-      <a class="brand" href="./" aria-label="Entrenamiento, inicio"><span class="brand-mark" aria-hidden="true">E</span><span>Entrenamiento</span></a>
+      <a class="brand" href="./" aria-label="Gymratic, inicio"><span class="brand-mark" aria-hidden="true"></span><span>Gymratic</span></a>
       <div class="topbar-meta"><span class="plan-pill">3 días · 62 series</span><span id="connectionState" class="status" role="status">Comprobando conexión…</span></div>
     </header>
     <main>

@@ -2,7 +2,7 @@
 
 ## 1. Propósito
 
-Definir requisitos verificables para el sistema Entrenamiento Local. Este documento es la referencia funcional; las decisiones de implementación viven en arquitectura y ADR.
+Definir requisitos verificables para Gymratic. Este documento es la referencia funcional; las decisiones de implementación viven en arquitectura y ADR.
 
 ## 2. Convenciones
 
