@@ -3,6 +3,8 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from standardize_muscle_visuals import sanitize_canonical_metadata, standardize_muscle_visuals
+
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = ROOT / "data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html"
@@ -143,13 +145,27 @@ def build_header(template: str) -> str:
             "Perfil intermedio. Tren superior con prioridad en espalda y bíceps; deltoides posterior y pecho complementarios.": "Perfil intermedio. Tren superior con prioridad en pecho; hombros y tríceps reciben trabajo específico.",
         },
     )
-    grid = re.search(r'<div class="muscleDayGrid">.*?</div>\s*</div></div>', header, flags=re.S)
+    header = re.sub(
+        r'(<div class="subtitle">).*?(</div>)',
+        r'\1Empujes horizontales y verticales · deltoides lateral · tríceps\2',
+        header,
+        count=1,
+        flags=re.S,
+    )
+    header = re.sub(
+        r'(<div class="heroSummaryText">).*?(</div>)',
+        r'\1Rutina de <b>tren superior</b> equilibrada, con trabajo de pecho, hombros y tríceps.\2',
+        header,
+        count=1,
+        flags=re.S,
+    )
+    grid = re.search(r'<div class="muscleDayGrid"[^>]*>.*?</div>\s*</div></div>', header, flags=re.S)
     if not grid:
         raise ValueError("No se encontró la cuadrícula muscular de la cabecera")
     new_grid = """<div class="muscleDayGrid">
-<div class="muscleDayItem"><span class="muscleDayIcon upper explicit"><span class="muscleCode">PECHO</span></span><span>Pectoral mayor</span></div>
-<div class="muscleDayItem"><span class="muscleDayIcon upper explicit"><span class="muscleCode">HOMBRO</span></span><span>Deltoides</span></div>
-<div class="muscleDayItem"><span class="muscleDayIcon upper explicit"><span class="muscleCode">TRÍCEP</span></span><span>Tríceps</span></div>
+<div class="muscleDayItem" data-muscle-visual="upper-anterior"><span class="muscleDayVisual anterior"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/upper_anterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa anterior del tórax" decoding="async" fetchpriority="high"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#ff9da2">PECHO</span><span class="muscleName">Pectoral mayor</span></span></div>
+<div class="muscleDayItem" data-muscle-visual="upper-anterior"><span class="muscleDayVisual anterior"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/upper_anterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa anterior del hombro" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#7ff0cc">HOMBRO</span><span class="muscleName">Deltoides</span></span></div>
+<div class="muscleDayItem" data-muscle-visual="upper-anterior"><span class="muscleDayVisual anterior"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/upper_anterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa anterior del brazo" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#ffd277">TRÍCEP</span><span class="muscleName">Tríceps</span></span></div>
 </div>
 </div></div>"""
     header = header[: grid.start()] + new_grid + header[grid.end() :]
@@ -205,7 +221,7 @@ def build_card(item: dict[str, object], index: int) -> str:
         else ""
     )
     keys = " ".join(f"e{index + 1}s{n}" for n in range(1, series + 1))
-    return f'''<article class="card" data-day3-exercise="{index + 1}">
+    return f'''<article class="card" data-exercise-index="{index + 1}">
 <div aria-hidden="true" class="cardGlow"></div>
 <div class="meta">
 <div class="metaTop"><div class="num">{index + 1}</div></div>
@@ -420,8 +436,12 @@ def main() -> None:
         "</body>",
         "</html>",
     ])
-    if body.count('<article class="card"') != 7:
+    if body.count('<article class="card" data-exercise-index="') != 7:
         raise ValueError("El Día 3 debe contener exactamente 7 tarjetas")
+    if body.count('<main class="cards">') != 1:
+        raise ValueError("El HTML canónico debe envolver las tarjetas en un único main.cards")
+    if body.count('<footer class="sessionFooter"') != 1 or '<footer class="footer">' in body:
+        raise ValueError("El HTML canónico debe usar únicamente el footer de acciones de sesión")
     if body.count('realphoto day3StaticFrame') != 14:
         raise ValueError("Cada tarjeta debe conservar una pareja Inicio/Final estática")
     if body.count('realphoto day3ExerciseGif') != 7:
@@ -438,7 +458,23 @@ def main() -> None:
         raise ValueError("No deben quedar reparaciones de medios específicas del Día 1")
     if "confirma directamente la identidad de la máquina del gimnasio" in body:
         raise ValueError("La vista aislada no debe presentarse como confirmación del equipo real")
-    OUTPUT.write_text(head + body, encoding="utf-8", newline="\n")
+    forbidden_media_metadata = (
+        '"license":',
+        "portraitLicense",
+        "portraitCredit",
+        "portraitSource",
+        "authorContextSource",
+        "CANDIDATE_PENDING_LICENSE_REVIEW",
+        "sourceUrl:",
+        "mediaStatus",
+        "motivationSource",
+        "gifAttribution",
+    )
+    leaked_metadata = [marker for marker in forbidden_media_metadata if marker in body]
+    if leaked_metadata:
+        raise ValueError(f"El HTML canónico conserva metadatos de licencia/atribución: {leaked_metadata}")
+    canonical = sanitize_canonical_metadata(standardize_muscle_visuals(head + body))
+    OUTPUT.write_text(canonical, encoding="utf-8", newline="\n")
     print(f"GENERATED {OUTPUT.relative_to(ROOT)} bytes={OUTPUT.stat().st_size}")
 
 

@@ -3,6 +3,8 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from standardize_muscle_visuals import sanitize_canonical_metadata, standardize_muscle_visuals
+
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = ROOT / "data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html"
@@ -38,6 +40,20 @@ def build_header(day1_header: str) -> str:
     for old, new in replacements.items():
         header = header.replace(old, new)
     header = re.sub(
+        r'(<div class="subtitle">).*?(</div>)',
+        r'\1Patrón de sentadilla · extensión de cadera · flexión y extensión de rodilla · pantorrilla\2',
+        header,
+        count=1,
+        flags=re.S,
+    )
+    header = re.sub(
+        r'(<div class="heroSummaryText">).*?(</div>)',
+        r'\1Rutina de <b>tren inferior</b> con prioridad en cuádriceps y glúteo; isquiosurales y pantorrilla reciben trabajo específico.\2',
+        header,
+        count=1,
+        flags=re.S,
+    )
+    header = re.sub(
         r'(<div class="heroSummaryText"><b>Perfil intermedio\.</b> ).*?(</div>)',
         r'\1Tren inferior con prioridad en cuádriceps y glúteo; isquiosurales y pantorrilla reciben trabajo específico.\2',
         header,
@@ -45,16 +61,16 @@ def build_header(day1_header: str) -> str:
         flags=re.S,
     )
 
-    old_grid = re.search(r'<div class="muscleDayGrid">.*?</div>\s*</div></div>', header, re.S)
+    old_grid = re.search(r'<div class="muscleDayGrid"[^>]*>.*?</div>\s*</div></div>', header, re.S)
     if not old_grid:
         raise ValueError("No se encontró la cuadrícula muscular de la cabecera")
     new_grid = '''<div class="muscleDayGrid">
-<div class="muscleDayItem"><span class="muscleDayIcon lower explicit"><span class="muscleCode">CUÁDRI</span></span><span>Cuádriceps</span></div>
-<div class="muscleDayItem"><span class="muscleDayIcon lower explicit"><span class="muscleCode">GLÚTEO</span></span><span>Glúteo mayor</span></div>
-<div class="muscleDayItem"><span class="muscleDayIcon lower explicit"><span class="muscleCode">ISQUIO</span></span><span>Isquiosurales</span></div>
-<div class="muscleDayItem"><span class="muscleDayIcon lower explicit"><span class="muscleCode">ADUCT</span></span><span>Aductores</span></div>
-<div class="muscleDayItem"><span class="muscleDayIcon lower explicit"><span class="muscleCode">GASTRO</span></span><span>Gastrocnemio</span></div>
-<div class="muscleDayItem"><span class="muscleDayIcon lower explicit"><span class="muscleCode">SÓLEO</span></span><span>Sóleo</span></div>
+<div class="muscleDayItem" data-muscle-visual="lower-anterior"><span class="muscleDayVisual lower anterior"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_anterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa anterior del muslo" decoding="async" fetchpriority="high"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#64d7ff">CUÁDRI</span><span class="muscleName">Cuádriceps</span></span></div>
+<div class="muscleDayItem" data-muscle-visual="lower-posterior"><span class="muscleDayVisual lower"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_posterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa posterior de la cadera" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#64d7ff">GLÚTEO</span><span class="muscleName">Glúteo mayor</span></span></div>
+<div class="muscleDayItem" data-muscle-visual="lower-posterior"><span class="muscleDayVisual lower"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_posterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa posterior del muslo" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#64d7ff">ISQUIO</span><span class="muscleName">Isquiosurales</span></span></div>
+<div class="muscleDayItem" data-muscle-visual="lower-anterior"><span class="muscleDayVisual lower anterior"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_anterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa anterior del muslo y la cadera" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#64d7ff">ADUCT</span><span class="muscleName">Aductores</span></span></div>
+<div class="muscleDayItem" data-muscle-visual="lower-posterior"><span class="muscleDayVisual lower"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_posterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa posterior de la pantorrilla" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#64d7ff">GASTRO</span><span class="muscleName">Gastrocnemio</span></span></div>
+<div class="muscleDayItem" data-muscle-visual="lower-posterior"><span class="muscleDayVisual lower"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_posterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa posterior de la pantorrilla" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#64d7ff">SÓLEO</span><span class="muscleName">Sóleo</span></span></div>
 </div>
 </div></div>'''
     return header[: old_grid.start()] + new_grid + header[old_grid.end() :]
@@ -168,27 +184,6 @@ def build_session_overlays(template: str) -> str:
     return template[start:end]
 
 
-def build_footer(source_footer: str) -> str:
-    footer = source_footer
-    footer = footer.replace("20 series", "20 series")
-    footer = footer.replace(
-        "La selección cubre cuádriceps, glúteo mayor, isquiosurales y pantorrilla con un volumen suficiente para una rutina de tren inferior orientada a fuerza e hipertrofia.",
-        "La selección cubre cuádriceps, glúteo mayor, isquiosurales y pantorrilla con 20 series efectivas distribuidas por función, sin asumir que ese volumen sea óptimo fuera del programa semanal completo.",
-    )
-    footer = footer.replace("fotos reales", "referencias visuales")
-    footer = footer.replace("Termina normalmente con 1–2 repeticiones todavía posibles", "Termina normalmente con 1–3 repeticiones todavía posibles")
-    footer = footer.replace("Mantén 1–3 repeticiones en reserva en la mayoría de las series", "Mantén RIR 2–3 al inicio y RIR 1–2 al final o en aislamientos")
-    footer = footer.replace(
-        "<div class=" + '"footerBannerIcon"' + ">",
-        "<div class=" + '"footerBannerIcon"' + ">",
-    )
-    footer = footer.replace(
-        "Cierra la sesión priorizando técnica limpia, control de la pelvis y recorrido útil en cada repetición.",
-        "Cierra la sesión priorizando técnica limpia, control de la pelvis y recorrido útil en cada repetición. Los recursos animados de ejercicio combinan una demostración real y guías ilustradas; confirma la técnica con las fotos reales y el checklist.",
-    )
-    return footer
-
-
 def build_gif_script(template: str) -> str:
     return '''<script data-fix="day2-exercise-gifs">
 (function(){
@@ -199,8 +194,6 @@ def build_gif_script(template: str) -> str:
       key:"HIP THRUST",
       kind:"video",
       label:"VIDEO · DEMOSTRACIÓN REAL",
-      sourceUrl:"https://www.youtube.com/watch?v=0xfdeCBwoYw",
-      status:"PERSONAL_USE_SOURCE_REVIEWED",
       alt:"Video del hip thrust en máquina Booty Builder con ejecución correcta: espalda apoyada, pies firmes, extensión completa de cadera y regreso controlado",
       note:"Recorte del panel CORRECT FORM de la demostración oficial: muestra repeticiones completas en máquina, con espalda apoyada, pies estables y extensión de cadera sin compensar con la zona lumbar."
     },
@@ -258,9 +251,7 @@ def build_gif_script(template: str) -> str:
     if(!item || !visual) return;
     const box = make("div","gifProof");
     box.dataset.gifProof = "true";
-    box.dataset.mediaStatus = item.status || "CANDIDATE_REVIEW";
     box.dataset.mediaKind = item.kind || "gif";
-    if(item.sourceUrl) box.dataset.sourceUrl = item.sourceUrl;
     const frame = make("div","gifFrame");
     const motion = make("img","gifMotion");
     motion.src = item.gif;
@@ -283,7 +274,6 @@ def build_gif_script(template: str) -> str:
     motion.addEventListener("error", function(){
       motion.hidden = true;
       fallback.hidden = false;
-      box.dataset.mediaStatus = "FALLBACK_STATIC";
     });
     visual.insertBefore(box, visual.querySelector(".videoProof"));
   });
@@ -368,6 +358,16 @@ def add_exercise_tracker(card: str, exercise_number: int, series_count: int) -> 
     return card.replace(marker, tracker + "\n" + marker, 1)
 
 
+def add_exercise_quick_summary(card: str) -> str:
+    marker = '<div class="coachHeader">Técnica clave</div>'
+    summary = '<div class="exerciseQuickSummary" data-exercise-quick-summary aria-label="Resumen del ejercicio"></div>'
+    if 'data-exercise-quick-summary' in card:
+        return card
+    if marker not in card:
+        raise ValueError("No se encontró .coachHeader en una tarjeta del Día 2")
+    return card.replace(marker, marker + summary, 1)
+
+
 def main() -> None:
     template = TEMPLATE.read_text(encoding="utf-8")
     source = SOURCE.read_text(encoding="utf-8")
@@ -426,16 +426,21 @@ def main() -> None:
     series_by_exercise = (3, 3, 3, 4, 3, 4)
     for index, match in enumerate(card_matches):
         card = match.group(0)
+        card = card.replace(
+            '<article class="card">',
+            f'<article class="card" data-exercise-index="{index + 1}">',
+            1,
+        )
         if index == 1:
             card = enforce_machine_hip_thrust_visuals(card)
         if index == 3:
             card = card.replace('<div class="metricVal">3 series</div>', '<div class="metricVal">4 series</div>', 1)
             card = card.replace('<div class="metricVal">6–8 min</div>', '<div class="metricVal">8–10 min</div>', 1)
         card = improve_card_layout(card)
-        card_payloads.append(add_exercise_tracker(card, index + 1, series_by_exercise[index]))
+        card = add_exercise_tracker(card, index + 1, series_by_exercise[index])
+        card_payloads.append(add_exercise_quick_summary(card))
     cards = "\n".join(card_payloads)
 
-    source_footer = between(source, '<footer class="footer">', "</footer>")
     tail_start = template.rfind("</div>\n<script")
     if tail_start == -1:
         raise ValueError("No se encontró el cierre de la página y los scripts del Día 1")
@@ -457,15 +462,22 @@ def main() -> None:
         build_prep(day1_prep),
         build_dashboard(day1_dashboard),
         build_note(day1_note),
+        '<main class="cards">',
         cards,
+        '</main>',
         build_session_overlays(template),
-        build_footer(source_footer),
         tail,
         "</body>",
         "</html>",
     ])
-    if len(re.findall(r'<article class="card">', body)) != 6:
+    if len(re.findall(r'<article class="card" data-exercise-index="\d+">', body)) != 6:
         raise ValueError("El HTML canónico debe conservar 6 tarjetas")
+    if sum(card.count('data-exercise-quick-summary') for card in re.findall(r'<article class="card" data-exercise-index="\d+">.*?</article>', body, re.S)) != 6:
+        raise ValueError("Cada tarjeta del Día 2 debe conservar un resumen rápido")
+    if body.count('<main class="cards">') != 1:
+        raise ValueError("El HTML canónico debe envolver las tarjetas en un único main.cards")
+    if body.count('<footer class="sessionFooter"') != 1 or '<footer class="footer">' in body:
+        raise ValueError("El HTML canónico debe usar únicamente el footer de acciones de sesión")
     if len(re.findall(r'<div class="visual">\s*<div class="referenceRow">', body)) != 6:
         raise ValueError("Cada tarjeta debe agrupar referencia y secuencia dentro de .visual")
     if 'data-fix="day2-exercise-gifs"' not in body:
@@ -474,7 +486,23 @@ def main() -> None:
         raise ValueError("El hip thrust del Día 2 debe conservarse como máquina")
     if "hip_thrust_machine_booty_builder_correct_form_inicio.jpg" not in card_payloads[1] or "hip_thrust_machine_booty_builder_correct_form_final.jpg" not in card_payloads[1]:
         raise ValueError("La tarjeta de hip thrust debe mostrar fases fotográficas de la máquina")
-    OUTPUT.write_text(head + body, encoding="utf-8", newline="\n")
+    forbidden_media_metadata = (
+        '"license":',
+        "portraitLicense",
+        "portraitCredit",
+        "portraitSource",
+        "authorContextSource",
+        "CANDIDATE_PENDING_LICENSE_REVIEW",
+        "sourceUrl:",
+        "mediaStatus",
+        "motivationSource",
+        "gifAttribution",
+    )
+    leaked_metadata = [marker for marker in forbidden_media_metadata if marker in body]
+    if leaked_metadata:
+        raise ValueError(f"El HTML canónico conserva metadatos de licencia/atribución: {leaked_metadata}")
+    canonical = sanitize_canonical_metadata(standardize_muscle_visuals(head + body))
+    OUTPUT.write_text(canonical, encoding="utf-8", newline="\n")
     print(f"GENERATED {OUTPUT.relative_to(ROOT)} bytes={OUTPUT.stat().st_size}")
 
 

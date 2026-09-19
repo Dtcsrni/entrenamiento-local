@@ -31,7 +31,7 @@ La suma es `4 + 3 + 3 + 3 + 3 + 3 + 3 = 22` series efectivas. Se mantiene RIR `1
 
 Los siete ejercicios usan recursos locales del inventario `evidencia/dia3_media_manifest.json`. Cada tarjeta separa cuatro roles visuales: vista aislada de la máquina, imagen estática inicial, imagen estática final y GIF del recorrido completo. La clave del press de hombro se corrigió a `2318-dNFYIU1`; las demás son `0577-T0yTjgW`, `1299-jHAnWmT`, `0596-v3xmPAR`, `0584-dRTfGZT`, `0200-dU605di` y `0194-2IxROQ1`.
 
-Las vistas aisladas de máquina (`*-machine-only.png`) son ediciones visuales basadas en la referencia local: eliminan a la persona del recuadro de máquina y conservan la geometría visible como apoyo, pero no prueban por sí solas la identidad exacta del equipo instalado. Los recursos de movimiento se muestran como demostraciones visuales del patrón y tampoco prueban por sí solos la prescripción ni la superioridad de una máquina. La atribución local de los recursos de movimiento es `© Gym visual — https://gymvisual.com/`; la licencia de redistribución permanece pendiente de revisión. La ficha conserva imágenes estáticas de inicio/final para reducción de movimiento o fallo de carga.
+Las vistas aisladas de máquina (`*-machine-only.png`) son ediciones visuales basadas en la referencia local: eliminan a la persona del recuadro de máquina y conservan la geometría visible como apoyo, pero no prueban por sí solas la identidad exacta del equipo instalado. Los recursos de movimiento se muestran como demostraciones visuales del patrón y tampoco prueban por sí solos la prescripción ni la superioridad de una máquina. La ficha conserva imágenes estáticas de inicio/final para reducción de movimiento o fallo de carga.
 
 ## Criterios de aceptación
 
@@ -41,5 +41,5 @@ Las vistas aisladas de máquina (`*-machine-only.png`) son ediciones visuales ba
 - El recuadro de máquina muestra exclusivamente la máquina, sin persona, y está etiquetado como ilustración de apoyo; no se presenta como confirmación del equipo real.
 - Las siete vistas GIF apuntan a los GIF locales verificados y tienen texto alternativo específico.
 - El template conserva `warmupTracker`, `sessionGamification` y `resetSession`.
-- La rutina no declara identidad exacta del equipo del gimnasio ni licencia de redistribución aprobada.
+- La rutina no declara identidad exacta del equipo del gimnasio.
 - Se ejecutan `python scripts/build_day3_canonical.py`, `python scripts/validate_repository.py`, `python -m py_compile scripts/build_day3_canonical.py` y revisión visual de escritorio/móvil.

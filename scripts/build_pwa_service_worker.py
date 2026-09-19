@@ -15,6 +15,7 @@ ROUTINE_FILES = (
     "Rutina_Dia_1_Espalda_Biceps_V1.html",
     "Rutina_Dia_2_Pierna_Gluteo_V1.html",
     "Rutina_Dia_3_Pecho_Hombro_Triceps_V1.html",
+    "Rutina_Dia_4_Pierna_Equilibrio_V1.html",
 )
 HTML_ATTR_PATTERN = re.compile(r"(?:src|data-static-src|gif|thumbnail)\s*[:=]\s*[\"']([^\"']+)")
 
@@ -91,7 +92,8 @@ const PRECACHE = [
 const ROUTINE_URLS = [
   './data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html',
   './data/rutinas_autocontenidas/canonicas/Rutina_Dia_2_Pierna_Gluteo_V1.html',
-  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_3_Pecho_Hombro_Triceps_V1.html'
+  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_3_Pecho_Hombro_Triceps_V1.html',
+  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_4_Pierna_Equilibrio_V1.html'
 ];
 const LOCAL_REFERENCE = /(?:src|data-static-src|gif|thumbnail)\s*[:=]\s*[\"'](\.\.[^\"']+)[\"']/g;
 

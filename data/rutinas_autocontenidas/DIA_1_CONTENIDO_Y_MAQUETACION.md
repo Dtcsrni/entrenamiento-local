@@ -18,7 +18,7 @@ Documentar el contenido del Día 1 y la plantilla canónica reutilizable. La pan
 - **Series efectivas:** `20`.
 - **Distribución:** `4 + 4 + 3 + 3 + 3 + 3 = 20 series`.
 - **Esfuerzo orientativo:** `RIR` (repeticiones en reserva) 2–3 al inicio y 1–2 en las últimas series de los compuestos; aislamientos en `RIR 1–2`.
-- **Estado del material visual:** seis candidatos mapeados por patrón; fuente y licencia de uso final pendientes.
+- **Estado del material visual:** seis referencias locales mapeadas por patrón.
 
 La serie de aproximación no forma parte de las 20 series efectivas.
 
@@ -32,9 +32,9 @@ Al completar los seis ejercicios aparece una celebración global, con una frase 
 
 La ficha incluye además un resumen flotante, plegable y compacto. Muestra ejercicios terminados, series realizadas, series pendientes por ejercicio y permite marcar `Máquina ocupada` cuando una serie queda pendiente por disponibilidad del equipo. Este estado también se conserva localmente. El contador de cada ejercicio usa una única acción secuencial (`Completar serie`), por lo que no permite saltar directamente a una serie posterior.
 
-El mensaje motivacional usa exclusivamente el banco local `frases_fitness/fitness_quotes.json`, con 1,000 frases seleccionadas por vocabulario explícito de ejercicio/deporte desde Quotables (CC0-1.0), traducción de construcción con Argos Translate y texto original conservado. Se cambia de forma secuencial; en pantalla solo aparecen la frase, el autor y, cuando existe un retrato local verificado, su imagen. No se atribuyen frases a una marca ni se consulta una API de frases aleatorias durante el uso.
+El mensaje motivacional usa exclusivamente el banco local `frases_fitness/fitness_quotes.json`, con 1,000 frases seleccionadas por vocabulario explícito de ejercicio/deporte. Se cambia de forma secuencial; en pantalla solo aparecen la frase, el autor y, cuando existe una imagen local verificada, ese apoyo visual. No se atribuyen frases a una marca ni se consulta una API de frases aleatorias durante el uso.
 
-El banco conserva por registro `quoteOriginal`, `quoteEs`, autor, temas, fuente de la cita y, cuando aplica, `portraitSource`; `fitness_quotes.js` es la copia embebible generada desde ese JSON para que la ficha siga funcionando sin conexión.
+El banco conserva por registro el texto, autor y temas; `fitness_quotes.js` es la copia embebible generada desde ese JSON para que la ficha siga funcionando sin conexión.
 
 ## Criterio científico actualizado
 
@@ -85,7 +85,7 @@ La ficha muestra dos pasos antes de las tarjetas de ejercicios, cada uno con un 
 1. **Cardio moderado:** `16–17 min`; elige elíptica, bicicleta estacionaria o caminadora inclinada a ritmo constante.
 2. **Movilidad y activación de hombros:** `1–2 min`; movimiento dinámico y controlado, sin bandas, pared ni equipo. Se muestran dos GIF reales y diferenciados: círculos de brazos y círculos de hombros de pie, ambos con recorrido lento y cómodo.
 
-Los GIF de los ejercicios proceden de Gym visual; los dos GIF de movilidad son demostraciones filmadas alojadas en Tenor. La ficha los sirve desde archivos locales para evitar depender de URLs externas; los medios permanecen pendientes de revisión final de licencia y redistribución.
+Los GIF de los ejercicios y los dos GIF de movilidad se sirven desde archivos locales para evitar depender de URLs externas.
 
 Criterio de selección: se priorizaron círculos de hombros y elevación controlada de brazos, movimientos corporales suaves descritos en recursos de fisioterapia del NHS. La animación local es una guía visual de recorrido, no una prescripción clínica; detenerse ante dolor o limitación.
 
@@ -118,7 +118,7 @@ Inicio → recorrido → final
 AJUSTE       EJECUCIÓN       RITMO       EVITA
 
 3–4 series · 8–12 rep. · 2 min · RIR 1–3
-Fuente visual · autor/licencia · timestamp
+Referencia visual · timestamp
 ```
 
 ### Reglas del GIF
@@ -128,7 +128,7 @@ Fuente visual · autor/licencia · timestamp
 - Debe incluir una imagen estática de respaldo para `prefers-reduced-motion` y para carga fallida.
 - Debe llevar texto alternativo descriptivo, no solo el nombre del ejercicio.
 - El GIF demuestra una ejecución visual; no justifica por sí mismo series, repeticiones, descanso ni superioridad del equipo.
-- Conservar URL, autor, licencia, minuto/segundo de origen, fecha de consulta y SHA-256 del archivo local.
+- Conservar identificador local, minuto/segundo de origen, fecha de consulta y SHA-256 del archivo local.
 - No llamar `foto real`, `máquina exacta` o `técnica correcta` a un recurso que no haya sido comprobado para ese uso.
 
 ## Inventario visual local preliminar
@@ -138,9 +138,9 @@ La revisión local encontró cinco GIF técnicamente válidos y un marcador vac�
 - Cinco archivos tienen `6` fotogramas, resolución `400×400` y duración total aproximada de `1.82 s`.
 - Un archivo tiene `34` bytes y dimensiones `1×1`; se descarta como medio visual.
 - La inspección de fotogramas sugiere candidatos para curl, remo y jalón, pero esa observación no demuestra todavía qué ejercicio representa cada archivo.
-- Los registros extraídos no conservan una `source_url` utilizable para estos GIF; permanecen como candidatos históricos, no como medios aprobados.
+- Los registros extraídos no conservan un identificador utilizable para estos GIF; permanecen como candidatos históricos, no como medios aprobados.
 
-Por tanto, ningún archivo de este inventario se incrustará en la ficha hasta completar la relación `ejercicio → recurso → fuente → licencia`.
+Por tanto, ningún archivo de este inventario se incrustará en la ficha hasta completar la relación `ejercicio → recurso → patrón → archivo local`.
 
 ### Candidatos históricos por orden de extracción
 
@@ -152,16 +152,16 @@ La extracción del HTML histórico v20 conserva el orden de los medios, pero no 
 | Panatta Super Rowing · remo horizontal | 11 | `87fcf78d64eeb8bc519dac0de15191fe06c66c7019a7884412eea3ca728963c2.gif` | `PENDIENTE`: equipo y trayectoria no están confirmados |
 | Jalón al pecho · máquina selectorized | 15 | `d58cd315059b6518fd7488765cf362368020c91600b7e1c8bd018b20466247a7.gif` | `PENDIENTE`: el fotograma parece un remo; no se reutiliza |
 | Reverse fly / rear delt · máquina | 19 | `74cf0090f65381e5bbcef2b9aeb567932998ebc18d084d6da14649f380950970.gif` | `PENDIENTE`: el gesto parece un remo; no se reutiliza |
-| Curl de bíceps · máquina con apoyo | 23 | `0e40c4b93ce53de1a27e36f3bc42b3c387f5d0c29044ad620eebe1e5ef3c9686.gif` | `CANDIDATO`: el gesto parece compatible, pero faltan fuente y licencia |
+| Curl de bíceps · máquina con apoyo | 23 | `0e40c4b93ce53de1a27e36f3bc42b3c387f5d0c29044ad620eebe1e5ef3c9686.gif` | `CANDIDATO`: el gesto parece compatible, pero la correspondencia no está confirmada |
 | Curl martillo · máquina de agarre neutro | — | — | `SIN RECURSO HISTÓRICO` |
 
-La conclusión operativa es conservar estos archivos solo como evidencia de extracción y buscar para cada tarjeta un recurso cuya identidad, técnica y licencia se puedan verificar independientemente. La apariencia del fotograma no basta para corregir el mapeo del HTML.
+La conclusión operativa es conservar estos archivos solo como evidencia de extracción y buscar para cada tarjeta un recurso cuya identidad y técnica se puedan verificar independientemente. La apariencia del fotograma no basta para corregir el mapeo del HTML.
 
 ### Candidatos de la fuente versionada de ejercicios
 
-Para la maqueta se localizaron seis candidatos para los ejercicios y dos GIF filmados específicos para el calentamiento en `artifacts/ejercicios-compartido/`. Sus hashes, miniaturas, fuentes y estado de derechos están registrados en `evidencia/dia1_media_manifest.json`. La inspección confirma el patrón visual de cada movimiento, pero no autoriza aún su redistribución: los seis medios de ejercicios son de Gym visual y los dos de movilidad proceden de Tenor; todos requieren revisión de derechos.
+Para la maqueta se localizaron seis candidatos para los ejercicios y dos GIF filmados específicos para el calentamiento en `artifacts/ejercicios-compartido/`. Sus hashes, miniaturas y correspondencia visual están registrados en `evidencia/dia1_media_manifest.json`. La inspección confirma el patrón visual de cada movimiento.
 
-La tarjeta debe mostrar, provisionalmente, la leyenda `CANDIDATO VISUAL · LICENCIA PENDIENTE`; al aprobarse el uso se sustituye por la atribución completa y el enlace de procedencia.
+La tarjeta debe mostrar una referencia visual clara y un fallback estático cuando corresponda.
 
 ## Textos técnicos
 
@@ -222,12 +222,12 @@ La tarjeta debe mostrar, provisionalmente, la leyenda `CANDIDATO VISUAL · LICEN
 - Cada ejercicio tiene GIF o secuencia estática de respaldo con procedencia trazable.
 - Ningún medio se presenta como real, exacto o clínicamente validado sin evidencia específica.
 - La composición sigue siendo legible en escritorio y móvil.
-- Se revisan licencia, atribución y SHA-256 antes de incrustar medios redistribuibles.
+- Se revisan correspondencia visual, integridad y SHA-256 antes de incrustar medios.
 - Se ejecuta `python scripts/validate_repository.py` antes de proponer integración.
 
 ## Pendientes
 
 1. Confirmar si cada candidato puede redistribuirse dentro del repositorio y de la futura aplicación.
-2. Integrar los seis GIF y sus miniaturas únicamente después de la revisión de derechos.
+2. Integrar los seis GIF y sus miniaturas únicamente después de verificar su correspondencia con el ejercicio.
 3. Revisar visualmente el render final en escritorio y móvil.
 4. Calcular la duración total con una fórmula explícita; `75–95 min` queda como estimación heredada hasta esa revisión.

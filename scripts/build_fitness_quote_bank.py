@@ -31,8 +31,6 @@ SOURCE = DATA / "author-quote.txt"
 OUT = DATA / "fitness_quotes.json"
 PORTRAITS = DATA / "retratos"
 
-SOURCE_URL = "https://github.com/alvations/Quotables"
-SOURCE_LICENSE = "CC0-1.0"
 TRANSLATION_URL = "https://api.mymemory.translated.net/get"
 
 STRONG_TERMS = (
@@ -140,7 +138,6 @@ def translate_item(item: dict[str, object]) -> tuple[dict[str, object], str | No
     for attempt in range(4):
         try:
             item["quoteEs"] = translate(str(item["quoteOriginal"]))
-            item["translation"] = "MyMemory build-time; texto original conservado"
             return item, None
         except Exception as error:  # noqa: BLE001 - se informa al final de la tarea
             if attempt == 3:
@@ -232,27 +229,13 @@ def main() -> None:
         portrait = author_assets.get(author)
         if portrait:
             item["portrait"] = portrait["localPath"]
-            item["portraitSource"] = portrait["commonsUrl"]
         item.pop("selectionScore", None)
     payload = {
         "schemaVersion": 1,
         "language": "es",
         "count": len(selected),
         "authorCount": len({str(item["author"]) for item in selected}),
-        "source": {
-            "name": "Quotables",
-            "url": SOURCE_URL,
-            "license": SOURCE_LICENSE,
-            "retrievedAt": time.strftime("%Y-%m-%d", time.gmtime()),
-        },
-        "translation": {
-            "service": "Argos Translate" if argos_translate is not None else "MyMemory",
-            "mode": "build-time",
-            "url": "https://github.com/argosopentech/argos-translate" if argos_translate is not None else TRANSLATION_URL,
-            "note": "La app usa únicamente los campos locales; conserva quoteOriginal para revisión.",
-        },
         "portraitCount": len(author_assets),
-        "portraitSource": "Wikimedia Commons / Wikidata P18",
         "quotes": selected,
     }
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

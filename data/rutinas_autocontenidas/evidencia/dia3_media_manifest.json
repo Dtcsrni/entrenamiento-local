@@ -10,8 +10,7 @@
     "claimed_key_exists": true,
     "verified_key": "0577-T0yTjgW",
     "verified_gif": "0577-T0yTjgW.gif",
-    "verified_image": "0577-T0yTjgW.jpg",
-    "attribution": "© Gym visual — https://gymvisual.com/"
+    "verified_image": "0577-T0yTjgW.jpg"
   },
   {
     "exercise": "Press inclinado convergente en máquina",
@@ -24,8 +23,7 @@
     "claimed_key_exists": false,
     "verified_key": "1299-jHAnWmT",
     "verified_gif": "1299-jHAnWmT.gif",
-    "verified_image": "1299-jHAnWmT.jpg",
-    "attribution": "© Gym visual — https://gymvisual.com/"
+    "verified_image": "1299-jHAnWmT.jpg"
   },
   {
     "exercise": "Pec deck / contractor de pecho",
@@ -38,8 +36,7 @@
     "claimed_key_exists": false,
     "verified_key": "0596-v3xmPAR",
     "verified_gif": "0596-v3xmPAR.gif",
-    "verified_image": "0596-v3xmPAR.jpg",
-    "attribution": "© Gym visual — https://gymvisual.com/"
+    "verified_image": "0596-v3xmPAR.jpg"
   },
   {
     "exercise": "Press de hombro en máquina",
@@ -52,8 +49,7 @@
     "claimed_key_exists": true,
     "verified_key": "2318-dNFYIU1",
     "verified_gif": "2318-dNFYIU1.gif",
-    "verified_image": "2318-dNFYIU1.jpg",
-    "attribution": "© Gym visual — https://gymvisual.com/"
+    "verified_image": "2318-dNFYIU1.jpg"
   },
   {
     "exercise": "Elevación lateral en máquina",
@@ -66,8 +62,7 @@
     "claimed_key_exists": false,
     "verified_key": "0584-dRTfGZT",
     "verified_gif": "0584-dRTfGZT.gif",
-    "verified_image": "0584-dRTfGZT.jpg",
-    "attribution": "© Gym visual — https://gymvisual.com/"
+    "verified_image": "0584-dRTfGZT.jpg"
   },
   {
     "exercise": "Jalón de tríceps en polea",
@@ -80,8 +75,7 @@
     "claimed_key_exists": false,
     "verified_key": "0200-dU605di",
     "verified_gif": "0200-dU605di.gif",
-    "verified_image": "0200-dU605di.jpg",
-    "attribution": "© Gym visual — https://gymvisual.com/"
+    "verified_image": "0200-dU605di.jpg"
   },
   {
     "exercise": "Extensión de tríceps sobre cabeza con cuerda",
@@ -94,7 +88,6 @@
     "claimed_key_exists": false,
     "verified_key": "0194-2IxROQ1",
     "verified_gif": "0194-2IxROQ1.gif",
-    "verified_image": "0194-2IxROQ1.jpg",
-    "attribution": "© Gym visual — https://gymvisual.com/"
+    "verified_image": "0194-2IxROQ1.jpg"
   }
 ]

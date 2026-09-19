@@ -1,0 +1,40 @@
+{
+  "purpose": "Recursos rasterizados para la franja Músculos del día de las rutinas canónicas.",
+  "created_at": "2026-09-19",
+  "visual_status": "ILLUSTRATIVE_ANATOMY_REFERENCE",
+  "rights_status": "GENERATED_ASSET_PROVENANCE_RECORDED",
+  "limitations": [
+    "Las placas son referencias educativas ilustrativas y no sustituyen una fuente anatómica revisada por especialistas.",
+    "La imagen no identifica por sí sola qué músculo trabaja un ejercicio ni constituye evidencia de superioridad fisiológica."
+  ],
+  "assets": [
+    {
+      "file": "../medios_publicados/rutinas_autocontenidas/musculos_generados/upper_posterior_anatomy_v1.png",
+      "used_by": ["Día 1"],
+      "view": "posterior_upper_body",
+      "generation_method": "OpenAI built-in image generation",
+      "prompt_scope": "Realistic educational 3D posterior upper-body musculature; no labels, logos or watermark"
+    },
+    {
+      "file": "../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_posterior_anatomy_v1.png",
+      "used_by": ["Día 2"],
+      "view": "posterior_lower_body",
+      "generation_method": "OpenAI built-in image generation",
+      "prompt_scope": "Clinical educational 3D posterior lower-limb musculature; no labels, logos or watermark"
+    },
+    {
+      "file": "../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_anterior_anatomy_v1.png",
+      "used_by": ["Día 2"],
+      "view": "anterior_lower_body",
+      "generation_method": "OpenAI built-in image generation",
+      "prompt_scope": "Clinical educational 3D anterior lower-limb musculature; no labels, logos or watermark"
+    },
+    {
+      "file": "../medios_publicados/rutinas_autocontenidas/musculos_generados/upper_anterior_anatomy_v1.png",
+      "used_by": ["Día 1", "Día 3"],
+      "view": "anterior_upper_body",
+      "generation_method": "OpenAI built-in image generation",
+      "prompt_scope": "Realistic educational 3D anterior upper-body musculature; no labels, logos or watermark"
+    }
+  ]
+}

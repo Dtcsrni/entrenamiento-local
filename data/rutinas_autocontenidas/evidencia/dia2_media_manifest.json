@@ -1,26 +1,172 @@
 {
   "day": "Día 2",
-  "status": "EXERCISE_GIFS_RENDERED_LICENSE_REVIEW_PENDING",
   "reviewed_at": "2026-09-14",
-  "source_repository": "https://github.com/hasaneyldrm/exercises-dataset",
-  "source_commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
-  "media_rights_holder": "Gym visual",
-  "required_attribution": "© Gym visual — https://gymvisual.com/",
-  "license_note": "El dataset declara medios de Gym visual sujetos a sus términos. Este manifiesto no concede licencia propia para redistribuirlos.",
   "items": [
-    {"exercise_number": 1, "exercise": "Hack squat", "dataset_id": "0743", "dataset_name": "sled hack squat", "gif": "artifacts/ejercicios-compartido/videos/0743-Qa55kX1.gif", "thumbnail": "artifacts/ejercicios-compartido/images/0743-Qa55kX1.jpg", "sha256_gif": "CD7333BD2FF3D49C37B286E74A2E6E2F98C015A595231CA58B03C0C7316319DB", "status": "CANDIDATE_PENDING_LICENSE_REVIEW", "integration_status": "NOT_RENDERED_ILLUSTRATED_LOW_RES"},
-    {"exercise_number": 2, "exercise": "Hip thrust en máquina", "dataset_id": null, "dataset_name": "Booty Builder Correct Form (video externo oficial, panel correcto recortado)", "gif": "artifacts/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form.gif", "thumbnail": "artifacts/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form.jpg", "phase_images": {"inicio": "artifacts/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form_inicio.jpg", "final": "artifacts/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form_final.jpg"}, "sha256_gif": "436BBD0A312C56A84C5DC554A03CB32A893F3C22951134DC093DD414CE03A984", "sha256_phase_images": {"inicio": "6F87BDA5C49803BBE107C20206417CBEF3FE11FDD4DEA479B07E3E210DD14F5D", "final": "DDD9E76ACDC2002300812038EE806729B2AAB57CB6DD91B5985E537D33CFB973"}, "source_segment_seconds": [3.5, 12.0], "crop": {"source_size": "1280x720", "panel": "CORRECT FORM", "left": 0, "top": 0, "width": 720, "height": 360}, "status": "PERSONAL_USE_SOURCE_REVIEWED", "integration_status": "REAL_VIDEO_CORRECT_FORM_PANEL_CROP_AND_PHASE_IMAGES_RENDERED_PERSONAL_USE"},
-    {"exercise_number": 3, "exercise": "Prensa de piernas", "dataset_id": "0739", "dataset_name": "sled 45° leg press", "gif": "artifacts/ejercicios-compartido/videos/0739-10Z2DXU.gif", "thumbnail": "artifacts/ejercicios-compartido/images/0739-10Z2DXU.jpg", "sha256_gif": "4E4AFB16A87FF94ECEBF835CD56358E3AC3BBDF66F5743F211651400137DDEC3", "status": "CANDIDATE_PENDING_LICENSE_REVIEW", "integration_status": "NOT_RENDERED_ILLUSTRATED_LOW_RES"},
-    {"exercise_number": 4, "exercise": "Curl femoral en máquina", "dataset_id": "0599", "dataset_name": "lever seated leg curl", "gif": "artifacts/ejercicios-compartido/videos/0599-Zg3XY7P.gif", "thumbnail": "artifacts/ejercicios-compartido/images/0599-Zg3XY7P.jpg", "sha256_gif": "83BE1DB342FCB514086ECCD82B6748FE2D957CAEF22CE1501A9EADED5142D277", "status": "CANDIDATE_PENDING_LICENSE_REVIEW", "integration_status": "NOT_RENDERED_ILLUSTRATED_LOW_RES"},
-    {"exercise_number": 5, "exercise": "Extensión de piernas", "dataset_id": "0585", "dataset_name": "lever leg extension", "gif": "artifacts/ejercicios-compartido/videos/0585-my33uHU.gif", "thumbnail": "artifacts/ejercicios-compartido/images/0585-my33uHU.jpg", "sha256_gif": "AD9602E9EB0584CD73ECC5CDF9F9E273ADE4D14336D1554BC35B9242DFBB6F0D", "status": "CANDIDATE_PENDING_LICENSE_REVIEW", "integration_status": "NOT_RENDERED_ILLUSTRATED_LOW_RES"},
-    {"exercise_number": 6, "exercise": "Pantorrillas de pie", "dataset_id": "0605", "dataset_name": "lever standing calf raise", "gif": "artifacts/ejercicios-compartido/videos/0605-ykUOVze.gif", "thumbnail": "artifacts/ejercicios-compartido/images/0605-ykUOVze.jpg", "sha256_gif": "A47FDC5174B3F2003AE89A82D1815951413A0FD7B6F49329637454DC11A72960", "status": "CANDIDATE_PENDING_LICENSE_REVIEW", "integration_status": "NOT_RENDERED_ILLUSTRATED_LOW_RES"}
+    {
+      "exercise_number": 1,
+      "exercise": "Hack squat",
+      "dataset_id": "0743",
+      "dataset_name": "sled hack squat",
+      "gif": "artifacts/ejercicios-compartido/videos/0743-Qa55kX1.gif",
+      "thumbnail": "artifacts/ejercicios-compartido/images/0743-Qa55kX1.jpg",
+      "sha256_gif": "CD7333BD2FF3D49C37B286E74A2E6E2F98C015A595231CA58B03C0C7316319DB"
+    },
+    {
+      "exercise_number": 2,
+      "exercise": "Hip thrust en máquina",
+      "dataset_id": null,
+      "dataset_name": "Booty Builder Correct Form (video externo oficial, panel correcto recortado)",
+      "gif": "artifacts/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form.gif",
+      "thumbnail": "artifacts/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form.jpg",
+      "phase_images": {
+        "inicio": "artifacts/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form_inicio.jpg",
+        "final": "artifacts/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form_final.jpg"
+      },
+      "sha256_gif": "436BBD0A312C56A84C5DC554A03CB32A893F3C22951134DC093DD414CE03A984",
+      "sha256_phase_images": {
+        "inicio": "6F87BDA5C49803BBE107C20206417CBEF3FE11FDD4DEA479B07E3E210DD14F5D",
+        "final": "DDD9E76ACDC2002300812038EE806729B2AAB57CB6DD91B5985E537D33CFB973"
+      },
+      "source_segment_seconds": [
+        3.5,
+        12.0
+      ],
+      "crop": {
+        "source_size": "1280x720",
+        "panel": "CORRECT FORM",
+        "left": 0,
+        "top": 0,
+        "width": 720,
+        "height": 360
+      }
+    },
+    {
+      "exercise_number": 3,
+      "exercise": "Prensa de piernas",
+      "dataset_id": "0739",
+      "dataset_name": "sled 45° leg press",
+      "gif": "artifacts/ejercicios-compartido/videos/0739-10Z2DXU.gif",
+      "thumbnail": "artifacts/ejercicios-compartido/images/0739-10Z2DXU.jpg",
+      "sha256_gif": "4E4AFB16A87FF94ECEBF835CD56358E3AC3BBDF66F5743F211651400137DDEC3"
+    },
+    {
+      "exercise_number": 4,
+      "exercise": "Curl femoral en máquina",
+      "dataset_id": "0599",
+      "dataset_name": "lever seated leg curl",
+      "gif": "artifacts/ejercicios-compartido/videos/0599-Zg3XY7P.gif",
+      "thumbnail": "artifacts/ejercicios-compartido/images/0599-Zg3XY7P.jpg",
+      "sha256_gif": "83BE1DB342FCB514086ECCD82B6748FE2D957CAEF22CE1501A9EADED5142D277"
+    },
+    {
+      "exercise_number": 5,
+      "exercise": "Extensión de piernas",
+      "dataset_id": "0585",
+      "dataset_name": "lever leg extension",
+      "gif": "artifacts/ejercicios-compartido/videos/0585-my33uHU.gif",
+      "thumbnail": "artifacts/ejercicios-compartido/images/0585-my33uHU.jpg",
+      "sha256_gif": "AD9602E9EB0584CD73ECC5CDF9F9E273ADE4D14336D1554BC35B9242DFBB6F0D"
+    },
+    {
+      "exercise_number": 6,
+      "exercise": "Pantorrillas de pie",
+      "dataset_id": "0605",
+      "dataset_name": "lever standing calf raise",
+      "gif": "artifacts/ejercicios-compartido/videos/0605-ykUOVze.gif",
+      "thumbnail": "artifacts/ejercicios-compartido/images/0605-ykUOVze.jpg",
+      "sha256_gif": "A47FDC5174B3F2003AE89A82D1815951413A0FD7B6F49329637454DC11A72960"
+    }
   ],
-  "hip_thrust_repository_search": {"reference_equipment": "Glute Drive / máquina de hip thrust con carga por discos", "records_reviewed": 1324, "queries": ["hip thrust", "glute bridge", "glute", "hip"], "equipment_constraint": "leverage machine", "exact_match_count": 0, "nearest_rejected_candidate": {"dataset_id": "2286", "dataset_name": "lever hip extension v. 2", "gif": "artifacts/ejercicios-compartido/videos/2286-OPqShYN.gif", "reason": "La animación muestra extensión de cadera sentado empujando apoyapiés; no representa un hip thrust con apoyo dorsal y almohadilla pélvica."}, "external_reference_video": {"title": "Booty Builder Basics: Correct vs Incorrect Form", "url": "https://www.youtube.com/watch?v=0xfdeCBwoYw", "official_page": "https://bootybuilder.com/how-to-use-the-booty-builder/", "status": "PERSONAL_USE_SOURCE_REVIEWED"}},
+  "hip_thrust_repository_search": {
+    "reference_equipment": "Glute Drive / máquina de hip thrust con carga por discos",
+    "records_reviewed": 1324,
+    "queries": [
+      "hip thrust",
+      "glute bridge",
+      "glute",
+      "hip"
+    ],
+    "equipment_constraint": "leverage machine",
+    "exact_match_count": 0,
+    "nearest_rejected_candidate": {
+      "dataset_id": "2286",
+      "dataset_name": "lever hip extension v. 2",
+      "gif": "artifacts/ejercicios-compartido/videos/2286-OPqShYN.gif",
+      "reason": "La animación muestra extensión de cadera sentado empujando apoyapiés; no representa un hip thrust con apoyo dorsal y almohadilla pélvica."
+    },
+    "external_reference_video": {
+      "title": "Booty Builder Basics: Correct vs Incorrect Form",
+      "url": "https://www.youtube.com/watch?v=0xfdeCBwoYw",
+      "official_page": "https://bootybuilder.com/how-to-use-the-booty-builder/"
+    }
+  },
   "warmup_items": [
-    {"step": 1, "label": "Cardio suave", "dataset_ids": ["2141", "0798", "3666"], "gif_paths": ["artifacts/ejercicios-compartido/videos/2141-rjtuP6X.gif", "artifacts/ejercicios-compartido/videos/0798-a8VDgLw.gif", "artifacts/ejercicios-compartido/videos/3666-rjiM4L3.gif"], "sha256_gifs": ["C77B3BB6811B3A6CCA1BA8CCD34B1FBDCEB699F1C1D70FCD35A480ABB63F50B9", "1DEAFD6CF869E63F16071DE98A4C33BF7CB6BF704854B64B8D026E5D1884F5BE", "E57E8ADE4FFF7AD586F0DE6DEA582A776838E76069923F8BD31AD206B4D33F90"], "status": "CANDIDATE_PENDING_LICENSE_REVIEW", "integration_status": "REPOSITORY_GIFS_RENDERED_WITH_STATIC_FALLBACKS"},
-    {"step": 2, "label": "Movilidad dinámica de cadera, rodilla y tobillo", "dataset_ids": ["1512", "0257"], "gif_paths": ["artifacts/ejercicios-compartido/videos/1512-qBcKorM.gif", "artifacts/rutinas_autocontenidas/dia2_media_generated/ankle_circles_real_mymichigan.gif", "artifacts/ejercicios-compartido/videos/0257-X7jbxra.gif"], "sha256_gifs": ["25DCCDBFF76C890AB4382218D736979429D1256D8514E07035D2801DD7F7A708", "B833E69144BD656B017C676600BEE111331C65E69A67E3B4E1EFBB18D3E2986A", "622DA6D81D605FDAC4DAA1022DD0172C9E5AD5401BF6D1528E41C7839C100B25"], "status": "PERSONAL_USE_SOURCE_REVIEWED", "integration_status": "REPOSITORY_GIFS_PLUS_REAL_VIDEO_RENDERED_WITH_STATIC_FALLBACKS", "external_video": {"title": "Ankle Circles", "url": "https://www.youtube.com/watch?v=uV0I5adTRXw", "publisher": "MyMichigan Health", "segment_seconds": [19.4, 25.7], "crop": "focused square crop of the filmed ankle-circle demonstration"}}
+    {
+      "step": 1,
+      "label": "Cardio suave",
+      "dataset_ids": [
+        "2141",
+        "0798",
+        "3666"
+      ],
+      "gif_paths": [
+        "artifacts/ejercicios-compartido/videos/2141-rjtuP6X.gif",
+        "artifacts/ejercicios-compartido/videos/0798-a8VDgLw.gif",
+        "artifacts/ejercicios-compartido/videos/3666-rjiM4L3.gif"
+      ],
+      "sha256_gifs": [
+        "C77B3BB6811B3A6CCA1BA8CCD34B1FBDCEB699F1C1D70FCD35A480ABB63F50B9",
+        "1DEAFD6CF869E63F16071DE98A4C33BF7CB6BF704854B64B8D026E5D1884F5BE",
+        "E57E8ADE4FFF7AD586F0DE6DEA582A776838E76069923F8BD31AD206B4D33F90"
+      ]
+    },
+    {
+      "step": 2,
+      "label": "Movilidad dinámica de cadera, rodilla y tobillo",
+      "dataset_ids": [
+        "1512",
+        "0257"
+      ],
+      "gif_paths": [
+        "artifacts/ejercicios-compartido/videos/1512-qBcKorM.gif",
+        "artifacts/rutinas_autocontenidas/dia2_media_generated/ankle_circles_real_mymichigan.gif",
+        "artifacts/ejercicios-compartido/videos/0257-X7jbxra.gif"
+      ],
+      "sha256_gifs": [
+        "25DCCDBFF76C890AB4382218D736979429D1256D8514E07035D2801DD7F7A708",
+        "B833E69144BD656B017C676600BEE111331C65E69A67E3B4E1EFBB18D3E2986A",
+        "622DA6D81D605FDAC4DAA1022DD0172C9E5AD5401BF6D1528E41C7839C100B25"
+      ],
+      "external_video": {
+        "title": "Ankle Circles",
+        "url": "https://www.youtube.com/watch?v=uV0I5adTRXw",
+        "publisher": "MyMichigan Health",
+        "segment_seconds": [
+          19.4,
+          25.7
+        ],
+        "crop": "focused square crop of the filmed ankle-circle demonstration"
+      }
+    }
   ],
   "embedded_static_note": "Las parejas Inicio → Final y las referencias anatómicas heredadas de la fuente v6 se conservan embebidas para continuidad visual; su procedencia individual no está documentada en el HTML fuente y permanece pendiente de revisión.",
-  "quality_gate": {"animated_assets_reviewed": true, "animated_assets_dimensions": "ten 180x180 illustrated repository GIFs; one 360x180 real-video correct-form crop; one 360x360 real-video ankle-circles crop", "animated_assets_are_illustrated": false, "animated_asset_types": {"illustrated_repository_gifs": 10, "real_video_crops": 2}, "rendered_in_canonical_html": true, "rendered_exercise_gif_count": 6, "rendered_warmup_gif_count": 6, "rendered_gif_count": 12, "rendered_only_when_semantically_matched": true},
-  "accessibility": {"animated_media_rendered": true, "static_fallback": true, "reduced_motion_support": true}
+  "quality_gate": {
+    "animated_assets_reviewed": true,
+    "animated_assets_dimensions": "ten 180x180 illustrated repository GIFs; one 360x180 real-video correct-form crop; one 360x360 real-video ankle-circles crop",
+    "animated_assets_are_illustrated": false,
+    "animated_asset_types": {
+      "illustrated_repository_gifs": 10,
+      "real_video_crops": 2
+    },
+    "rendered_in_canonical_html": true,
+    "rendered_exercise_gif_count": 6,
+    "rendered_warmup_gif_count": 6,
+    "rendered_gif_count": 12,
+    "rendered_only_when_semantically_matched": true
+  },
+  "accessibility": {
+    "animated_media_rendered": true,
+    "static_fallback": true,
+    "reduced_motion_support": true
+  }
 }

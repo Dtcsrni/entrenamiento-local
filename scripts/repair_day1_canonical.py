@@ -3,8 +3,11 @@
 import re
 from pathlib import Path
 
+from standardize_muscle_visuals import sanitize_canonical_metadata, standardize_muscle_visuals
+
 
 HTML = Path(__file__).parents[1] / "data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html"
+HEADER_SOURCE = Path(__file__).parents[1] / "data/rutinas_autocontenidas/fuentes_locales/Rutina_Dia_1_Espalda_Biceps_Autocontenida_v10_HEADER_REPARADO.html"
 
 
 CARDS_4_5 = r'''<!-- 4 -->
@@ -45,6 +48,40 @@ def main() -> None:
     with HTML.open("r", encoding="utf-8", newline="") as handle:
         source = handle.read()
     newline = "\r\n" if "\r\n" in source else "\n"
+    if "</head>" not in source or '<header class="hero">' not in source:
+        with HEADER_SOURCE.open("r", encoding="utf-8", newline="") as handle:
+            header_source = handle.read()
+        header_start = header_source.index('<header class="hero">')
+        header_end = header_source.index("</header>", header_start) + len("</header>")
+        fragment_start = source.index('<div class="heroSummaryText">')
+        header_style_end = source.rfind("</style>", 0, fragment_start)
+        current_header_end = source.index("</header>", fragment_start) + len("</header>")
+        if header_style_end < 0:
+            raise RuntimeError("No se encontró el cierre de estilos del encabezado del Día 1")
+        source = (
+            source[: header_style_end + len("</style>")]
+            + newline
+            + "</head>"
+            + newline
+            + "<body>"
+            + newline
+            + '<div class="page">'
+            + newline
+            + header_source[header_start:header_end]
+            + source[current_header_end:]
+        )
+    source = re.sub(
+        r'<img alt="Panatta Super High Row unilateral inicio"[^>]*>',
+        '<img alt="Panatta Super High Row unilateral inicio" class="realphoto" loading="lazy" src="../medios_publicados/ejercicios-compartido/images/panatta-super-high-row-unilateral-start.webp"/>',
+        source,
+        count=1,
+    )
+    source = re.sub(
+        r'<img alt="Panatta Super High Row unilateral final"[^>]*>',
+        '<img alt="Panatta Super High Row unilateral final" class="realphoto" loading="lazy" src="../medios_publicados/ejercicios-compartido/images/panatta-super-high-row-unilateral-final.webp"/>',
+        source,
+        count=1,
+    )
     bad_tracker = 'data-exercise="5" data-series-keys="e5s1 e5s2 e5s3"'
     e3_tracker = 'data-exercise="3" data-series-keys="e3s1 e3s2 e3s3"'
     if bad_tracker in source and e3_tracker not in source:
@@ -70,6 +107,12 @@ def main() -> None:
     card3_start = source.index('<!-- 3 -->')
     card3_end = source.index('<!-- 4 -->', card3_start)
     card3 = source[card3_start:card3_end]
+    card3 = re.sub(
+        r'<img alt="Panatta Super Rowing inicio"[^>]*>',
+        '<img alt="Panatta Super Rowing inicio" class="realphoto" loading="lazy" src="../medios_publicados/ejercicios-compartido/images/1350-7I6LNUG.jpg"/>',
+        card3,
+        count=1,
+    )
     card3 = card3.replace('American Fitness · contracción', 'Inicio · brazos extendidos · pecho apoyado', 1)
     card3 = card3.replace('https://www.mayoclinic.org/healthy-lifestyle/fitness/multimedia/biceps-curl/vid-20084690', 'https://www.youtube.com/watch?v=Jl0r78dnqGU', 1)
     card3 = card3.replace('▶ VIDEO TÉCNICO · Curl de bíceps', '▶ VIDEO TÉCNICO · Remo horizontal', 1)
@@ -151,6 +194,8 @@ def main() -> None:
             count=1,
             flags=re.S,
         )
+    source = standardize_muscle_visuals(source)
+    source = sanitize_canonical_metadata(source)
     with HTML.open("w", encoding="utf-8", newline="") as handle:
         handle.write(source)
 

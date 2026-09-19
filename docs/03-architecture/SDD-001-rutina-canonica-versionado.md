@@ -14,7 +14,7 @@ salida incompleta.
 
 ## 2. Alcance
 
-Incluye Día 1, Día 2 y Día 3, sus documentos de contenido, las HTML bajo
+Incluye Día 1, Día 2, Día 3 y Día 4, sus documentos de contenido, las HTML bajo
 `data/rutinas_autocontenidas/canonicas/` y los builders que producen salidas
 canónicas. Incluye calentamiento, series de aproximación, ejercicios,
 distribución, orden y versión.
@@ -69,6 +69,9 @@ Para cada rutina canónica:
    `exerciseIndex + 1`.
 8. Una rutina no mezcla en una misma salida los identificadores de otra rutina,
    día o versión.
+9. Las cuatro salidas comparten un único `main.cards`, un `data-exercise-index`
+   contiguo por tarjeta y un único `sessionFooter`; las diferencias de contenido
+   no deben crear una segunda variante de layout.
 
 ## 5. Fuente y flujo de construcción
 
@@ -92,7 +95,7 @@ DIA_{N}_CONTENIDO_Y_MAQUETACION.md
 La plantilla visual del Día 1 sigue siendo la base compartida declarada en
 `data/rutinas_autocontenidas/README.md`, pero debe tratarse como una plantilla
 con contrato estructural, no como una copia que pueda propagar silenciosamente
-tarjetas faltantes o referencias obsoletas.
+tarjetas faltantes, footers alternativos o referencias obsoletas.
 
 ## 6. Versionado y compatibilidad
 
@@ -115,11 +118,10 @@ La inspección del estado actual confirmó:
 
 - Día 2 conserva seis ejercicios y la distribución `3 + 3 + 3 + 4 + 3 + 4`.
 - Día 3 conserva siete ejercicios y la distribución `4 + 3 + 3 + 3 + 3 + 3 + 3`.
-- Día 1 anuncia seis ejercicios y 20 series, pero la HTML actual solo contiene
-  tarjetas con `data-exercise` 1, 2, 5 y 6.
+- Día 4 conserva siete ejercicios y la distribución `3 + 3 + 4 + 2 + 2 + 3 + 3`.
 
-Por tanto, SDD-001 no puede pasar a `Verified` hasta resolver la discrepancia
-de Día 1 y ejecutar TDD-002 sobre las tres salidas.
+SDD-001 queda pendiente de cierre formal hasta ejecutar TDD-002 sobre las cuatro
+salidas y conservar su evidencia junto con la revisión visual independiente.
 
 ## 8. Criterio de aceptación
 

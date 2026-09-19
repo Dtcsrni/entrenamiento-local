@@ -1,4 +1,4 @@
-const CACHE_NAME = 'entrenamiento-pwa-a078caa4ddeb';
+const CACHE_NAME = 'entrenamiento-pwa-785dea98f291';
 const PRECACHE = [
   './',
   './index.html',
@@ -8,6 +8,7 @@ const PRECACHE = [
   './data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html',
   './data/rutinas_autocontenidas/canonicas/Rutina_Dia_2_Pierna_Gluteo_V1.html',
   './data/rutinas_autocontenidas/canonicas/Rutina_Dia_3_Pecho_Hombro_Triceps_V1.html',
+  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_4_Pierna_Equilibrio_V1.html',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0194-2IxROQ1-final.jpg',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0194-2IxROQ1-machine-only.png',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0194-2IxROQ1-start.jpg',
@@ -49,6 +50,8 @@ const PRECACHE = [
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/2318-dNFYIU1-start.jpg',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/3025-butterfly-reverse-front.jpg',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/3666-rjiM4L3.jpg',
+  './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/panatta-super-high-row-unilateral-final.webp',
+  './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/panatta-super-high-row-unilateral-start.webp',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/warmup-arm-circles-filmed.jpg',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/warmup-shoulder-rolls-filmed.jpg',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0194-2IxROQ1.gif',
@@ -56,11 +59,17 @@ const PRECACHE = [
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0200-dU605di.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0257-X7jbxra.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0577-T0yTjgW.gif',
+  './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0578-GUT8I22.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0584-dRTfGZT.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0585-my33uHU.gif',
+  './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0586-17lJ1kr.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0592-b6hQYMb.gif',
+  './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0594-bOOdeyc.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0596-v3xmPAR.gif',
+  './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0597-CHpahtl.gif',
+  './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0598-oHsrypV.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0599-Zg3XY7P.gif',
+  './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0600-PQ2AtC3.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0602-myfUsKf.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0605-ykUOVze.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0739-10Z2DXU.gif',
@@ -71,6 +80,7 @@ const PRECACHE = [
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/1356-OIFMAp1.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/1512-qBcKorM.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/2141-rjtuP6X.gif',
+  './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/2287-V07qpXy.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/2318-dNFYIU1.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/3666-rjiM4L3.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/warmup-arm-circles-filmed.gif',
@@ -81,13 +91,39 @@ const PRECACHE = [
   './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form.jpg',
   './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form_final.jpg',
   './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form_inicio.jpg',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0578-GUT8I22-final.jpg',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0578-GUT8I22-machine-reference.png',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0578-GUT8I22-start.jpg',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0586-17lJ1kr-final.jpg',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0586-17lJ1kr-machine-reference.png',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0586-17lJ1kr-start.jpg',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0594-bOOdeyc-final.jpg',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0594-bOOdeyc-machine-reference.png',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0594-bOOdeyc-start.jpg',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0597-CHpahtl-final.jpg',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0597-CHpahtl-machine-reference.png',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0597-CHpahtl-start.jpg',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0598-oHsrypV-final.jpg',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0598-oHsrypV-machine-reference.png',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0598-oHsrypV-start.jpg',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0600-PQ2AtC3-final.jpg',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0600-PQ2AtC3-machine-reference.png',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0600-PQ2AtC3-start.jpg',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/2287-V07qpXy-final.jpg',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/2287-V07qpXy-machine-reference.png',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/2287-V07qpXy-start.jpg',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/musculos_generados/lower_anterior_anatomy_v1.png',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/musculos_generados/lower_posterior_anatomy_v1.png',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/musculos_generados/upper_anterior_anatomy_v1.png',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/musculos_generados/upper_posterior_anatomy_v1.png',
   './data/rutinas_autocontenidas/recursos_embebidos/b963bc266356a83bea4fe9909f0516c0c3a1543c06c8a17d24ca9d674fe3c759.png'
 ];
 
 const ROUTINE_URLS = [
   './data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html',
   './data/rutinas_autocontenidas/canonicas/Rutina_Dia_2_Pierna_Gluteo_V1.html',
-  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_3_Pecho_Hombro_Triceps_V1.html'
+  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_3_Pecho_Hombro_Triceps_V1.html',
+  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_4_Pierna_Equilibrio_V1.html'
 ];
 const LOCAL_REFERENCE = /(?:src|data-static-src|gif|thumbnail)\s*[:=]\s*[\"'](\.\.[^\"']+)[\"']/g;
 

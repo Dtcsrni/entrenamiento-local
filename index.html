@@ -68,7 +68,7 @@
     .section-head { display:flex; align-items:end; justify-content:space-between; gap:24px; margin-bottom:22px; }
     .section-head h2 { margin-bottom:0; font-size:clamp(1.8rem,4vw,2.65rem); letter-spacing:-.055em; }
     .section-head p { max-width:38ch; margin-bottom:3px; color:var(--muted); font-size:.9rem; text-align:right; }
-    .routine-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .routine-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
     .routine-card { display:flex; min-width:0; flex-direction:column; overflow:hidden; border:1px solid var(--line); border-radius:20px; background:linear-gradient(160deg,var(--panel-strong),var(--panel)); box-shadow:0 14px 34px rgba(0,0,0,.15); text-decoration:none; transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease; }
     .routine-card:hover { transform:translateY(-5px); border-color:rgba(115,230,207,.55); box-shadow:0 20px 44px rgba(0,0,0,.23); }
     .routine-visual { position:relative; aspect-ratio:1.55; overflow:hidden; background:#d9dde0; }
@@ -84,7 +84,7 @@
     .routine-link span:last-child { font-size:1.2rem; line-height:1; }
     footer { padding:56px 0 36px; color:var(--soft); font-size:.78rem; }
     footer p { max-width:70ch; margin-bottom:0; }
-    @media (max-width:820px) { .hero { grid-template-columns:1fr; min-height:0; padding-top:42px; } h1 { max-width:11ch; } .hero-card { max-width:620px; } .progress-dashboard { grid-template-columns:repeat(2,1fr); } .routine-grid { grid-template-columns:repeat(2,1fr); } .routine-card:last-child { grid-column:span 2; } .routine-card:last-child .routine-visual { aspect-ratio:2.1; } }
+    @media (max-width:820px) { .hero { grid-template-columns:1fr; min-height:0; padding-top:42px; } h1 { max-width:11ch; } .hero-card { max-width:620px; } .progress-dashboard { grid-template-columns:repeat(2,1fr); } .routine-grid { grid-template-columns:repeat(2,1fr); } .routine-card:last-child { grid-column:auto; } }
     @media (max-width:560px) { .shell { width:min(100% - 24px,1120px); } .topbar { padding-top:17px; } .plan-pill { display:none; } .hero { gap:34px; padding:46px 0 52px; } h1 { font-size:clamp(3.2rem,17vw,5.5rem); } .hero-copy { font-size:.98rem; } .hero-card { padding:23px; border-radius:19px; } .hero-card h2 { font-size:2.5rem; } .stats,.progress-dashboard { grid-template-columns:1fr; } .stat { padding:15px 18px; } .stat strong { display:inline; margin-right:7px; font-size:1.3rem; } .stat span { font-size:.78rem; } section { padding-top:54px; } .section-head { display:block; } .section-head p { margin-top:8px; text-align:left; } .progress-actions { align-items:flex-start; flex-direction:column; } .routine-grid { grid-template-columns:1fr; gap:13px; } .routine-card:last-child { grid-column:auto; } .routine-card:last-child .routine-visual,.routine-visual { aspect-ratio:1.75; } }
     @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; transition:none !important; } }
   </style>
@@ -93,7 +93,7 @@
   <div class="shell">
     <header class="topbar">
       <a class="brand" href="./" aria-label="Gymratik, inicio"><span class="brand-mark" aria-hidden="true"></span><span>Gymratik</span></a>
-      <div class="topbar-meta"><span class="plan-pill">3 días · 62 series</span><span id="connectionState" class="status" role="status">Comprobando conexión…</span></div>
+      <div class="topbar-meta"><span class="plan-pill">4 días · 82 series</span><span id="connectionState" class="status" role="status">Comprobando conexión…</span></div>
     </header>
     <main>
       <section class="hero" aria-labelledby="pageTitle">
@@ -129,6 +129,7 @@
           <a class="routine-card" href="./data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html"><div class="routine-visual"><img src="./data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/1350-7I6LNUG.jpg" alt="Remo horizontal en máquina, referencia visual del Día 1" loading="eager"><span class="routine-day">Día 1</span><span class="routine-status">6 ejercicios · 20 series</span></div><div class="routine-body"><h3>Espalda + Bíceps</h3><p>Tracción, remo y trabajo de brazos con instrucciones visuales y registro por ejercicio.</p><span class="routine-link"><span>Ver sesión</span></span></div></a>
           <a class="routine-card" href="./data/rutinas_autocontenidas/canonicas/Rutina_Dia_2_Pierna_Gluteo_V1.html"><div class="routine-visual"><img src="./data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0739-10Z2DXU.jpg" alt="Prensa de piernas, referencia visual del Día 2" loading="lazy"><span class="routine-day">Día 2</span><span class="routine-status">6 ejercicios · 20 series</span></div><div class="routine-body"><h3>Pierna + Glúteo</h3><p>Tren inferior con énfasis en máquinas, progresión reproducible y fases técnicas visibles.</p><span class="routine-link"><span>Ver sesión</span></span></div></a>
           <a class="routine-card" href="./data/rutinas_autocontenidas/canonicas/Rutina_Dia_3_Pecho_Hombro_Triceps_V1.html"><div class="routine-visual"><img src="./data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0577-T0yTjgW.jpg" alt="Press de pecho sentado en máquina, referencia visual del Día 3" loading="lazy"><span class="routine-day">Día 3</span><span class="routine-status">7 ejercicios · 22 series</span></div><div class="routine-body"><h3>Pecho + Hombro + Tríceps</h3><p>Sesión de empuje con recorrido completo, referencias de posición y seguimiento visual.</p><span class="routine-link"><span>Ver sesión</span></span></div></a>
+          <a class="routine-card" href="./data/rutinas_autocontenidas/canonicas/Rutina_Dia_4_Pierna_Equilibrio_V1.html"><div class="routine-visual"><img src="./data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/2287-V07qpXy.jpg" alt="Prensa unilateral alterna, referencia visual del Día 4" loading="lazy"><span class="routine-day">Día 4</span><span class="routine-status">7 ejercicios · 20 series</span></div><div class="routine-body"><h3>Pierna equilibrada</h3><p>Rodilla, cadera, isquiosurales, pantorrilla y core con volumen trazable y apoyo visual.</p><span class="routine-link"><span>Ver sesión</span></span></div></a>
         </div>
       </section>
     </main>
@@ -148,6 +149,7 @@
       { routineId: 'day1', label: 'Día 1 · Espalda + Bíceps', totalSeries: 20 },
       { routineId: 'day2', label: 'Día 2 · Pierna + Glúteo', totalSeries: 20 },
       { routineId: 'day3', label: 'Día 3 · Pecho + Hombro + Tríceps', totalSeries: 22 },
+      { routineId: 'day4', label: 'Día 4 · Pierna equilibrada', totalSeries: 20 },
     ];
     let deferredInstallPrompt;
 

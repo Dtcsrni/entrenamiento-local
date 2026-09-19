@@ -2,7 +2,7 @@
 
 ## Identificación
 
-- **Nombre del producto:** Gymratic
+- **Nombre del producto:** Gymratik: Rutinas y progreso
 - **Usuario:** una sola persona
 - **Plataforma mínima objetivo:** Realme GT 6
 - **Wearable objetivo:** Amazfit Active original

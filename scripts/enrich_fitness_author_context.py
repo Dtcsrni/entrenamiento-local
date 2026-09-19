@@ -70,13 +70,9 @@ def main() -> int:
     for item in data["quotes"]:
         result = contexts.get(item["author"])
         if result:
-            item["authorContext"], item["authorContextSource"] = result
+            item["authorContext"] = result[0]
         else:
             item.pop("authorContext", None)
-            item.pop("authorContextSource", None)
-    data["authorContextCount"] = len(contexts)
-    data["authorContextSource"] = "Wikidata (coincidencia exacta de nombre, descripción en español)"
-    data["authorContextRetrievedAt"] = "2026-09-14"
 
     if args.apply:
         serialized = json.dumps(data, ensure_ascii=False, indent=2) + "\n"

@@ -31,19 +31,21 @@ class HomepageContractTests(unittest.TestCase):
             "Rutina_Dia_1_Espalda_Biceps_V1.html",
             "Rutina_Dia_2_Pierna_Gluteo_V1.html",
             "Rutina_Dia_3_Pecho_Hombro_Triceps_V1.html",
+            "Rutina_Dia_4_Pierna_Equilibrio_V1.html",
         )
         for path in routine_paths:
             self.assertIn(path, self.html)
 
-    def test_homepage_uses_three_local_visual_references(self):
+    def test_homepage_uses_four_local_visual_references(self):
         image_paths = (
             "1350-7I6LNUG.jpg",
             "0739-10Z2DXU.jpg",
             "0577-T0yTjgW.jpg",
+            "2287-V07qpXy.jpg",
         )
         for path in image_paths:
             self.assertIn(path, self.html)
-        self.assertEqual(self.html.count('class="routine-card"'), 3)
+        self.assertEqual(self.html.count('class="routine-card"'), 4)
 
     def test_pwa_icon_is_the_mascot_png_and_maskable_manifest_entry(self):
         icon = (ROOT / "icon.png").read_bytes()
@@ -91,11 +93,12 @@ class HomepageContractTests(unittest.TestCase):
             marker = "const storageKey = '"
             start = source.index(marker) + len(marker)
             keys.append(source[start:source.index("'", start)])
-        self.assertEqual(len(keys), 3)
-        self.assertEqual(len(set(keys)), 3)
+        self.assertEqual(len(keys), 4)
+        self.assertEqual(len(set(keys)), 4)
         self.assertIn("day1", keys[0])
         self.assertIn("day2", keys[1])
         self.assertIn("day3", keys[2])
+        self.assertIn("day4", keys[3])
 
     def test_canonical_routines_publish_progress_to_shared_store(self):
         for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):

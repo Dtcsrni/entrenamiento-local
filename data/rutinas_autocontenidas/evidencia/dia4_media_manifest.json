@@ -1,0 +1,259 @@
+{
+  "schema": "routine-media-manifest-v1",
+  "routine": "Día 4 · Pierna · equilibrio",
+  "global_status": "CANDIDATES_PENDING_LICENSE_REVIEW",
+  "rights_note": "Los medios son candidatos locales; conservar revisión de licencia, atribución y redistribución pendiente.",
+  "equipment_note": "La imagen no confirma la identidad ni disponibilidad de una máquina instalada.",
+  "entries": [
+    {
+      "repo_id": "2287-V07qpXy",
+      "title_es": "Prensa unilateral alterna",
+      "target": "cuádriceps",
+      "body_part": "upper legs",
+      "secondary": [
+        "isquiosurales",
+        "glúteos"
+      ],
+      "source_repo": "ejercicios-compartido",
+      "source_commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+      "published": {
+        "gif": "data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/2287-V07qpXy.gif",
+        "thumbnail": "data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/2287-V07qpXy.jpg",
+        "start": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/2287-V07qpXy-start.jpg",
+        "final": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/2287-V07qpXy-final.jpg",
+        "machine_reference": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/2287-V07qpXy-machine-reference.png"
+      },
+      "sha256": {
+        "source_gif": "dc94fa4fcef99b39c5e8c215ea06d5cc478cc30fdcd3d3a687c932d320f9d2db",
+        "published_gif": "dc94fa4fcef99b39c5e8c215ea06d5cc478cc30fdcd3d3a687c932d320f9d2db",
+        "thumbnail": "6f80a77e02967ac1cf2d2faafa007d8fc87f7cafd6b8157feac66418d6c9f685",
+        "start": "509e8567cf0967f5f31a834df8ff84a4d94a364bb8d2df5fe678680ca9237005",
+        "final": "48b023ff2b4a7dc3ffb2b4a120903ffd5da4a2374709b37f18c012d3b9fc7a1a",
+        "machine_reference": "1b6118bc476118a136b50c56fb82be6890f4925eb0e979f28272d52e78b198c0"
+      },
+      "gif": {
+        "width": 180,
+        "height": 180,
+        "frames": 24,
+        "frame_duration_ms": 1000
+      },
+      "visual_review": "LOOP_AND_FRAME_REVIEWED_LOCAL",
+      "rights_status": "CANDIDATES_PENDING_LICENSE_REVIEW",
+      "equipment_identity_status": "VISUAL_PATTERN_REFERENCE_ONLY"
+    },
+    {
+      "repo_id": "0578-GUT8I22",
+      "title_es": "Peso muerto en máquina",
+      "target": "glúteos",
+      "body_part": "upper legs",
+      "secondary": [
+        "isquiosurales",
+        "cuádriceps"
+      ],
+      "source_repo": "ejercicios-compartido",
+      "source_commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+      "published": {
+        "gif": "data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0578-GUT8I22.gif",
+        "thumbnail": "data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0578-GUT8I22.jpg",
+        "start": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0578-GUT8I22-start.jpg",
+        "final": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0578-GUT8I22-final.jpg",
+        "machine_reference": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0578-GUT8I22-machine-reference.png"
+      },
+      "sha256": {
+        "source_gif": "ee1307a821e9df29c934e3575b49290b4ac00247d445ea6e8e4270c97468e916",
+        "published_gif": "ee1307a821e9df29c934e3575b49290b4ac00247d445ea6e8e4270c97468e916",
+        "thumbnail": "906443f2ab1d10fd5c84486fefc5d5cd268d477954e86d73027152c20dc62f4e",
+        "start": "c9ebb1b18cfffe15c9364840de9ec6cad75a95f0ecc7fc5c852a194b1cbaa367",
+        "final": "9a4d03363bb22cd468f34ddc4075e00fc68190c1cab848887210661a90a1fbbf",
+        "machine_reference": "d14b53a69c96690760dc94ae0b344005c08aeb262ed153433dc775665e32e9b1"
+      },
+      "gif": {
+        "width": 180,
+        "height": 180,
+        "frames": 12,
+        "frame_duration_ms": 1000
+      },
+      "visual_review": "LOOP_AND_FRAME_REVIEWED_LOCAL",
+      "rights_status": "CANDIDATES_PENDING_LICENSE_REVIEW",
+      "equipment_identity_status": "VISUAL_PATTERN_REFERENCE_ONLY"
+    },
+    {
+      "repo_id": "0586-17lJ1kr",
+      "title_es": "Curl femoral tumbado",
+      "target": "isquiosurales",
+      "body_part": "upper legs",
+      "secondary": [
+        "pantorrillas"
+      ],
+      "source_repo": "ejercicios-compartido",
+      "source_commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+      "published": {
+        "gif": "data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0586-17lJ1kr.gif",
+        "thumbnail": "data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0586-17lJ1kr.jpg",
+        "start": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0586-17lJ1kr-start.jpg",
+        "final": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0586-17lJ1kr-final.jpg",
+        "machine_reference": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0586-17lJ1kr-machine-reference.png"
+      },
+      "sha256": {
+        "source_gif": "97b4df3fa35a3b87d1864ed29c2d773b08248e914e24a7765c10471ea232a45b",
+        "published_gif": "97b4df3fa35a3b87d1864ed29c2d773b08248e914e24a7765c10471ea232a45b",
+        "thumbnail": "a39549c1813864f7f7b91a3efaeae336d0b0ffa4e81e15d35d29ccba955b635c",
+        "start": "df7991e71cd5c2e966e590c8d61b1c3fa8cf2822d1ed7cb3cf9d069d82ae4098",
+        "final": "bbd89a673645a8dfe71fbbb02dd1dbe2029ab6d1227b77b540ff2f13366a248f",
+        "machine_reference": "1cb9909db7bf671cb67c8304aa72f65dd7eb050482f15d7059f15985ef578d5f"
+      },
+      "gif": {
+        "width": 180,
+        "height": 180,
+        "frames": 12,
+        "frame_duration_ms": 1000
+      },
+      "visual_review": "LOOP_AND_FRAME_REVIEWED_LOCAL",
+      "rights_status": "CANDIDATES_PENDING_LICENSE_REVIEW",
+      "equipment_identity_status": "VISUAL_PATTERN_REFERENCE_ONLY"
+    },
+    {
+      "repo_id": "0597-CHpahtl",
+      "title_es": "Abducción de cadera sentada",
+      "target": "abductores",
+      "body_part": "upper legs",
+      "secondary": [
+        "glúteos",
+        "isquiosurales"
+      ],
+      "source_repo": "ejercicios-compartido",
+      "source_commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+      "published": {
+        "gif": "data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0597-CHpahtl.gif",
+        "thumbnail": "data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0597-CHpahtl.jpg",
+        "start": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0597-CHpahtl-start.jpg",
+        "final": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0597-CHpahtl-final.jpg",
+        "machine_reference": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0597-CHpahtl-machine-reference.png"
+      },
+      "sha256": {
+        "source_gif": "f736cf937b8224e209c00d23acf002c74e6a0c94bea1bd7d321650d3a54f0cf5",
+        "published_gif": "f736cf937b8224e209c00d23acf002c74e6a0c94bea1bd7d321650d3a54f0cf5",
+        "thumbnail": "73327d309c74b5bacdf9d16200b0ed7a0007fe7430c2fe6e6bd3c95b634947fd",
+        "start": "aa6b1ae69037f8b9abfa3539e3ac607b69b391b17c94372e52b7137e70ec865d",
+        "final": "5dec5bbce1df3e17c3741b5e36abdaa33102670b6bea2e1e197c6abf01e0d8bb",
+        "machine_reference": "27e5654aeef184c924e2884f3f0627ee847e0cc1fe8d38cb9fd6cc8fc4b1c6dc"
+      },
+      "gif": {
+        "width": 180,
+        "height": 180,
+        "frames": 12,
+        "frame_duration_ms": 1000
+      },
+      "visual_review": "LOOP_AND_FRAME_REVIEWED_LOCAL",
+      "rights_status": "CANDIDATES_PENDING_LICENSE_REVIEW",
+      "equipment_identity_status": "VISUAL_PATTERN_REFERENCE_ONLY"
+    },
+    {
+      "repo_id": "0598-oHsrypV",
+      "title_es": "Aducción de cadera sentada",
+      "target": "aductores",
+      "body_part": "upper legs",
+      "secondary": [
+        "isquiosurales",
+        "glúteos"
+      ],
+      "source_repo": "ejercicios-compartido",
+      "source_commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+      "published": {
+        "gif": "data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0598-oHsrypV.gif",
+        "thumbnail": "data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0598-oHsrypV.jpg",
+        "start": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0598-oHsrypV-start.jpg",
+        "final": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0598-oHsrypV-final.jpg",
+        "machine_reference": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0598-oHsrypV-machine-reference.png"
+      },
+      "sha256": {
+        "source_gif": "bdaba331f3282ea7ba1cb6eafcf11b97fbc4e5aa3505e7f10161fce758d3c0ef",
+        "published_gif": "bdaba331f3282ea7ba1cb6eafcf11b97fbc4e5aa3505e7f10161fce758d3c0ef",
+        "thumbnail": "a817e22c05e88dbdcd10013a95fdd514319d0a68b0fd57d954e8f8b9785d9f06",
+        "start": "fd7cac41b93e1027da126dc374db2b1309907160eee4dfc3582a20b8cf06bde9",
+        "final": "f3181c2fadb0d5fb5468b993eebf2789a08cb9d879866f2f5d85ac22c51aa1e1",
+        "machine_reference": "e82e3753dad1fed3f4943dbd9032d61b936e9f2269a4e481a71e341b0a321a90"
+      },
+      "gif": {
+        "width": 180,
+        "height": 180,
+        "frames": 12,
+        "frame_duration_ms": 1000
+      },
+      "visual_review": "LOOP_AND_FRAME_REVIEWED_LOCAL",
+      "rights_status": "CANDIDATES_PENDING_LICENSE_REVIEW",
+      "equipment_identity_status": "VISUAL_PATTERN_REFERENCE_ONLY"
+    },
+    {
+      "repo_id": "0594-bOOdeyc",
+      "title_es": "Elevación de pantorrilla sentada",
+      "target": "pantorrillas",
+      "body_part": "lower legs",
+      "secondary": [
+        "sóleo",
+        "estabilizadores del tobillo"
+      ],
+      "source_repo": "ejercicios-compartido",
+      "source_commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+      "published": {
+        "gif": "data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0594-bOOdeyc.gif",
+        "thumbnail": "data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0594-bOOdeyc.jpg",
+        "start": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0594-bOOdeyc-start.jpg",
+        "final": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0594-bOOdeyc-final.jpg",
+        "machine_reference": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0594-bOOdeyc-machine-reference.png"
+      },
+      "sha256": {
+        "source_gif": "8f3b487983e6e7fc1431bd1d341556d4f25e693101f69eb46dc6a2cd0c65c2ba",
+        "published_gif": "8f3b487983e6e7fc1431bd1d341556d4f25e693101f69eb46dc6a2cd0c65c2ba",
+        "thumbnail": "ea7fc08ad821feb22f1eb03e8be48eac00965234c9c330046bade81718725a6d",
+        "start": "275bc3ea7a96ed298699ad885cbfeed8cca25fe0dfbc88c3bf25ee7d5e4866eb",
+        "final": "496dd1bd6232e2e145c4cb168eff96b132e37be8df996548e957332ed51913b1",
+        "machine_reference": "c50ea7234e49f9a1b33c629b932dfc23897c2424076f6b7c8928f01007f988dc"
+      },
+      "gif": {
+        "width": 180,
+        "height": 180,
+        "frames": 12,
+        "frame_duration_ms": 1000
+      },
+      "visual_review": "LOOP_AND_FRAME_REVIEWED_LOCAL",
+      "rights_status": "CANDIDATES_PENDING_LICENSE_REVIEW",
+      "equipment_identity_status": "VISUAL_PATTERN_REFERENCE_ONLY"
+    },
+    {
+      "repo_id": "0600-PQ2AtC3",
+      "title_es": "Crunch con elevación de piernas sentada",
+      "target": "abdominales",
+      "body_part": "waist",
+      "secondary": [
+        "flexores de cadera"
+      ],
+      "source_repo": "ejercicios-compartido",
+      "source_commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+      "published": {
+        "gif": "data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0600-PQ2AtC3.gif",
+        "thumbnail": "data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0600-PQ2AtC3.jpg",
+        "start": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0600-PQ2AtC3-start.jpg",
+        "final": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0600-PQ2AtC3-final.jpg",
+        "machine_reference": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia4_media_generated/0600-PQ2AtC3-machine-reference.png"
+      },
+      "sha256": {
+        "source_gif": "1732dbcd2ec76f5f9d1ecf8bf8d26c4f571b024bb3a5cbd0cce1eef19940a87e",
+        "published_gif": "1732dbcd2ec76f5f9d1ecf8bf8d26c4f571b024bb3a5cbd0cce1eef19940a87e",
+        "thumbnail": "f401dbd84358d62c456f5d04d2aab3f5445cceef948a4a8c4e81221ccc8d90d0",
+        "start": "cc4e5f7d49f0e4f1b0aeeea44ce3168c510b5a1b251a569d4db60eeb2e2d4045",
+        "final": "2d07f5be0eab13d79e0cc3bdfcafe881465e118f13cc4d9d6e6c14efc3202d23",
+        "machine_reference": "23a268bfc5dcca0a6d713d60b2e7bc52b13fef3b3d3a432a8357e8a2fd00e31d"
+      },
+      "gif": {
+        "width": 180,
+        "height": 180,
+        "frames": 12,
+        "frame_duration_ms": 1000
+      },
+      "visual_review": "LOOP_AND_FRAME_REVIEWED_LOCAL",
+      "rights_status": "CANDIDATES_PENDING_LICENSE_REVIEW",
+      "equipment_identity_status": "VISUAL_PATTERN_REFERENCE_ONLY"
+    }
+  ]
+}

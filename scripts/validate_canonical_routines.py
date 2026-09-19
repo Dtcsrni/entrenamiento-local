@@ -16,6 +16,7 @@ EXPECTED_CONTRACTS: dict[str, tuple[int, int, tuple[int, ...]]] = {
     "Rutina_Dia_1_Espalda_Biceps_V1.html": (6, 20, (4, 4, 3, 3, 3, 3)),
     "Rutina_Dia_2_Pierna_Gluteo_V1.html": (6, 20, (3, 3, 3, 4, 3, 4)),
     "Rutina_Dia_3_Pecho_Hombro_Triceps_V1.html": (7, 22, (4, 3, 3, 3, 3, 3, 3)),
+    "Rutina_Dia_4_Pierna_Equilibrio_V1.html": (7, 20, (3, 3, 4, 2, 2, 3, 3)),
 }
 
 
@@ -241,7 +242,7 @@ def main(argv: list[str] | None = None) -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description="Valida la estructura de las rutinas HTML canónicas.")
-    parser.add_argument("paths", nargs="*", type=Path, help="HTML canónicas; por defecto se validan las tres")
+    parser.add_argument("paths", nargs="*", type=Path, help="HTML canónicas; por defecto se validan todas las salidas contractuales")
     args = parser.parse_args(argv)
     paths = args.paths or [CANONICAL_DIR / name for name in EXPECTED_CONTRACTS]
 

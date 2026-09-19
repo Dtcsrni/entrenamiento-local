@@ -3,7 +3,7 @@
 ## 1. Propósito y significado local
 
 Este documento define la serie de documentos que gobernará los siguientes
-incrementos de Gymratic. En este repositorio:
+incrementos de Gymratik: Rutinas y progreso. En este repositorio:
 
 - **SDD** significa *Software Design Description*: diseño de software. Describe
   responsabilidades, datos, interfaces, estados, invariantes y decisiones de
@@ -23,7 +23,7 @@ La serie cubre dos capas relacionadas pero no intercambiables:
 
 1. **Rutinas canónicas actuales:** HTML autocontenido, builders, manifiestos de
    medios, PWA y comportamiento interactivo de calentamiento, progreso y reset.
-2. **Producto Gymratic previsto:** Android local-first, Room,
+2. **Producto Gymratik previsto:** Android local-first, Room,
    outbox, contratos, Tezkatli, nutrición, IA, Zepp, Health Connect,
    recuperación, seguridad y operación.
 
@@ -64,11 +64,11 @@ son criterios de regresión, no cambios aplicados por este documento.
 
 | ID | Hallazgo verificable | Impacto | Documento que lo captura |
 |---|---|---|---|
-| DEF-CAN-001 | `Rutina_Dia_1_Espalda_Biceps_V1.html` declara 6 ejercicios/20 series, pero hoy contiene solo `data-exercise` 1, 2, 5 y 6. | La ficha y el flujo no representan el volumen anunciado. | `SDD-001`, `TDD-002` |
-| DEF-CAN-002 | En Día 3, los seis botones `nextExerciseCue` observados llevan `data-next` 1–6 y el texto del ejercicio actual, no el siguiente. | La navegación guiada puede mantener al usuario en el ejercicio equivocado. | `SDD-002`, `TDD-003` |
+| DEF-CAN-001 | Cerrado en la revisión actual: la salida de Día 1 conserva 6 tarjetas contiguas y 20 series contractuales. | La ficha y el flujo representan el volumen anunciado; conservar como regresión. | `SDD-001`, `TDD-002` |
+| DEF-CAN-002 | Cerrado en la revisión actual: la navegación guiada de Día 3 apunta al título siguiente. | Evita mantener al usuario en el ejercicio equivocado; conservar como regresión. | `SDD-002`, `TDD-003` |
 | DEF-MED-001 | `dia1` y `dia2` mantienen estados de revisión pendientes y no exponen campos `source_url`/`sourceUrl` por elemento; `dia3` es un arreglo sin el esquema homogéneo de estado, fuente y hash. | No se puede afirmar procedencia técnica completa ni trazabilidad uniforme. | `SDD-003`, `TDD-004` |
-| DEF-QA-001 | El validador de repositorio, los contratos y las 7 pruebas Python pasan, pero no existe una prueba automatizada que valide la estructura y aritmética de las tres HTML canónicas. | La suite verde no detecta DEF-CAN-001 ni el drift de navegación. | `SDD-004`, `TDD-001`, `TDD-002` |
-| DEF-FMT-001 | Día 2 y Día 3 heredan la plantilla de Día 1; una plantilla canónica incompleta puede propagar defectos a nuevas salidas. | El mecanismo de reutilización no tiene un contrato estructural independiente. | `SDD-002`, `SDD-004`, `TDD-005` |
+| DEF-QA-001 | Cerrado en la revisión actual: el validador y las pruebas cubren estructura y aritmética de las cuatro HTML canónicas. | El contrato detecta regresiones de tarjetas, series y navegación. | `SDD-004`, `TDD-001`, `TDD-002` |
+| DEF-FMT-001 | Día 2, Día 3 y Día 4 heredan la plantilla de Día 1; una plantilla canónica incompleta puede propagar defectos a nuevas salidas. | El mecanismo de reutilización conserva un contrato estructural independiente. | `SDD-002`, `SDD-004`, `TDD-005` |
 
 ## 5. Serie SDD — diseño de software
 
@@ -82,8 +82,8 @@ observabilidad, seguridad, migración/compatibilidad y pruebas asociadas.
 | [SDD-001](../03-architecture/SDD-001-rutina-canonica-versionado.md) | **Modelo de rutina canónica y versionado.** Prescripción, ejercicios, series efectivas, calentamiento, rangos, descansos, RIR, alternativas y versión por día. | `SRS`, `DATA_MODEL`, `DIA_1/2/3_CONTENIDO_Y_MAQUETACION` | In progress |
 | SDD-002 | **Plantilla visual y máquina de estados de la ficha.** Estructura de tarjeta, progreso, calentamiento general/específico, bloqueos, descanso, navegación siguiente y reset delegado. | `Rutina_Dia_1...V1.html`, `UX_FLOWS`, decisiones previas de `timingVersion === 3` | Partial |
 | [SDD-003](../03-architecture/SDD-003-medios-fallback-procedencia-tecnica.md) | **Medios, fallback y procedencia técnica.** Contrato único de manifiesto, relación ejercicio–recurso, `sourceUrl`, fuente, versión, SHA-256, alt, miniatura y `prefers-reduced-motion`. | `*_media_manifest.json`, `data/rutinas_autocontenidas/README.md` | In progress |
-| SDD-004 | **Generación, validación y publicación PWA.** Builders deterministas, idempotencia, detección de drift, inventario local, service worker y límites de publicación personal. | `build_day2_canonical.py`, `build_day3_canonical.py`, `validate_repository.py`, `PWA_ANDROID.md` | Partial |
-| SDD-005 | **Gymratic local-first.** `WorkoutSession`, fases, `PerformedSet`, revisiones, temporizador, Room como fuente operativa y recuperación tras process death. | `SRS` FUN-TRN-001..009, `DATA_MODEL`, ADR-003 | Planned |
+| SDD-004 | **Generación, validación y publicación PWA.** Builders deterministas, idempotencia, detección de drift, inventario local, service worker y límites de publicación personal. | `build_day2_canonical.py`, `build_day3_canonical.py`, `build_day4_canonical.py`, `validate_repository.py`, `PWA_ANDROID.md` | Partial |
+| SDD-005 | **Gymratik local-first.** `WorkoutSession`, fases, `PerformedSet`, revisiones, temporizador, Room como fuente operativa y recuperación tras process death. | `SRS` FUN-TRN-001..009, `DATA_MODEL`, ADR-003 | Planned |
 | SDD-006 | **Sincronización, contratos y recuperación.** Outbox transaccional, estados, claves de idempotencia, reordenamiento, duplicación, tombstones, exportación y restauración. | `SYNC_AND_AI`, ADR-004, ADR-011, JSON Schema | Planned |
 | SDD-007 | **Captura nutricional e IA como borrador.** Routing, calidad de entrada, catálogo, procedencia por componente, jobs, validación de esquema, incertidumbre y confirmación humana. | `SRS` FUN-NUT/FUN-AI, `AI_MLOPS`, ADR-006/007/009 | Planned |
 | SDD-008 | **Integraciones externas condicionadas.** Tezkatli privado, Health Connect, Zepp/Amazfit y sus adaptadores anticorrupción; ningún dispositivo externo es fuente definitiva sin PoC. | `ARCHITECTURE`, `USE_CASES`, ADR-008/010/012 | Planned |
@@ -103,7 +103,7 @@ artefacto de evidencia, requisitos/riesgos cubiertos y limitaciones.
 | ID | Título y alcance | Casos mínimos de aceptación | Evidencia | Estado inicial |
 |---|---|---|---|---|
 | TDD-001 | **Integridad del repositorio y contratos.** | Validador documental; esquemas válidos e inválidos; ejemplos; ausencia de secretos; links internos y formato Markdown. | A | Partial |
-| [TDD-002](../05-quality/TDD-002-integridad-rutinas-canonicas.md) | **Integridad semántica de rutinas canónicas.** | Número de tarjetas; índices contiguos; suma de `data-series-keys`; coincidencia con encabezado/dashboard; no contar calentamiento; Día 1 debe fallar hasta resolver DEF-CAN-001. | A | Planned |
+| [TDD-002](../05-quality/TDD-002-integridad-rutinas-canonicas.md) | **Integridad semántica de rutinas canónicas.** | Número de tarjetas; índices contiguos; suma de `data-series-keys`; coincidencia con encabezado/dashboard; no contar calentamiento; cuatro días contractuales. | A | Planned |
 | TDD-003 | **Comportamiento interactivo de sesión.** | Bloqueo antes del calentamiento; calentamiento global y específico; completar/deshacer si aplica; descanso; navegación al siguiente índice; reset de estado, UI y `localStorage`; cero errores de consola. | A + V | Partial |
 | [TDD-004](../05-quality/TDD-004-medios-formato-y-correspondencia.md) | **Medios, formato y correspondencia visual.** | Rutas; ausencia de imágenes/GIF; decodificación; hash; thumbnail/fallback; fuente y versión; alt; reduced motion; revisión visual por ejercicio. | A + V + P | In progress |
 | TDD-005 | **Builders y publicación reproducible.** | Dos ejecuciones producen salida equivalente; plantilla y salida conservan el contrato; no hay referencias externas no autorizadas; inventario PWA cubre todas las rutas; detectar drift entre manifest, HTML y assets. | A + V | Partial |
@@ -120,9 +120,10 @@ los `TST-*` existentes:
 
 | ID | Caso | Resultado esperado |
 |---|---|---|
-- **TST-CAN-001:** validar los tres HTML canónicos contra el contrato de estructura. Cada día tiene la cantidad de tarjetas declarada y los índices son contiguos.
+- **TST-CAN-001:** validar los cuatro HTML canónicos contra el contrato de estructura. Cada día tiene la cantidad de tarjetas declarada y los índices son contiguos.
 - **TST-CAN-002:** recalcular las series desde `data-series-keys`. El total coincide con resumen, dashboard y distribución documentada.
 - **TST-CAN-003:** validar navegación entre ejercicios. `data-next` es el índice siguiente; el último muestra finalización.
+- **TST-CAN-004:** validar el layout compartido. Cada salida tiene un único `main.cards`, índices de tarjeta contiguos y un único footer de acciones.
 - **TST-UI-001:** intentar iniciar antes y después del calentamiento. La secuencia obligatoria es general → específico → ejercicio → series.
 - **TST-UI-002:** completar parcialmente y ejecutar reset. UI, contadores, calentamiento y `localStorage` vuelven a estado inicial.
 - **TST-MED-001:** cruzar HTML, manifest y archivos locales. Cada recurso existe, tiene hash verificable y estado de procedencia explícito.
