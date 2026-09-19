@@ -1,9 +1,9 @@
-const CACHE_NAME = 'entrenamiento-pwa-126778312993';
+const CACHE_NAME = 'entrenamiento-pwa-a078caa4ddeb';
 const PRECACHE = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './icon.svg',
+  './icon.png',
   './progress-store.js',
   './data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html',
   './data/rutinas_autocontenidas/canonicas/Rutina_Dia_2_Pierna_Gluteo_V1.html',

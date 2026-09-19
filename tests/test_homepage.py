@@ -17,10 +17,13 @@ class HomepageContractTests(unittest.TestCase):
     def test_public_brand_does_not_include_local(self):
         self.assertNotIn("Entrenamiento Local", self.html)
         self.assertEqual(self.manifest["id"], "./")
-        self.assertEqual(self.manifest["name"], "Gymratic")
-        self.assertEqual(self.manifest["short_name"], "Gymratic")
-        self.assertIn("Gymratic · Rutinas", self.html)
-        self.assertIn('aria-label="Gymratic, inicio"', self.html)
+        self.assertEqual(self.manifest["name"], "Gymratik: Rutinas y progreso")
+        self.assertEqual(self.manifest["short_name"], "Gymratik")
+        self.assertIn("Gymratik: Rutinas y progreso", self.html)
+        self.assertIn('aria-label="Gymratik, inicio"', self.html)
+        self.assertIn("background:rgba(11,16,23,.72) url('./icon.png')", self.html)
+        self.assertIn('class="hero-mascot" src="./icon.png"', self.html)
+        self.assertNotIn("Gymratic", self.html)
         self.assertNotIn("<title>Entrenamiento", self.html)
 
     def test_homepage_exposes_all_canonical_routines(self):
@@ -42,16 +45,15 @@ class HomepageContractTests(unittest.TestCase):
             self.assertIn(path, self.html)
         self.assertEqual(self.html.count('class="routine-card"'), 3)
 
-    def test_pwa_icon_has_the_new_mark_and_maskable_manifest_entry(self):
-        icon = (ROOT / "icon.svg").read_text(encoding="utf-8")
-        self.assertIn('id="title"', icon)
-        self.assertIn('id="desc"', icon)
-        self.assertIn('id="mark"', icon)
-        self.assertIn("Gymratic", icon)
-        self.assertIn("markGradient", icon)
-        self.assertNotIn("Monograma E", icon)
-        self.assertNotIn("Entrenamiento Local", icon)
+    def test_pwa_icon_is_the_mascot_png_and_maskable_manifest_entry(self):
+        icon = (ROOT / "icon.png").read_bytes()
+        self.assertEqual(icon[:8], b"\x89PNG\r\n\x1a\n")
+        self.assertNotIn(b"Gymratic", icon)
+        self.assertNotIn(b"Entrenamiento Local", icon)
+        self.assertEqual(self.manifest["icons"][0]["src"], "./icon.png")
+        self.assertEqual(self.manifest["icons"][0]["type"], "image/png")
         self.assertEqual(self.manifest["icons"][0]["purpose"], "any maskable")
+        self.assertTrue((ROOT / "icon.png").is_file())
 
     def test_homepage_requests_service_worker_update_and_sync(self):
         self.assertIn("updateViaCache: 'none'", self.html)

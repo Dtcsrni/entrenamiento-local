@@ -66,7 +66,7 @@ def routine_resources(canonical: Path) -> set[str]:
 
 
 def build_precache() -> list[str]:
-    base = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg", "./progress-store.js"]
+    base = ["./", "./index.html", "./manifest.webmanifest", "./icon.png", "./progress-store.js"]
     routines = [f"./data/rutinas_autocontenidas/canonicas/{name}" for name in ROUTINE_FILES]
     resources = set(base + routines)
     for name in ROUTINE_FILES:
