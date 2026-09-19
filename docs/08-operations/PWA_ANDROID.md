@@ -7,10 +7,10 @@ La raíz del repositorio contiene una PWA estática (`index.html`, `manifest.web
 1. Publicar el repositorio con un host HTTPS de archivos estáticos, por ejemplo GitHub Pages.
 2. Abrir la URL publicada en Chrome para Android.
 3. Pulsar `Instalar en Android` si aparece el botón, o usar el menú de Chrome → `Añadir a pantalla de inicio`.
-4. Con Internet, abrir `Preparar sesiones` y esperar a que termine la primera sincronización.
+4. Abrir la PWA instalada; el service worker descarga automáticamente la portada, las rutinas y sus medios locales.
 5. En el gimnasio, abrir la PWA instalada sin conexión.
 
-La instalación del service worker precachea la portada, las tres rutinas y los medios locales referenciados por ellas. La acción `Preparar sesiones` permite forzar una sincronización completa cuando haya conexión.
+La instalación del service worker precachea la portada, las tres rutinas y los medios locales referenciados por ellas. No existe una preparación manual: la PWA prioriza la copia local y sincroniza cambios en segundo plano cuando hay conexión.
 
 ## Persistencia del avance
 
@@ -22,9 +22,9 @@ Si `IndexedDB` no está disponible o una transacción falla, la aplicación usa 
 
 ## Actualización desde el repositorio
 
-Al abrir la PWA con conexión, `index.html` solicita una comprobación de actualización de `sw.js` sin usar la caché HTTP. El service worker usa navegación `network-first`: obtiene la versión publicada más reciente y la guarda; si no hay red, sirve la última versión disponible en caché. El mismo criterio `network-first` se aplica al app shell (`index.html`, `progress-store.js`, manifiesto e ícono) para evitar mezclar archivos de versiones distintas. Cuando cambia el service worker, activa la nueva caché inmediatamente, solicita una recarga controlada de las pestañas abiertas y elimina la anterior. En cada sincronización también actualiza los recursos precacheados.
+Al abrir la PWA, `index.html` solicita una comprobación de actualización de `sw.js` sin usar la caché HTTP. El service worker usa una estrategia `cache-first`: entrega inmediatamente la copia local y actualiza esa copia en segundo plano cuando hay conexión; si no hay red, la última versión disponible sigue funcionando. La caché está versionada y se precarga completa antes de activar una versión nueva, evitando mezclar archivos incompatibles. Cuando cambia el service worker, activa la nueva caché inmediatamente, solicita una recarga controlada de las pestañas abiertas y elimina la anterior. En cada sincronización también actualiza los recursos precacheados.
 
-Por tanto, el flujo de actualización es: publicar cambios en el repositorio, abrir la PWA una vez con conexión y volver a usarla sin conexión. No es necesario borrar datos ni reinstalarla.
+Por tanto, el flujo de actualización es: publicar cambios en el repositorio y abrir la PWA cuando haya conexión para recibir la actualización; después puede seguir funcionando sin conexión. No es necesario borrar datos ni reinstalarla.
 
 Antes de publicar cambios en una rutina canónica o en `medios_publicados/`, regenerar el inventario con `python scripts/build_pwa_service_worker.py`. El workflow de validación compara el resultado generado con `sw.js` y rechaza publicaciones desactualizadas.
 

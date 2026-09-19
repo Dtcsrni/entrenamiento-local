@@ -93,13 +93,6 @@ const ROUTINE_URLS = [
   './data/rutinas_autocontenidas/canonicas/Rutina_Dia_2_Pierna_Gluteo_V1.html',
   './data/rutinas_autocontenidas/canonicas/Rutina_Dia_3_Pecho_Hombro_Triceps_V1.html'
 ];
-const APP_SHELL = new Set([
-  new URL('./', self.registration.scope).pathname,
-  new URL('./index.html', self.registration.scope).pathname,
-  new URL('./progress-store.js', self.registration.scope).pathname,
-  new URL('./manifest.webmanifest', self.registration.scope).pathname,
-  new URL('./icon.svg', self.registration.scope).pathname,
-]);
 const LOCAL_REFERENCE = /(?:src|data-static-src|gif|thumbnail)\s*[:=]\s*[\"'](\.\.[^\"']+)[\"']/g;
 
 async function refresh(request, cache) {{
@@ -157,10 +150,9 @@ self.addEventListener('fetch', (event) => {{
     const cache = await caches.open(CACHE_NAME);
     const cached = await cache.match(request);
     const isNavigation = request.mode === 'navigate' || request.headers.get('accept')?.includes('text/html');
-    const isAppShell = APP_SHELL.has(url.pathname);
     const bypassCache = ['no-cache', 'no-store', 'reload'].includes(request.cache);
 
-    if (!isNavigation && !isAppShell && cached && !bypassCache) {{
+    if (cached && !bypassCache) {{
       event.waitUntil(refresh(request, cache).catch(() => undefined));
       return cached;
     }}

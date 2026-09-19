@@ -68,6 +68,12 @@ class HomepageContractTests(unittest.TestCase):
         self.assertIn("addEventListener('controllerchange'", self.html)
         self.assertIn('window.location.reload()', self.html)
 
+    def test_homepage_is_offline_first_without_manual_preparation_prompt(self):
+        self.assertNotIn('Prepáralo antes de salir', self.html)
+        self.assertNotIn('Preparar sesiones', self.html)
+        self.assertNotIn('cacheButton', self.html)
+        self.assertNotIn('prepareOffline', self.html)
+
     def test_canonical_routines_use_distinct_progress_storage_keys(self):
         keys = []
         for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
