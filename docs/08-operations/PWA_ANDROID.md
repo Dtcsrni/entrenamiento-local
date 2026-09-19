@@ -16,6 +16,8 @@ La instalación del service worker precachea la portada, las tres rutinas y los 
 
 El avance de series se guarda en `IndexedDB`, separado de la caché del service worker. La portada lee esa base local para mostrar series registradas, sesiones completadas y avance por rutina. Los registros antiguos de `localStorage` se migran al primer acceso sin cambiar las claves de compatibilidad de las rutinas.
 
+La actividad se agrupa con la hora local del dispositivo: varios guardados en el mismo minuto se consolidan; dentro de la misma hora o del mismo día actualizan el mismo contexto; al detectar otro día se conserva el historial anterior y se marca una nueva jornada de actividad. Esta clasificación evita duplicados por cada clic y permite mostrar las series de hoy sin reiniciar silenciosamente una rutina incompleta.
+
 Si `IndexedDB` no está disponible o una transacción falla, la aplicación usa un respaldo compacto en `localStorage` y muestra el estado de error en la portada. `Proteger almacenamiento` solicita al navegador persistencia adicional; no sustituye una copia externa y el usuario puede perder los datos al borrar los datos del sitio, usar navegación privada o cambiar de dispositivo. La exportación/importación aún no forma parte del contrato actual.
 
 ## Actualización desde el repositorio

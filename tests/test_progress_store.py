@@ -15,6 +15,8 @@ class ProgressStoreContractTests(unittest.TestCase):
         self.assertIn("indexedDB.open", self.source)
         self.assertIn("routineProgress", self.source)
         self.assertIn("sessions", self.source)
+        self.assertIn("ACTIVITY_STORE", self.source)
+        self.assertIn("DB_VERSION = 2", self.source)
 
     def test_progress_store_has_fallback_and_migration_contract(self):
         self.assertIn("entrenamiento-progress-fallback-v1", self.source)
@@ -25,6 +27,9 @@ class ProgressStoreContractTests(unittest.TestCase):
         self.assertIn("getDashboard", self.source)
         self.assertIn("requestPersistence", self.source)
         self.assertIn("training-progress-updated", self.source)
+        self.assertIn("same-minute", self.source)
+        self.assertIn("same-hour", self.source)
+        self.assertIn("other-day", self.source)
 
     def test_progress_store_serializes_writes_and_merges_fallback(self):
         self.assertIn("writeQueues", self.source)

@@ -53,6 +53,7 @@ class HomepageContractTests(unittest.TestCase):
     def test_homepage_exposes_persistent_progress_dashboard(self):
         self.assertIn('src="./progress-store.js"', self.html)
         self.assertIn('progressRecordedSeries', self.html)
+        self.assertIn('progressTodaySeries', self.html)
         self.assertIn('TrainingProgressStore', self.html)
         self.assertIn('persistButton', self.html)
 

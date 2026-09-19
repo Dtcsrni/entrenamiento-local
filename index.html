@@ -48,7 +48,7 @@
     .stat { padding:20px 22px; background:rgba(24,33,45,.88); }
     .stat strong { display:block; margin-bottom:3px; color:var(--text); font-size:1.65rem; letter-spacing:-.04em; }
     .stat span { color:var(--muted); font-size:.8rem; }
-    .progress-dashboard { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .progress-dashboard { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
     .progress-card { padding:19px 20px; border:1px solid rgba(115,230,207,.2); border-radius:17px; background:linear-gradient(145deg,rgba(31,52,61,.92),rgba(24,33,45,.9)); }
     .progress-card strong { display:block; color:var(--accent); font-size:2rem; letter-spacing:-.06em; line-height:1; }
     .progress-card span { display:block; margin-top:8px; color:var(--muted); font-size:.78rem; }
@@ -86,7 +86,7 @@
     #cacheStatus { flex-basis:100%; min-height:1.4em; color:var(--accent); font-size:.78rem; text-align:right; }
     footer { padding:56px 0 36px; color:var(--soft); font-size:.78rem; }
     footer p { max-width:70ch; margin-bottom:0; }
-    @media (max-width:820px) { .hero { grid-template-columns:1fr; min-height:0; padding-top:42px; } h1 { max-width:11ch; } .hero-card { max-width:620px; } .routine-grid { grid-template-columns:repeat(2,1fr); } .routine-card:last-child { grid-column:span 2; } .routine-card:last-child .routine-visual { aspect-ratio:2.1; } }
+    @media (max-width:820px) { .hero { grid-template-columns:1fr; min-height:0; padding-top:42px; } h1 { max-width:11ch; } .hero-card { max-width:620px; } .progress-dashboard { grid-template-columns:repeat(2,1fr); } .routine-grid { grid-template-columns:repeat(2,1fr); } .routine-card:last-child { grid-column:span 2; } .routine-card:last-child .routine-visual { aspect-ratio:2.1; } }
     @media (max-width:560px) { .shell { width:min(100% - 24px,1120px); } .topbar { padding-top:17px; } .plan-pill { display:none; } .hero { gap:34px; padding:46px 0 52px; } h1 { font-size:clamp(3.2rem,17vw,5.5rem); } .hero-copy { font-size:.98rem; } .hero-card { padding:23px; border-radius:19px; } .hero-card h2 { font-size:2.5rem; } .stats,.progress-dashboard { grid-template-columns:1fr; } .stat { padding:15px 18px; } .stat strong { display:inline; margin-right:7px; font-size:1.3rem; } .stat span { font-size:.78rem; } section { padding-top:54px; } .section-head { display:block; } .section-head p { margin-top:8px; text-align:left; } .progress-actions { align-items:flex-start; flex-direction:column; } .routine-grid { grid-template-columns:1fr; gap:13px; } .routine-card:last-child { grid-column:auto; } .routine-card:last-child .routine-visual,.routine-visual { aspect-ratio:1.75; } .offline-card { display:block; padding:22px; } .offline-actions { justify-content:flex-start; margin-top:20px; } #cacheStatus { text-align:left; } }
     @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; transition:none !important; } }
   </style>
@@ -117,6 +117,7 @@
         <div class="section-head"><div><p class="eyebrow">Registro local</p><h2 id="progressTitle">Tu avance</h2></div><p>El progreso se conserva en este dispositivo y se resume aquí al volver de cada rutina.</p></div>
         <div class="progress-dashboard" aria-live="polite">
           <div class="progress-card"><strong id="progressRecordedSeries">0</strong><span>series registradas</span></div>
+          <div class="progress-card"><strong id="progressTodaySeries">0</strong><span>series de hoy</span></div>
           <div class="progress-card"><strong id="progressCompletedSessions">0</strong><span>sesiones completadas</span></div>
           <div class="progress-card"><strong id="progressPlanPercent">0%</strong><span>avance del plan actual</span></div>
         </div>
@@ -146,6 +147,7 @@
     const cacheButton = document.querySelector('#cacheButton');
     const cacheStatus = document.querySelector('#cacheStatus');
     const progressRecordedSeries = document.querySelector('#progressRecordedSeries');
+    const progressTodaySeries = document.querySelector('#progressTodaySeries');
     const progressCompletedSessions = document.querySelector('#progressCompletedSessions');
     const progressPlanPercent = document.querySelector('#progressPlanPercent');
     const routineProgressList = document.querySelector('#routineProgressList');
@@ -159,7 +161,10 @@
     }
 
     function renderProgress(dashboard) {
+      const temporal = dashboard.temporal || { sameMinute: false, sameHour: false, sameDay: false, otherDay: false };
+      const activityDays = Number.isFinite(dashboard.activityDays) ? dashboard.activityDays : (dashboard.lastActivity ? 1 : 0);
       progressRecordedSeries.textContent = String(dashboard.recordedSeries);
+      progressTodaySeries.textContent = String(Number.isFinite(dashboard.todaySeries) ? dashboard.todaySeries : 0);
       progressCompletedSessions.textContent = String(dashboard.sessionsCompleted);
       progressPlanPercent.textContent = `${dashboard.currentPlanPercent}%`;
       routineProgressList.innerHTML = dashboard.routines.map((routine) => `
@@ -167,8 +172,17 @@
           <span>${routine.label}</span><strong>${routine.doneSeries}/${routine.totalSeries}</strong>
           <div class="progress-meter" role="progressbar" aria-label="${routine.label}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${routine.percent}"><span style="width:${routine.percent}%"></span></div>
         </div>`).join('');
+      const temporalNote = temporal.sameMinute
+        ? 'Actualizado este minuto.'
+        : temporal.sameHour
+          ? 'Actividad registrada esta hora.'
+          : temporal.sameDay
+            ? 'Actividad registrada hoy.'
+            : temporal.otherDay
+              ? 'La última actividad pertenece a otro día.'
+              : '';
       progressNote.textContent = dashboard.lastActivity
-        ? `Último registro: ${formatLastActivity(dashboard.lastActivity)}`
+        ? `Último registro: ${formatLastActivity(dashboard.lastActivity)} · ${activityDays} días con actividad. ${temporalNote}`
         : 'Aún no hay series registradas en este dispositivo.';
     }
 
