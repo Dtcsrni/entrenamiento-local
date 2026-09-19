@@ -22,7 +22,7 @@ Si `IndexedDB` no está disponible o una transacción falla, la aplicación usa 
 
 ## Actualización desde el repositorio
 
-Al abrir la PWA con conexión, `index.html` solicita una comprobación de actualización de `sw.js` sin usar la caché HTTP. El service worker usa navegación `network-first`: obtiene la versión publicada más reciente y la guarda; si no hay red, sirve la última versión disponible en caché. Cuando cambia el service worker, activa la nueva caché inmediatamente y elimina la anterior. En cada sincronización también actualiza los recursos precacheados.
+Al abrir la PWA con conexión, `index.html` solicita una comprobación de actualización de `sw.js` sin usar la caché HTTP. El service worker usa navegación `network-first`: obtiene la versión publicada más reciente y la guarda; si no hay red, sirve la última versión disponible en caché. El mismo criterio `network-first` se aplica al app shell (`index.html`, `progress-store.js`, manifiesto e ícono) para evitar mezclar archivos de versiones distintas. Cuando cambia el service worker, activa la nueva caché inmediatamente, solicita una recarga controlada de las pestañas abiertas y elimina la anterior. En cada sincronización también actualiza los recursos precacheados.
 
 Por tanto, el flujo de actualización es: publicar cambios en el repositorio, abrir la PWA una vez con conexión y volver a usarla sin conexión. No es necesario borrar datos ni reinstalarla.
 

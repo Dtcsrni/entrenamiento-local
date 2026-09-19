@@ -19,6 +19,11 @@
   };
 
   const pad = value => String(value).padStart(2, '0');
+  const numberOrZero = value => {
+    const numeric = Number(value);
+    return Number.isFinite(numeric) ? numeric : 0;
+  };
+  const nonNegativeNumber = value => Math.max(0, numberOrZero(value));
 
   function timeKeys(timestamp = Date.now()) {
     const date = new Date(timestamp);
@@ -199,9 +204,9 @@
       startedAt: record.sessionStartedAt,
       endedAt: record.sessionEndedAt || 0,
       status: record.sessionEndedAt ? 'completed' : 'active',
-      completedSeries: record.doneSeries,
-      completedExercises: record.completedExercises,
-      totalSeries: record.totalSeries,
+      completedSeries: nonNegativeNumber(record.doneSeries),
+      completedExercises: nonNegativeNumber(record.completedExercises),
+      totalSeries: nonNegativeNumber(record.totalSeries),
       updatedAt: record.updatedAt,
     };
   }
@@ -220,8 +225,8 @@
       hourKey: record.hourKey || temporal.hourKey,
       minuteKey: record.minuteKey || temporal.minuteKey,
       capturedAt,
-      completedSeries: record.doneSeries,
-      totalSeries: record.totalSeries,
+      completedSeries: nonNegativeNumber(record.doneSeries),
+      totalSeries: nonNegativeNumber(record.totalSeries),
       startedAt: record.sessionStartedAt || 0,
       endedAt: record.sessionEndedAt || 0,
       updatedAt: record.updatedAt,
@@ -335,9 +340,9 @@
   function dashboardFrom(data) {
     const progressByRoutine = new Map(data.progress.map((record) => [record.routineId, record]));
     const sessions = data.sessions.filter((session) => session.status === 'completed');
-    const completedSeries = sessions.reduce((sum, session) => sum + session.completedSeries, 0);
-    const activeSeries = data.progress.reduce((sum, record) => sum + (record.sessionEndedAt ? 0 : record.doneSeries), 0);
-    const currentSeries = data.progress.reduce((sum, record) => sum + record.doneSeries, 0);
+    const completedSeries = sessions.reduce((sum, session) => sum + nonNegativeNumber(session.completedSeries), 0);
+    const activeSeries = data.progress.reduce((sum, record) => sum + (record.sessionEndedAt ? 0 : nonNegativeNumber(record.doneSeries)), 0);
+    const currentSeries = data.progress.reduce((sum, record) => sum + nonNegativeNumber(record.doneSeries), 0);
     const plannedSeries = Object.values(ROUTINES).reduce((sum, routine) => sum + routine.totalSeries, 0);
     const now = Date.now();
     const nowKeys = timeKeys(now);
@@ -349,7 +354,8 @@
     activity.filter((item) => item.dayKey === nowKeys.dayKey).forEach((item) => {
       const key = `${item.routineId}:${item.sessionId || item.activityKey}`;
       const current = todayBySession.get(key);
-      if (!current || item.completedSeries > current) todayBySession.set(key, item.completedSeries);
+      const completedSeriesForDay = nonNegativeNumber(item.completedSeries);
+      if (!current || completedSeriesForDay > current) todayBySession.set(key, completedSeriesForDay);
     });
     return {
       plannedSeries,
@@ -376,9 +382,9 @@
           label: routine.label,
           totalExercises: routine.totalExercises,
           totalSeries: routine.totalSeries,
-          doneSeries: record?.doneSeries || 0,
-          completedExercises: record?.completedExercises || 0,
-          percent: record ? Math.min(100, Math.round((record.doneSeries / routine.totalSeries) * 100)) : 0,
+          doneSeries: nonNegativeNumber(record?.doneSeries),
+          completedExercises: nonNegativeNumber(record?.completedExercises),
+          percent: record ? Math.min(100, Math.round((nonNegativeNumber(record.doneSeries) / routine.totalSeries) * 100)) : 0,
         };
       }),
     };

@@ -57,6 +57,17 @@ class HomepageContractTests(unittest.TestCase):
         self.assertIn('TrainingProgressStore', self.html)
         self.assertIn('persistButton', self.html)
 
+    def test_homepage_normalizes_partial_dashboard_data(self):
+        self.assertIn('function normalizeDashboard', self.html)
+        self.assertIn('fallbackRoutineProgress', self.html)
+        self.assertIn('Array.isArray(source.routines)', self.html)
+        self.assertIn('String(dashboard.todaySeries)', self.html)
+        self.assertIn("source.temporal?.sameMinute === true", self.html)
+
+    def test_homepage_reloads_after_service_worker_controller_change(self):
+        self.assertIn("addEventListener('controllerchange'", self.html)
+        self.assertIn('window.location.reload()', self.html)
+
     def test_canonical_routines_use_distinct_progress_storage_keys(self):
         keys = []
         for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):

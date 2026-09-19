@@ -153,18 +153,70 @@
     const routineProgressList = document.querySelector('#routineProgressList');
     const progressNote = document.querySelector('#progressNote');
     const persistButton = document.querySelector('#persistButton');
+    const fallbackRoutineProgress = [
+      { routineId: 'day1', label: 'Día 1 · Espalda + Bíceps', totalSeries: 20 },
+      { routineId: 'day2', label: 'Día 2 · Pierna + Glúteo', totalSeries: 20 },
+      { routineId: 'day3', label: 'Día 3 · Pecho + Hombro + Tríceps', totalSeries: 22 },
+    ];
     let deferredInstallPrompt;
+
+    function numberOr(value, fallback = 0) {
+      const numeric = Number(value);
+      return Number.isFinite(numeric) ? numeric : fallback;
+    }
+
+    function boundedNumber(value, minimum = 0, maximum = Number.POSITIVE_INFINITY) {
+      return Math.min(maximum, Math.max(minimum, numberOr(value)));
+    }
+
+    function normalizeDashboard(rawDashboard) {
+      const source = rawDashboard && typeof rawDashboard === 'object' ? rawDashboard : {};
+      const rawRoutines = Array.isArray(source.routines) && source.routines.length
+        ? source.routines
+        : fallbackRoutineProgress;
+      const routines = rawRoutines.map((routine, index) => {
+        const fallback = fallbackRoutineProgress[index] || fallbackRoutineProgress[0];
+        const totalSeries = boundedNumber(routine?.totalSeries, 1);
+        const doneSeries = boundedNumber(routine?.doneSeries, 0, totalSeries);
+        const percent = boundedNumber(routine?.percent, 0, 100);
+        return {
+          routineId: typeof routine?.routineId === 'string' ? routine.routineId : fallback.routineId,
+          label: typeof routine?.label === 'string' && routine.label.trim() ? routine.label : fallback.label,
+          totalSeries,
+          doneSeries,
+          percent,
+        };
+      });
+      const relation = typeof source.temporal?.relation === 'string' ? source.temporal.relation : 'none';
+      return {
+        recordedSeries: boundedNumber(source.recordedSeries),
+        todaySeries: boundedNumber(source.todaySeries),
+        sessionsCompleted: boundedNumber(source.sessionsCompleted),
+        currentPlanPercent: boundedNumber(source.currentPlanPercent, 0, 100),
+        lastActivity: boundedNumber(source.lastActivity),
+        activityDays: boundedNumber(source.activityDays),
+        temporal: {
+          relation,
+          sameMinute: source.temporal?.sameMinute === true,
+          sameHour: source.temporal?.sameHour === true,
+          sameDay: source.temporal?.sameDay === true,
+          otherDay: source.temporal?.otherDay === true,
+        },
+        routines,
+      };
+    }
 
     function formatLastActivity(timestamp) {
       if (!timestamp) return '';
       return new Intl.DateTimeFormat('es-MX', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(timestamp));
     }
 
-    function renderProgress(dashboard) {
-      const temporal = dashboard.temporal || { sameMinute: false, sameHour: false, sameDay: false, otherDay: false };
-      const activityDays = Number.isFinite(dashboard.activityDays) ? dashboard.activityDays : (dashboard.lastActivity ? 1 : 0);
+    function renderProgress(rawDashboard) {
+      const dashboard = normalizeDashboard(rawDashboard);
+      const temporal = dashboard.temporal;
+      const activityDays = dashboard.activityDays || (dashboard.lastActivity ? 1 : 0);
       progressRecordedSeries.textContent = String(dashboard.recordedSeries);
-      progressTodaySeries.textContent = String(Number.isFinite(dashboard.todaySeries) ? dashboard.todaySeries : 0);
+      progressTodaySeries.textContent = String(dashboard.todaySeries);
       progressCompletedSessions.textContent = String(dashboard.sessionsCompleted);
       progressPlanPercent.textContent = `${dashboard.currentPlanPercent}%`;
       routineProgressList.innerHTML = dashboard.routines.map((routine) => `
@@ -262,6 +314,12 @@
       console.error('Progress dashboard failed', error);
     });
     if ('serviceWorker' in navigator) {
+      let reloadingForServiceWorker = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (reloadingForServiceWorker) return;
+        reloadingForServiceWorker = true;
+        window.location.reload();
+      });
       navigator.serviceWorker.register('./sw.js', { scope: './', updateViaCache: 'none' }).then((registration) => {
         registration.update().catch((error) => console.error('Service worker update check failed', error));
         if (navigator.onLine) {
