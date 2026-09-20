@@ -44,6 +44,27 @@ CARDS_4_5 = r'''<!-- 4 -->
 </div></article>'''
 
 
+DAY1_CARD6 = r'''<!-- 6 -->
+<article class="card" data-exercise-index="6"><div aria-hidden="true" class="cardGlow"></div>
+<div class="meta">
+<div class="metaTop"><div class="num">6</div></div>
+<div class="exTitle">CURL DE BÍCEPS SENTADO EN MÁQUINA</div>
+<div class="zone">BRAZO · BÍCEPS</div><div class="chipRow"><span class="infoChip chipExercise">Ejercicio 6</span><span class="infoChip">BRAZO</span><span class="infoChip">BÍCEPS</span></div>
+<div class="machinePill"><span class="pillText">curl sentado en máquina · agarre supino</span></div>
+</div>
+<div class="visual"><div class="referenceRow"><div class="machineRefBox"><img alt="Máquina de curl de bíceps sentado, sin persona" class="realphoto" loading="lazy" src="../medios_publicados/rutinas_autocontenidas/dia1_media_generated/0575-q6y3OhV-machine-reference.png"/><span class="refTag">VISTA AISLADA · REFERENCIA DE MÁQUINA</span></div></div><div class="phaseRow">
+<div class="phaseCol"><div class="phaseLabel">Inicio</div><div class="photo techZoom"><img alt="Curl de bíceps sentado en máquina, brazos extendidos y espalda apoyada" class="realphoto" loading="lazy" src="../medios_publicados/rutinas_autocontenidas/dia1_media_generated/0575-q6y3OhV-start.jpg"/><div class="brokenFallback"><div class="fallbackIcon"><svg aria-hidden="true" viewbox="0 0 64 64"><path d="M10 32h38M38 20l12 12-12 12" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="6"></path></svg></div>Referencia de inicio no disponible.</div></div><div class="source">Inicio · espalda apoyada · codos junto al torso</div></div>
+<div class="swap" aria-hidden="true">→</div>
+<div class="phaseCol"><div class="phaseLabel">Final</div><div class="photo techZoom"><img alt="Curl de bíceps sentado en máquina, asas elevadas y bíceps contraídos" class="realphoto" loading="lazy" src="../medios_publicados/rutinas_autocontenidas/dia1_media_generated/0575-q6y3OhV-final.jpg"/><div class="brokenFallback"><div class="fallbackIcon"><svg aria-hidden="true" viewbox="0 0 64 64"><path d="M10 32h38M38 20l12 12-12 12" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="6"></path></svg></div>Referencia final no disponible.</div></div><div class="source">Final · pausa breve · sin despegar los codos</div></div>
+</div><div class="videoProof"><span>▶ GIF LOCAL · Curl de bíceps sentado en máquina</span></div></div>
+<div class="coach"><div class="coachHeader">Técnica clave</div><div class="exerciseQuickSummary" data-exercise-quick-summary aria-label="Resumen del ejercicio"></div><div class="metrics"><div class="metric series"><div class="metricText"><div class="metricLabel">Series</div><div class="metricVal">3 series</div></div></div><div class="metric reps"><div class="metricText"><div class="metricLabel">Repeticiones</div><div class="metricVal">10–15 rep.</div></div></div><div class="metric rest"><div class="metricText"><div class="metricLabel">Descanso</div><div class="metricVal"><strong class="timeCue">1.5–2 min</strong></div></div></div><div class="metric duration"><div class="metricText"><div class="metricLabel">Duración aprox.</div><div class="metricVal"><strong class="timeCue">5–7 min</strong></div></div></div></div><div class="exerciseTracker" data-exercise="6" data-series-keys="e6s1 e6s2 e6s3"><div class="exerciseTrackerHead"><span>Contador de series</span><span class="exerciseTrackerMeta"><strong class="exerciseProgress">0/3</strong><span class="exerciseStatus" hidden>Completado</span></span></div><div class="exerciseSetButtons" role="group" aria-label="Contador de series de curl de bíceps sentado"><button type="button" class="completeSetButton" aria-label="Completar serie 1 de 3">Completar serie 1 de 3</button><button type="button" class="machinePendingToggle" data-pending-key="p6" aria-pressed="false">⚠ Máquina ocupada</button></div></div></div>
+<div class="techSteps"><div class="techStep setup"><div class="techStepTitle">1 · Ajuste</div><div class="techStepText">Regula la altura del asiento y apoya la espalda. Coloca los codos cerca de los costados y las muñecas neutras.</div></div><div class="techStep move"><div class="techStepTitle">2 · Ejecución</div><div class="techStepText">Sujeta las asas con agarre supino, flexiona los codos y eleva los mangos sin despegar los brazos del soporte.</div></div><div class="techStep control"><div class="techStepTitle">3 · Ritmo y respiración</div><div class="techStepText">Exhala al subir, pausa brevemente arriba e inhala mientras bajas en 2–3 s hasta extender los brazos.</div></div><div class="techStep warning"><div class="techStepTitle">⚠ Evita</div><div class="techStepText">Impulsarte con el tronco, adelantar los codos, doblar las muñecas o bloquear la articulación al final.</div></div></div>
+</div></article>'''
+
+
+MUSCLE_PECTORAL = r'''<div class="muscleDayItem" data-muscle-focus="pectoralis-major" data-muscle-view="anterior" data-muscle-visual="upper-anterior" aria-label="Pectoral mayor; foco visual en tórax anterior"><span class="muscleDayVisual anterior" title="Foco visual: tórax anterior"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/upper_anterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa anterior del músculo Pectoral mayor; foco visual aproximado en tórax anterior" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#ff9da2">PECHO</span><span class="muscleName">Pectoral mayor</span></span></div>'''
+
+
 def main() -> None:
     with HTML.open("r", encoding="utf-8", newline="") as handle:
         source = handle.read()
@@ -101,7 +122,7 @@ def main() -> None:
     e3_next = 'data-next="4" hidden><span class="nextArrow" aria-hidden="true">↓</span> Siguiente: 04 · Apertura inversa en máquina</button>'
     if source.count(e3_next) >= 2:
         second = source.find(e3_next, source.find(e3_next) + 1)
-        source = source[:second] + source[second:].replace(e3_next, 'data-next="6" hidden><span class="nextArrow" aria-hidden="true">↓</span> Siguiente: 06 · Press de pecho complementario</button>', 1)
+        source = source[:second] + source[second:].replace(e3_next, 'data-next="6" hidden><span class="nextArrow" aria-hidden="true">↓</span> Siguiente: 06 · Curl de bíceps sentado en máquina</button>', 1)
     source = source.replace('Siguiente: 03 · Remo horizontal</button>', 'Siguiente: 03 · Remo horizontal en máquina</button>', 1)
     source = source.replace('images/0592-b6hQYMb-start.jpg', 'images/0592-b6hQYMb.jpg', 1)
     card3_start = source.index('<!-- 3 -->')
@@ -183,6 +204,45 @@ def main() -> None:
     elif '<div class="num">4</div>' not in source or '<div class="num">5</div>' not in source:
         raise RuntimeError("Solo existe una de las tarjetas 4 o 5; se evita alterar una tarjeta parcial")
     source = source.replace('images/0592-b6hQYMb-start.jpg', 'images/0592-b6hQYMb.jpg')
+    card6_start = source.index('<!-- 6 -->')
+    main_end = source.index('</main>', card6_start)
+    source = source[:card6_start] + DAY1_CARD6.replace("\n", newline) + newline + source[main_end:]
+    source = source.replace(
+        'Siguiente: 06 · Press de pecho complementario',
+        'Siguiente: 06 · Curl de bíceps sentado en máquina',
+    )
+    source = source.replace(' · pecho complementario', ' · curl sentado en máquina')
+    source = source.replace(
+        'trabajo complementario de deltoides posterior y pecho.',
+        'trabajo complementario de deltoides posterior y un segundo patrón de bíceps.',
+    )
+    source = source.replace(
+        'Con trabajo complementario de deltoides posterior y pecho',
+        'Con trabajo complementario de deltoides posterior y curl sentado de bíceps',
+    )
+    if '<div class="muscleDayItem" data-muscle-focus="pectoralis-major"' not in source:
+        grid_close = f'{newline}</div>{newline}</div></div>{newline}{newline}</header>'
+        if grid_close not in source:
+            raise RuntimeError("No se encontró el cierre del panel muscular del Día 1")
+        source = source.replace(
+            grid_close,
+            newline + MUSCLE_PECTORAL.replace("\n", newline) + grid_close,
+            1,
+        )
+    source = source.replace(
+        (
+            'gif:"../medios_publicados/ejercicios-compartido/videos/0577-T0yTjgW.gif",\n'
+            '      thumbnail:"../medios_publicados/ejercicios-compartido/images/0577-T0yTjgW.jpg",\n'
+            '      key:"PRESS DE PECHO COMPLEMENTARIO",\n'
+            '      alt:"GIF de press de pecho sentado en máquina"'
+        ).replace("\n", newline),
+        (
+            'gif:"../medios_publicados/ejercicios-compartido/videos/0575-q6y3OhV.gif",\n'
+            '      thumbnail:"../medios_publicados/ejercicios-compartido/images/0575-q6y3OhV.jpg",\n'
+            '      key:"CURL DE BÍCEPS SENTADO EN MÁQUINA",\n'
+            '      alt:"GIF de curl de bíceps sentado en máquina con agarre supino"'
+        ).replace("\n", newline),
+    )
     for exercise, rest, duration in ((4, "1.5 min", "5–7 min"), (5, "1.5–2 min", "5–7 min")):
         tracker_marker = f'<div class="exerciseTracker" data-exercise="{exercise}"'
         rest_metric = f'<div class="metric rest"><div class="metricText"><div class="metricLabel">Descanso</div><div class="metricVal"><strong class="timeCue">{rest}</strong></div></div></div>'

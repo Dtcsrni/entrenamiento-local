@@ -128,6 +128,16 @@ class HomepageContractTests(unittest.TestCase):
             self.assertIn('src="../../../progress-store.js"', source)
             self.assertIn('TrainingProgressStore?.capture', source)
 
+    def test_day1_replaces_cross_day_duplicate_media_id(self):
+        day1 = json.loads((ROOT / "data/rutinas_autocontenidas/evidencia/dia1_media_manifest.json").read_text(encoding="utf-8"))
+        day3 = json.loads((ROOT / "data/rutinas_autocontenidas/evidencia/dia3_media_manifest.json").read_text(encoding="utf-8"))
+        day1_ids = {item["dataset_id"] for item in day1["items"]}
+        day3_ids = {item["repo_id"] for item in day3}
+        self.assertIn("0575", day1_ids)
+        self.assertNotIn("0577", day1_ids)
+        self.assertIn("0577", day3_ids)
+        self.assertTrue(day1_ids.isdisjoint(day3_ids))
+
 
 if __name__ == "__main__":
     unittest.main()

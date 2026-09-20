@@ -1,4 +1,4 @@
-const CACHE_NAME = 'entrenamiento-pwa-2bb0a4417a47';
+const CACHE_NAME = 'entrenamiento-pwa-02cb0105e33b';
 const PRECACHE = [
   './',
   './index.html',
@@ -17,10 +17,10 @@ const PRECACHE = [
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0200-dU605di-machine-only.png',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0200-dU605di-start.jpg',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0257-X7jbxra.jpg',
+  './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0575-q6y3OhV.jpg',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0577-T0yTjgW-final.jpg',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0577-T0yTjgW-machine-only.png',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0577-T0yTjgW-start.jpg',
-  './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0577-T0yTjgW.jpg',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0584-dRTfGZT-final.jpg',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0584-dRTfGZT-machine-only.png',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0584-dRTfGZT-start.jpg',
@@ -58,6 +58,7 @@ const PRECACHE = [
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0197-qdRxqCj.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0200-dU605di.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0257-X7jbxra.gif',
+  './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0575-q6y3OhV.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0577-T0yTjgW.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0578-GUT8I22.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/0584-dRTfGZT.gif',
@@ -85,6 +86,9 @@ const PRECACHE = [
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/3666-rjiM4L3.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/warmup-arm-circles-filmed.gif',
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/videos/warmup-shoulder-rolls-filmed.gif',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia1_media_generated/0575-q6y3OhV-final.jpg',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia1_media_generated/0575-q6y3OhV-machine-reference.png',
+  './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia1_media_generated/0575-q6y3OhV-start.jpg',
   './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia2_media_generated/ankle_circles_real_mymichigan.gif',
   './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia2_media_generated/ankle_circles_real_mymichigan.jpg',
   './data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia2_media_generated/hip_thrust_machine_booty_builder_correct_form.gif',

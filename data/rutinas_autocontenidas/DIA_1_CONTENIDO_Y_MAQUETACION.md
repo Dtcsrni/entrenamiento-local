@@ -61,9 +61,9 @@ Se revisó la correspondencia entre el patrón del ejercicio y la referencia vis
 | 3 | Remo horizontal en máquina | Panatta Super Rowing, asiento y apoyo frontal para remo | Confirmada |
 | 4 | Apertura inversa en máquina | gym80 3025 Butterfly Reverse, vista frontal oficial, asiento y apoyo de pecho | Corregida; se reemplazó la imagen anterior de jalón por la referencia frontal oficial localizada |
 | 5 | Curl de bíceps en máquina | Máquina selectorizada con apoyo de brazos | Confirmada |
-| 6 | Press de pecho complementario | Máquina selectorizada de press sentado con respaldo y agarres | Confirmada |
+| 6 | Curl de bíceps sentado en máquina | Máquina de palancas con respaldo, asas y agarre supino | Confirmada como referencia visual; no confirma el equipo instalado |
 
-Las referencias de los ejercicios 2–6 se conservan porque su configuración visible coincide con el patrón descrito. La identidad exacta del equipo del gimnasio requiere una fotografía directa de cada estación; las fuentes de fabricante/distribuidor documentan el modelo de referencia, no la instalación concreta del usuario.
+Las referencias de los ejercicios 2–6 se conservan porque su configuración visible coincide con el patrón descrito. La identidad exacta del equipo del gimnasio requiere una fotografía directa de cada estación; las fuentes de fabricante/distribuidor documentan el modelo de referencia, no la instalación concreta del usuario. El ejercicio 6 usa `0575` y no repite el press `0577` reservado para el Día 3.
 
 ## Preparación
 
@@ -100,7 +100,7 @@ La ficha integra el tiempo total, el volumen y el rango de descansos en una band
 | 3 | Remo horizontal en máquina | Remo horizontal con pecho apoyado | 3 | 8–12 | 2–2.5 min |
 | 4 | Apertura inversa en máquina | Deltoides posterior; brazos en arco horizontal | 3 | 12–20 | 1.5 min |
 | 5 | Curl de bíceps en máquina | Flexión de codo con brazo apoyado | 3 | 10–15 | 1.5–2 min |
-| 6 | Press de pecho complementario | Empuje horizontal complementario | 3 | 10–15 | 1.5–2 min |
+| 6 | Curl de bíceps sentado en máquina | Flexión de codo con espalda apoyada y agarre supino | 3 | 10–15 | 1.5–2 min |
 
 Regla de progresión:
 
@@ -200,12 +200,12 @@ La tarjeta debe mostrar una referencia visual clara y un fallback estático cuan
 - **Ritmo:** Exhala al subir y desciende en 2–3 s sin dejar caer la carga.
 - **Evita:** Levantar los hombros, adelantar los codos, doblar las muñecas o rebotar en la parte baja.
 
-### 6 · Press de pecho complementario
+### 6 · Curl de bíceps sentado en máquina
 
-- **Ajuste:** Regula el asiento para que las empuñaduras queden a la altura media del pecho. Mantén espalda, pelvis y pies apoyados.
-- **Ejecución:** Empuja hacia delante con los codos aproximadamente a 45–70° del torso. Extiende sin bloquear de golpe.
-- **Ritmo:** Exhala al empujar y vuelve en 2–3 s hasta un estiramiento cómodo.
-- **Evita:** Despegar la espalda o la pelvis, abrir los codos a 90°, rebotar o usar impulso.
+- **Ajuste:** Regula la altura del asiento y apoya la espalda en la almohadilla. Mantén los codos cerca de los costados y las muñecas neutras.
+- **Ejecución:** Sujeta las asas con agarre supino, flexiona los codos y eleva los mangos sin despegar los brazos del soporte.
+- **Ritmo:** Exhala al subir, pausa brevemente arriba e inhala mientras bajas en 2–3 s hasta extender los brazos.
+- **Evita:** Impulsarte con el tronco, adelantar los codos, doblar las muñecas o bloquear la articulación al final.
 
 ## Cierre de sesión
 

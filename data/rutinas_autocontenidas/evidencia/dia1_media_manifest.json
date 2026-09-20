@@ -63,15 +63,27 @@
     },
     {
       "exercise_number": 6,
-      "exercise": "Press de pecho ligero",
-      "dataset_id": "0577",
-      "dataset_name": "lever chest press",
+      "exercise": "Curl de bíceps sentado en máquina",
+      "dataset_id": "0575",
+      "dataset_name": "lever bicep curl",
       "equipment": "leverage machine",
-      "gif": "artifacts/ejercicios-compartido/videos/0577-T0yTjgW.gif",
-      "thumbnail": "artifacts/ejercicios-compartido/images/0577-T0yTjgW.jpg",
-      "sha256_gif": "789515907e5001da8ced127bcf8969e7ab265f25545bf7f0a80dbb6f0da213b0",
+      "gif": "artifacts/ejercicios-compartido/videos/0575-q6y3OhV.gif",
+      "thumbnail": "artifacts/ejercicios-compartido/images/0575-q6y3OhV.jpg",
+      "sha256_gif": "5e48884ec3603a2b146bed4456abe97079a9683c86401311a1253c37d60d1027",
       "dimensions": "180x180",
-      "frames": 12
+      "frames": 12,
+      "source_commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
+      "attribution": "© Gym visual — https://gymvisual.com/",
+      "derived_media": {
+        "start": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia1_media_generated/0575-q6y3OhV-start.jpg",
+        "final": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia1_media_generated/0575-q6y3OhV-final.jpg",
+        "machine_reference": "data/rutinas_autocontenidas/medios_publicados/rutinas_autocontenidas/dia1_media_generated/0575-q6y3OhV-machine-reference.png",
+        "sha256_start": "fc2f6e7409825c5b2445e0335073d440096cc7122951d3de7831e327fc8f0603",
+        "sha256_final": "e0598c52bc3a468a08390662ce94569c55aa9b24968530c2e365472c41f23bd1",
+        "sha256_machine_reference": "66519625359b8abadad8558313877b592c08fb6a19cb21565729e65a59e5a0c9"
+      },
+      "rights_status": "CANDIDATES_PENDING_LICENSE_REVIEW",
+      "equipment_identity_status": "VISUAL_PATTERN_REFERENCE_ONLY"
     }
   ],
   "warmup_items": [

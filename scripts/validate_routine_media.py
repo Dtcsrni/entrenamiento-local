@@ -22,7 +22,7 @@ DAY1_MEDIA_KEYS = (
     "REMO HORIZONTAL EN MÁQUINA",
     "APERTURA INVERSA EN MÁQUINA",
     "CURL DE BÍCEPS EN MÁQUINA",
-    "PRESS DE PECHO COMPLEMENTARIO",
+    "CURL DE BÍCEPS SENTADO EN MÁQUINA",
 )
 DAY1_MEDIA_ENTRY = re.compile(
     r"gif\s*:\s*[\"']([^\"']+)[\"']\s*,\s*"
