@@ -133,6 +133,30 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
             self.assertIn("navigator.vibrate", source)
             self.assertIn("timing.timingVersion = 5", source)
 
+    def test_all_routines_use_five_second_preparation_before_timing(self) -> None:
+        for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
+            source = path.read_text(encoding="utf-8")
+            with self.subTest(path=path.name):
+                self.assertEqual(source.count("const PREPARATION_MS = 5000;"), 1)
+                self.assertIn("warmup.phase = 'preparing'", source)
+                self.assertIn("root.sessionStartedAt = timestamp", source)
+                self.assertIn("startSeriesPreparation(item);", source)
+                self.assertIn(
+                    "const startTiming = (item, timestamp = Date.now(), startSeries = false)",
+                    source,
+                )
+                self.assertIn("startTiming(item, timestamp, true)", source)
+                self.assertIn("clearPreparationTimers();", source)
+                self.assertEqual(
+                    source.count("sendBrowserNotification('Descanso listo'"), 1
+                )
+                self.assertNotIn(
+                    "const preparing = isSeriesPreparing(item); if (preparing) "
+                    "{ renderPreparationDisplay(item); if (item.restDisplay) item.restDisplay.hidden = true; return; } "
+                    "const preparing = isSeriesPreparing(item);",
+                    source,
+                )
+
     def test_all_routines_share_the_canonical_page_layout_contract(self) -> None:
         expected_cards = {"Rutina_Dia_1_Espalda_Biceps_V1.html": 6, "Rutina_Dia_2_Pierna_Gluteo_V1.html": 6, "Rutina_Dia_3_Pecho_Hombro_Triceps_V1.html": 7, "Rutina_Dia_4_Pierna_Equilibrio_V1.html": 7}
         for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
@@ -255,6 +279,39 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
                         'data-muscle-visual="upper-posterior"',
                         source,
                     )
+
+    def test_all_routines_keep_explicit_anatomical_focus_markers(self) -> None:
+        bilateral = {
+            "Dorsal ancho",
+            "Romboides",
+            "Trapecio medio",
+            "Deltoides posterior",
+            "Bíceps braquial",
+            "Pectoral mayor",
+            "Cuádriceps",
+            "Glúteo mayor",
+            "Isquiosurales",
+            "Aductores",
+            "Abductores",
+            "Gastrocnemio",
+            "Sóleo",
+            "Deltoides",
+            "Tríceps",
+        }
+        for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
+            source = path.read_text(encoding="utf-8")
+            items = re.findall(r'<div class="muscleDayItem"[^>]*>.*?</div>', source, flags=re.S)
+            for item in items:
+                name_match = re.search(r'<span class="muscleName">([^<]+)</span>', item)
+                self.assertIsNotNone(name_match, f"Tarjeta sin nombre: {path.name}")
+                name = name_match.group(1)
+                marker_count = len(re.findall(r'class="muscleFocusMarker"', item))
+                with self.subTest(path=path.name, muscle=name):
+                    self.assertEqual(marker_count, 2 if name in bilateral else 1)
+                    self.assertIn('data-enhancement="muscle-marker-precision-v2"', source)
+                    self.assertIn('data-enhancement="mobile-first-muscle-grid-v1"', source)
+                    self.assertIn("--marker-x:", item)
+                    self.assertIn("--marker-y:", item)
 
     def test_all_routines_keep_phase_media_readable_on_dark_ui(self) -> None:
         for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):

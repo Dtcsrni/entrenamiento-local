@@ -2652,40 +2652,50 @@ body::before,body::after{animation:none!important}
 }
 </style>
 <script src="../../../progress-store.js"></script>
-<style data-fix="muscle-specific-focus-v1">
+<style data-fix="muscle-specific-focus-v1" data-enhancement="muscle-marker-precision-v2">
 /* Referencia ilustrativa: el halo localiza la región, no pretende ser una
    segmentación clínica ni una prueba de activación muscular. */
 .muscleDayItem[data-muscle-focus]{--focus-color:rgba(100,215,255,.92);--focus-x:50%;--focus-y:50%;--focus-r:38%;--focus-scale:1.18}
 .muscleDayVisual{position:relative!important;width:104px!important;height:104px!important;flex:0 0 104px!important;overflow:hidden!important;isolation:isolate!important;border-radius:16px!important;background:#f7f5ee!important}
 .muscleDayImage{display:block!important;width:100%!important;height:100%!important;max-width:none!important}
 .muscleDayVisual::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;background:radial-gradient(ellipse at var(--focus-x) var(--focus-y),var(--focus-color) 0%,rgba(255,255,255,.12) 10%,transparent var(--focus-r));mix-blend-mode:screen;opacity:.72}
-.muscleDayVisual::before{content:"";position:absolute;z-index:3;pointer-events:none;width:24px;height:24px;left:calc(var(--focus-x) - 12px);top:calc(var(--focus-y) - 12px);border:2px solid var(--focus-color);border-radius:50%;box-shadow:0 0 0 3px rgba(4,17,27,.36),0 0 18px var(--focus-color);opacity:.86}
+.muscleDayVisual::before{display:none}
+.muscleFocusMarker{position:absolute;z-index:4;left:var(--marker-x);top:var(--marker-y);width:24px;height:24px;transform:translate(-50%,-50%);border:2px solid var(--focus-color);border-radius:50%;box-shadow:0 0 0 3px rgba(4,17,27,.36),0 0 18px var(--focus-color);pointer-events:none;opacity:.92}
 .muscleDayItem[data-muscle-focus] .muscleDayImage{object-fit:cover!important;object-position:var(--focus-x) var(--focus-y)!important;transform:scale(var(--focus-scale))!important;transform-origin:var(--focus-x) var(--focus-y)!important}
-.muscleDayItem[data-muscle-focus="latissimus"]{--focus-x:58%;--focus-y:57%;--focus-r:42%;--focus-scale:1.22}
-.muscleDayItem[data-muscle-focus="rhomboids"]{--focus-x:50%;--focus-y:38%;--focus-r:30%;--focus-scale:1.34}
-.muscleDayItem[data-muscle-focus="middle-trapezius"]{--focus-x:50%;--focus-y:43%;--focus-r:28%;--focus-scale:1.35}
-.muscleDayItem[data-muscle-focus="rear-deltoid"]{--focus-x:23%;--focus-y:32%;--focus-r:27%;--focus-scale:1.32}
-.muscleDayItem[data-muscle-focus="biceps"]{--focus-x:21%;--focus-y:47%;--focus-r:30%;--focus-scale:1.28}
-.muscleDayItem[data-muscle-focus="pectoralis-major"]{--focus-x:50%;--focus-y:36%;--focus-r:35%;--focus-scale:1.25}
-.muscleDayItem[data-muscle-focus="quadriceps"]{--focus-x:50%;--focus-y:37%;--focus-r:35%;--focus-scale:1.22}
-.muscleDayItem[data-muscle-focus="gluteus-maximus"]{--focus-x:50%;--focus-y:22%;--focus-r:31%;--focus-scale:1.3}
-.muscleDayItem[data-muscle-focus="hamstrings"]{--focus-x:50%;--focus-y:38%;--focus-r:31%;--focus-scale:1.26}
-.muscleDayItem[data-muscle-focus="adductors"]{--focus-x:50%;--focus-y:40%;--focus-r:27%;--focus-scale:1.28}
-.muscleDayItem[data-muscle-focus="abductors"]{--focus-x:58%;--focus-y:28%;--focus-r:29%;--focus-scale:1.28}
-.muscleDayItem[data-muscle-focus="gastrocnemius"]{--focus-x:50%;--focus-y:60%;--focus-r:31%;--focus-scale:1.26}
-.muscleDayItem[data-muscle-focus="soleus"]{--focus-x:50%;--focus-y:72%;--focus-r:26%;--focus-scale:1.3}
-.muscleDayItem[data-muscle-focus="deltoid"]{--focus-x:22%;--focus-y:30%;--focus-r:27%;--focus-scale:1.28}
-.muscleDayItem[data-muscle-focus="triceps"]{--focus-x:22%;--focus-y:48%;--focus-r:30%;--focus-scale:1.26}
-.muscleDayItem[data-muscle-focus="biceps"] .muscleDayVisual::after,.muscleDayItem[data-muscle-focus="deltoid"] .muscleDayVisual::after{background:radial-gradient(ellipse at 21% 47%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 34%),radial-gradient(ellipse at 79% 47%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 34%)}
-.muscleDayItem[data-muscle-focus="biceps"] .muscleDayVisual::before,.muscleDayItem[data-muscle-focus="deltoid"] .muscleDayVisual::before{left:calc(21% - 12px)}
+.muscleDayItem[data-muscle-focus="latissimus"]{--focus-x:65%;--focus-y:59%;--focus-r:34%;--focus-scale:1.22}
+.muscleDayItem[data-muscle-focus="rhomboids"]{--focus-x:50%;--focus-y:39%;--focus-r:30%;--focus-scale:1.34}
+.muscleDayItem[data-muscle-focus="middle-trapezius"]{--focus-x:50%;--focus-y:48%;--focus-r:28%;--focus-scale:1.35}
+.muscleDayItem[data-muscle-focus="rear-deltoid"]{--focus-x:50%;--focus-y:34%;--focus-r:27%;--focus-scale:1.28}
+.muscleDayItem[data-muscle-focus="biceps"]{--focus-x:50%;--focus-y:53%;--focus-r:30%;--focus-scale:1.28}
+.muscleDayItem[data-muscle-focus="pectoralis-major"]{--focus-x:50%;--focus-y:40%;--focus-r:28%;--focus-scale:1.22}
+.muscleDayItem[data-muscle-focus="quadriceps"]{--focus-x:50%;--focus-y:32%;--focus-r:30%;--focus-scale:1.22}
+.muscleDayItem[data-muscle-focus="gluteus-maximus"]{--focus-x:50%;--focus-y:18%;--focus-r:26%;--focus-scale:1.24}
+.muscleDayItem[data-muscle-focus="hamstrings"]{--focus-x:50%;--focus-y:37%;--focus-r:28%;--focus-scale:1.24}
+.muscleDayItem[data-muscle-focus="adductors"]{--focus-x:50%;--focus-y:39%;--focus-r:24%;--focus-scale:1.26}
+.muscleDayItem[data-muscle-focus="abductors"]{--focus-x:50%;--focus-y:25%;--focus-r:28%;--focus-scale:1.24}
+.muscleDayItem[data-muscle-focus="gastrocnemius"]{--focus-x:50%;--focus-y:61%;--focus-r:27%;--focus-scale:1.24}
+.muscleDayItem[data-muscle-focus="soleus"]{--focus-x:50%;--focus-y:76%;--focus-r:24%;--focus-scale:1.24}
+.muscleDayItem[data-muscle-focus="deltoid"]{--focus-x:50%;--focus-y:31%;--focus-r:27%;--focus-scale:1.24}
+.muscleDayItem[data-muscle-focus="triceps"]{--focus-x:50%;--focus-y:51%;--focus-r:28%;--focus-scale:1.24}
+.muscleDayItem[data-muscle-focus="biceps"] .muscleDayVisual::after{background:radial-gradient(ellipse at 23% 53%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%),radial-gradient(ellipse at 77% 53%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%)}
+.muscleDayItem[data-muscle-focus="deltoid"] .muscleDayVisual::after{background:radial-gradient(ellipse at 28% 31%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%),radial-gradient(ellipse at 72% 31%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%)}
+.muscleDayItem[data-muscle-focus="pectoralis-major"] .muscleDayVisual::after{background:radial-gradient(ellipse at 38% 40%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%),radial-gradient(ellipse at 62% 40%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%)}
+.muscleDayItem[data-muscle-focus="rear-deltoid"] .muscleDayVisual::after{background:radial-gradient(ellipse at 28% 34%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%),radial-gradient(ellipse at 72% 34%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%)}
+.muscleDayItem[data-muscle-focus="quadriceps"] .muscleDayVisual::after{background:radial-gradient(ellipse at 42% 32%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%),radial-gradient(ellipse at 58% 32%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%)}
+.muscleDayItem[data-muscle-focus="gluteus-maximus"] .muscleDayVisual::after{background:radial-gradient(ellipse at 42% 18%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 29%),radial-gradient(ellipse at 58% 18%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 29%)}
+.muscleDayItem[data-muscle-focus="hamstrings"] .muscleDayVisual::after{background:radial-gradient(ellipse at 42% 37%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%),radial-gradient(ellipse at 58% 37%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%)}
+.muscleDayItem[data-muscle-focus="adductors"] .muscleDayVisual::after{background:radial-gradient(ellipse at 45% 39%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 27%),radial-gradient(ellipse at 55% 39%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 27%)}
+.muscleDayItem[data-muscle-focus="abductors"] .muscleDayVisual::after{background:radial-gradient(ellipse at 29% 25%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 30%),radial-gradient(ellipse at 71% 25%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 30%)}
+.muscleDayItem[data-muscle-focus="gastrocnemius"] .muscleDayVisual::after{background:radial-gradient(ellipse at 43% 61%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%),radial-gradient(ellipse at 57% 61%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%)}
+.muscleDayItem[data-muscle-focus="soleus"] .muscleDayVisual::after{background:radial-gradient(ellipse at 43% 76%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 29%),radial-gradient(ellipse at 57% 76%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 29%)}
+.muscleDayItem[data-muscle-focus="triceps"] .muscleDayVisual::after{background:radial-gradient(ellipse at 23% 51%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%),radial-gradient(ellipse at 77% 51%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%)}
 .muscleDayCopy{display:flex!important;min-width:0!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:4px!important}
 .muscleDayCopy .muscleCode{display:inline-flex!important;align-items:center!important;min-height:22px;padding:3px 8px;border:1px solid currentColor;border-radius:999px;font-size:.68rem!important;line-height:1!important;letter-spacing:.03em!important}
 .muscleDayCopy .muscleName{display:block!important;font-size:clamp(.78rem,1.25vw,1rem)!important;line-height:1.15!important}
 .muscleDayCopy .muscleName{overflow-wrap:anywhere!important}
 @media(max-width:640px){
   .muscleDayVisual{width:76px!important;height:76px!important;flex:0 0 76px!important}
-  .muscleDayItem[data-muscle-focus] .muscleDayVisual::before{width:20px;height:20px;left:calc(var(--focus-x) - 10px);top:calc(var(--focus-y) - 10px)}
-  .muscleDayItem[data-muscle-focus="biceps"] .muscleDayVisual::before,.muscleDayItem[data-muscle-focus="deltoid"] .muscleDayVisual::before{left:calc(21% - 10px)}
+  .muscleFocusMarker{width:20px;height:20px}
 }
 @media(min-width:641px) and (max-width:980px){.muscleDayVisual{width:88px!important;height:88px!important;flex-basis:88px!important}}
 @media(prefers-reduced-motion:reduce){.muscleDayItem:hover{transform:none!important}}
@@ -2746,12 +2756,12 @@ body::before,body::after{animation:none!important}
 </div><div class="muscleDayPanel" data-fix="hero-v9">
 <div class="muscleDayHead"><span class="muscleDayHeadIcon"><svg aria-hidden="true" viewbox="0 0 64 64"><path d="M17 39c1-8 7-14 15-14 3 0 5 1 7 2 3-3 7-5 11-5 5 0 8 3 8 8 0 10-10 20-24 20-10 0-18-4-17-11z" fill="currentColor"></path><path d="M22 17c2 0 4 2 4 4v4M31 14c2 1 3 3 3 6v4" fill="none" opacity=".55" stroke="currentColor" stroke-linecap="round" stroke-width="4"></path></svg></span><span>Músculos del día</span></div>
 <div class="muscleDayGrid" data-enhancement="muscle-day-realistic-media-v1" data-fallback-contract="muscle-day-image-fallback-v1">
-<div class="muscleDayItem" data-muscle-focus="quadriceps" data-muscle-view="anterior" data-muscle-visual="lower-anterior" aria-label="Cuádriceps; foco visual en cara anterior del muslo"><span class="muscleDayVisual anterior" title="Foco visual: cara anterior del muslo"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_anterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa anterior del músculo Cuádriceps; foco visual aproximado en cara anterior del muslo" decoding="async" fetchpriority="high"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#64d7ff">CUÁDRI</span><span class="muscleName">Cuádriceps</span></span></div>
-<div class="muscleDayItem" data-muscle-focus="gluteus-maximus" data-muscle-view="posterior" data-muscle-visual="lower-posterior" aria-label="Glúteo mayor; foco visual en cadera posterior"><span class="muscleDayVisual posterior" title="Foco visual: cadera posterior"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_posterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa posterior del músculo Glúteo mayor; foco visual aproximado en cadera posterior" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#64d7ff">GLÚTEO</span><span class="muscleName">Glúteo mayor</span></span></div>
-<div class="muscleDayItem" data-muscle-focus="hamstrings" data-muscle-view="posterior" data-muscle-visual="lower-posterior" aria-label="Isquiosurales; foco visual en cara posterior del muslo"><span class="muscleDayVisual posterior" title="Foco visual: cara posterior del muslo"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_posterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa posterior del músculo Isquiosurales; foco visual aproximado en cara posterior del muslo" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#64d7ff">ISQUIO</span><span class="muscleName">Isquiosurales</span></span></div>
-<div class="muscleDayItem" data-muscle-focus="adductors" data-muscle-view="anterior" data-muscle-visual="lower-anterior" aria-label="Aductores; foco visual en cara medial del muslo"><span class="muscleDayVisual anterior" title="Foco visual: cara medial del muslo"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_anterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa anterior del músculo Aductores; foco visual aproximado en cara medial del muslo" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#64d7ff">ADUCT</span><span class="muscleName">Aductores</span></span></div>
-<div class="muscleDayItem" data-muscle-focus="gastrocnemius" data-muscle-view="posterior" data-muscle-visual="lower-posterior" aria-label="Gastrocnemio; foco visual en pantorrilla superficial"><span class="muscleDayVisual posterior" title="Foco visual: pantorrilla superficial"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_posterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa posterior del músculo Gastrocnemio; foco visual aproximado en pantorrilla superficial" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#64d7ff">GASTRO</span><span class="muscleName">Gastrocnemio</span></span></div>
-<div class="muscleDayItem" data-muscle-focus="soleus" data-muscle-view="posterior" data-muscle-visual="lower-posterior" aria-label="Sóleo; foco visual en pantorrilla profunda inferior"><span class="muscleDayVisual posterior" title="Foco visual: pantorrilla profunda inferior"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_posterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa posterior del músculo Sóleo; foco visual aproximado en pantorrilla profunda inferior" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#64d7ff">SÓLEO</span><span class="muscleName">Sóleo</span></span></div>
+<div class="muscleDayItem" data-muscle-focus="quadriceps" data-muscle-view="anterior" data-muscle-visual="lower-anterior" aria-label="Cuádriceps; foco visual en cara anterior del muslo"><span class="muscleDayVisual anterior" title="Foco visual: cara anterior del muslo"><span class="muscleFocusMarker" data-marker-side="izquierdo" style="--marker-x:42%;--marker-y:32%" aria-hidden="true"></span><span class="muscleFocusMarker" data-marker-side="derecho" style="--marker-x:58%;--marker-y:32%" aria-hidden="true"></span><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_anterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa anterior del músculo Cuádriceps; foco visual aproximado en cara anterior del muslo" decoding="async" fetchpriority="high"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#64d7ff">CUÁDRI</span><span class="muscleName">Cuádriceps</span></span></div>
+<div class="muscleDayItem" data-muscle-focus="gluteus-maximus" data-muscle-view="posterior" data-muscle-visual="lower-posterior" aria-label="Glúteo mayor; foco visual en cadera posterior"><span class="muscleDayVisual posterior" title="Foco visual: cadera posterior"><span class="muscleFocusMarker" data-marker-side="izquierdo" style="--marker-x:42%;--marker-y:18%" aria-hidden="true"></span><span class="muscleFocusMarker" data-marker-side="derecho" style="--marker-x:58%;--marker-y:18%" aria-hidden="true"></span><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_posterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa posterior del músculo Glúteo mayor; foco visual aproximado en cadera posterior" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#64d7ff">GLÚTEO</span><span class="muscleName">Glúteo mayor</span></span></div>
+<div class="muscleDayItem" data-muscle-focus="hamstrings" data-muscle-view="posterior" data-muscle-visual="lower-posterior" aria-label="Isquiosurales; foco visual en cara posterior del muslo"><span class="muscleDayVisual posterior" title="Foco visual: cara posterior del muslo"><span class="muscleFocusMarker" data-marker-side="izquierdo" style="--marker-x:42%;--marker-y:37%" aria-hidden="true"></span><span class="muscleFocusMarker" data-marker-side="derecho" style="--marker-x:58%;--marker-y:37%" aria-hidden="true"></span><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_posterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa posterior del músculo Isquiosurales; foco visual aproximado en cara posterior del muslo" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#64d7ff">ISQUIO</span><span class="muscleName">Isquiosurales</span></span></div>
+<div class="muscleDayItem" data-muscle-focus="adductors" data-muscle-view="anterior" data-muscle-visual="lower-anterior" aria-label="Aductores; foco visual en cara medial del muslo"><span class="muscleDayVisual anterior" title="Foco visual: cara medial del muslo"><span class="muscleFocusMarker" data-marker-side="izquierdo" style="--marker-x:45%;--marker-y:39%" aria-hidden="true"></span><span class="muscleFocusMarker" data-marker-side="derecho" style="--marker-x:55%;--marker-y:39%" aria-hidden="true"></span><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_anterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa anterior del músculo Aductores; foco visual aproximado en cara medial del muslo" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#64d7ff">ADUCT</span><span class="muscleName">Aductores</span></span></div>
+<div class="muscleDayItem" data-muscle-focus="gastrocnemius" data-muscle-view="posterior" data-muscle-visual="lower-posterior" aria-label="Gastrocnemio; foco visual en pantorrilla superficial"><span class="muscleDayVisual posterior" title="Foco visual: pantorrilla superficial"><span class="muscleFocusMarker" data-marker-side="izquierdo" style="--marker-x:43%;--marker-y:61%" aria-hidden="true"></span><span class="muscleFocusMarker" data-marker-side="derecho" style="--marker-x:57%;--marker-y:61%" aria-hidden="true"></span><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_posterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa posterior del músculo Gastrocnemio; foco visual aproximado en pantorrilla superficial" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#64d7ff">GASTRO</span><span class="muscleName">Gastrocnemio</span></span></div>
+<div class="muscleDayItem" data-muscle-focus="soleus" data-muscle-view="posterior" data-muscle-visual="lower-posterior" aria-label="Sóleo; foco visual en pantorrilla profunda inferior"><span class="muscleDayVisual posterior" title="Foco visual: pantorrilla profunda inferior"><span class="muscleFocusMarker" data-marker-side="izquierdo" style="--marker-x:43%;--marker-y:76%" aria-hidden="true"></span><span class="muscleFocusMarker" data-marker-side="derecho" style="--marker-x:57%;--marker-y:76%" aria-hidden="true"></span><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_posterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa posterior del músculo Sóleo; foco visual aproximado en pantorrilla profunda inferior" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#64d7ff">SÓLEO</span><span class="muscleName">Sóleo</span></span></div>
 </div>
 </div></div>
 
@@ -2822,7 +2832,7 @@ body::before,body::after{animation:none!important}
 <section class="sessionDashboard">
 <div class="dashCard total"><div class="dashIcon"><svg aria-hidden="true" viewbox="0 0 64 64"><circle cx="32" cy="35" fill="none" r="20" stroke="currentColor" stroke-width="5"></circle><path d="M32 35V23M32 35l9 5M24 7h16M32 7v8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="5"></path></svg></div><div><div class="dashLabel">Duración total estimada</div><div class="dashValue"><strong class="timeCue">65–85 min</strong></div><div class="dashSub">Incluye calentamiento, series efectivas y descansos</div></div></div>
 <div class="dashCard volume"><div class="dashIcon"><svg aria-hidden="true" viewbox="0 0 64 64"><rect fill="currentColor" height="26" rx="2" width="8" x="8" y="19"></rect><rect fill="currentColor" height="26" rx="2" width="8" x="48" y="19"></rect><rect fill="currentColor" height="36" rx="2" width="7" x="18" y="14"></rect><rect fill="currentColor" height="36" rx="2" width="7" x="39" y="14"></rect><rect fill="currentColor" height="6" rx="3" width="14" x="25" y="29"></rect></svg></div><div><div class="dashLabel">Volumen del día</div><div class="dashValue">20 series efectivas</div><div class="dashSub">3 + 3 + 3 + 4 + 3 + 4 series</div></div></div>
-<div class="dashCard focus"><div class="dashIcon"><svg aria-hidden="true" viewbox="0 0 64 64"><circle cx="32" cy="32" fill="none" r="22" stroke="currentColor" stroke-width="5"></circle><circle cx="32" cy="32" fill="none" r="12" stroke="currentColor" stroke-width="5"></circle><circle cx="32" cy="32" fill="currentColor" r="4"></circle><path d="M46 18l8-8M44 10h10v10" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"></path></svg></div><div><div class="dashLabel">Enfoque principal</div><div class="dashValue">Cuádriceps + glúteo</div><div class="dashSub">Con trabajo específico de isquiosurales y pantorrilla</div></div></div>
+<div class="dashCard focus"><div class="dashIcon"><svg aria-hidden="true" viewbox="0 0 64 64"><circle cx="32" cy="32" fill="none" r="22" stroke="currentColor" stroke-width="5"></circle><circle cx="32" cy="32" fill="none" r="12" stroke="currentColor" stroke-width="5"></circle><circle cx="32" cy="32" fill="currentColor" r="4"></circle><path d="M46 18l8-8M44 10h10v10" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"></path></svg></div><div><div class="dashLabel">Enfoque principal</div><div class="dashValue">Cuádriceps + glúteo</div><div class="dashSub">Con trabajo complementario de deltoides posterior y curl sentado de bíceps</div></div></div>
 <div class="dashCard flow"><div class="dashIcon"><svg aria-hidden="true" viewbox="0 0 64 64"><path d="M18 9h28M18 55h28M22 10c0 12 4 16 10 22-6 6-10 10-10 22M42 10c0 12-4 16-10 22 6 6 10 10 10 22" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"></path><path d="M26 47h12l-6-7z" fill="currentColor"></path></svg></div><div><div class="dashLabel">Ritmo de trabajo</div><div class="dashValue">Descansos guiados</div><div class="dashSub">De 90 s a 3 min según el ejercicio</div></div></div>
 </section>
 <section class="note notePanel">
@@ -3674,20 +3684,135 @@ body::before,body::after{animation:none!important}
   const sendBrowserNotification = (title, body) => { try { if (typeof Notification !== 'undefined' && Notification.permission === 'granted') new Notification(title, { body }); } catch (_) {} };
   const notifyRestReady = (item, timing, elapsed) => {
     if (timing.restNotifiedAt || elapsed < getRestRecommendation(item).minMs) return;
-    timing.restNotifiedAt = Date.now(); timing.restReminderNotifiedAt = timing.restNotifiedAt; sendBrowserNotification('Descanso listo', `Puedes iniciar ${item.title}.`); timing.restReminderNotifiedAt = timing.restNotifiedAt; sendBrowserNotification('Descanso listo', `Puedes iniciar ${item.title}.`); timing.restReminderNotifiedAt = timing.restNotifiedAt; sendBrowserNotification('Descanso listo', `Puedes iniciar ${item.title}.`); timing.restReminderNotifiedAt = timing.restNotifiedAt; sendBrowserNotification('Descanso listo', `Puedes iniciar ${item.title}.`); timing.restReminderNotifiedAt = timing.restNotifiedAt; sendBrowserNotification('Descanso listo', `Puedes iniciar ${item.title}.`); timing.restReminderNotifiedAt = timing.restNotifiedAt; sendBrowserNotification('Descanso listo', `Puedes iniciar ${item.title}.`); timing.restReminderNotifiedAt = timing.restNotifiedAt; sendBrowserNotification('Descanso listo', `Puedes iniciar ${item.title}.`); timing.restReminderNotifiedAt = timing.restNotifiedAt; sendBrowserNotification('Descanso listo', `Puedes iniciar ${item.title}.`); timing.restReminderNotifiedAt = timing.restNotifiedAt; sendBrowserNotification('Descanso listo', `Puedes iniciar ${item.title}.`); timing.restReminderNotifiedAt = timing.restNotifiedAt; sendBrowserNotification('Descanso listo', `Puedes iniciar ${item.title}.`); timing.restReminderNotifiedAt = timing.restNotifiedAt; sendBrowserNotification('Descanso listo', `Puedes iniciar ${item.title}.`); timing.restReminderNotifiedAt = timing.restNotifiedAt;
+    timing.restNotifiedAt = Date.now(); timing.restReminderNotifiedAt = timing.restNotifiedAt; sendBrowserNotification('Descanso listo', `Puedes iniciar ${item.title}.`);timing.restReminderNotifiedAt = timing.restNotifiedAt;
     playMilestoneSound('rest');
     try { navigator.vibrate?.([140, 80, 220]); } catch (_) {}
     save();
   };
   const getTimingState = () => { if (!state.__timing || typeof state.__timing !== 'object') state.__timing = { sessionStartedAt: 0, sessionEndedAt: 0, sessionAbandonedAt: 0, exercises: {} }; if (!state.__timing.exercises || typeof state.__timing.exercises !== 'object') state.__timing.exercises = {}; return state.__timing; };
   const getExerciseTiming = item => { const root = getTimingState(); const key = String(item.index + 1); if (!root.exercises[key]) root.exercises[key] = { startedAt: 0, seriesStartedAt: 0, seriesTimes: [], restStartedAt: 0, restTimes: [], restNotifiedAt: 0, restReminderNotifiedAt: 0, endedAt: 0 }; const timing = root.exercises[key]; ['startedAt','seriesStartedAt','restStartedAt','restNotifiedAt','restReminderNotifiedAt','endedAt'].forEach(keyName => { if (!Number.isFinite(timing[keyName]) || timing[keyName] < 0) timing[keyName] = 0; }); if (!Array.isArray(timing.seriesTimes)) timing.seriesTimes = []; if (!Array.isArray(timing.restTimes)) timing.restTimes = []; return timing; };
-  const startTiming = (item, timestamp = Date.now()) => { const root = getTimingState(); const timing = getExerciseTiming(item); if (!timing.startedAt) { timing.startedAt = timestamp; timing.seriesStartedAt = timestamp; if (!root.sessionStartedAt) root.sessionStartedAt = timestamp; save(); } else if (!timing.seriesStartedAt && !timing.restStartedAt && !timing.endedAt) { timing.seriesStartedAt = timestamp; save(); } return timing; };
-  const beginSeries = (item, timestamp = Date.now()) => { const timing = startTiming(item, timestamp); const nextIndex = item.seriesKeys.findIndex(key => state[key] !== true); if (nextIndex < 0) return timing; if (nextIndex > 0 && timing.restStartedAt) timing.restTimes[nextIndex - 1] = Math.min(MAX_TIMING_MS, Math.max(0, timestamp - timing.restStartedAt)); timing.restStartedAt = 0; timing.restNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.seriesStartedAt = timestamp; timing.endedAt = 0; save(); return timing; };
-  const recordSeriesTime = (item, seriesIndex, timestamp = Date.now()) => { const root = getTimingState(); const timing = getExerciseTiming(item); if (!timing.startedAt) startTiming(item, timestamp); if (seriesIndex > 0 && timing.restStartedAt) timing.restTimes[seriesIndex - 1] = Math.min(MAX_TIMING_MS, Math.max(0, timestamp - timing.restStartedAt)); timing.restStartedAt = 0; timing.restNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; timing.restReminderNotifiedAt = 0; if (timing.seriesTimes[seriesIndex] == null) timing.seriesTimes[seriesIndex] = Math.min(MAX_TIMING_MS, Math.max(0, timestamp - (timing.seriesStartedAt || timestamp))); timing.seriesStartedAt = 0; if (seriesIndex + 1 < item.seriesKeys.length) timing.restStartedAt = timestamp; else timing.endedAt = timestamp; if (exerciseItems.every(entry => entry.seriesKeys.every(key => state[key] === true)) && !root.sessionEndedAt) root.sessionEndedAt = timestamp; save(); };
+  const startTiming = (item, timestamp = Date.now(), startSeries = false) => { const root = getTimingState(); const timing = getExerciseTiming(item); if (!timing.startedAt) { timing.startedAt = timestamp; if (startSeries) timing.seriesStartedAt = timestamp; if (!root.sessionStartedAt) root.sessionStartedAt = timestamp; save(); } else if (startSeries && !timing.seriesStartedAt && !timing.restStartedAt && !timing.endedAt) { timing.seriesStartedAt = timestamp; save(); } return timing; };
+  const beginSeries = (item, timestamp = Date.now()) => { const timing = startTiming(item, timestamp, true); const nextIndex = item.seriesKeys.findIndex(key => state[key] !== true); if (nextIndex < 0) return timing; if (nextIndex > 0 && timing.restStartedAt) timing.restTimes[nextIndex - 1] = Math.min(MAX_TIMING_MS, Math.max(0, timestamp - timing.restStartedAt)); timing.restStartedAt = 0; timing.restNotifiedAt = 0; timing.restReminderNotifiedAt = 0;timing.seriesStartedAt = timestamp; timing.endedAt = 0; save(); return timing; };
+  const recordSeriesTime = (item, seriesIndex, timestamp = Date.now()) => { const root = getTimingState(); const timing = getExerciseTiming(item); if (!timing.startedAt) startTiming(item, timestamp); if (seriesIndex > 0 && timing.restStartedAt) timing.restTimes[seriesIndex - 1] = Math.min(MAX_TIMING_MS, Math.max(0, timestamp - timing.restStartedAt)); timing.restStartedAt = 0; timing.restNotifiedAt = 0; timing.restReminderNotifiedAt = 0;if (timing.seriesTimes[seriesIndex] == null) timing.seriesTimes[seriesIndex] = Math.min(MAX_TIMING_MS, Math.max(0, timestamp - (timing.seriesStartedAt || timestamp))); timing.seriesStartedAt = 0; if (seriesIndex + 1 < item.seriesKeys.length) timing.restStartedAt = timestamp; else timing.endedAt = timestamp; if (exerciseItems.every(entry => entry.seriesKeys.every(key => state[key] === true)) && !root.sessionEndedAt) root.sessionEndedAt = timestamp; save(); };
   exerciseItems.forEach(item => { const display = document.createElement('div'); display.className = 'exerciseTiming'; display.setAttribute('aria-live', 'polite'); display.textContent = '⏱ Serie — · Ejercicio —'; item.timingDisplay = display; const restDisplay = document.createElement('div'); restDisplay.className = 'exerciseRest'; restDisplay.setAttribute('role', 'status'); restDisplay.setAttribute('aria-live', 'polite'); restDisplay.hidden = true; restDisplay.textContent = '⏳ Descanso en curso: 00:00'; item.restDisplay = restDisplay; item.tracker.querySelector('.exerciseTrackerHead')?.after(display); display.after(restDisplay); });
-  const renderTimingDisplays = () => { const root = state.__timing; const now = Date.now(); const total = document.getElementById('summaryElapsed'); if (total) { const elapsed = root?.sessionStartedAt ? (root.sessionEndedAt || now) - root.sessionStartedAt : NaN; total.textContent = `⏱ Total de rutina: ${formatElapsed(elapsed)}`; total.classList.toggle('isLive', Boolean(root?.sessionStartedAt && !root.sessionEndedAt)); } exerciseItems.forEach(item => { const display = item.timingDisplay; if (!display) return; const timing = root?.exercises?.[String(item.index + 1)]; const row = snapshot(item); const labels = []; (timing?.seriesTimes || []).forEach((duration, index) => { if (Number.isFinite(duration)) labels.push(`S${index + 1} ${formatElapsed(duration)}`); }); (timing?.restTimes || []).forEach((duration, index) => { if (Number.isFinite(duration)) labels.push(`D${index + 1} ${formatElapsed(duration)}`); }); const restActive = Boolean(!row.complete && timing?.restStartedAt); if (restActive) { const elapsed = Math.max(0, now - timing.restStartedAt); const recommendation = getRestRecommendation(item); const phase = restPhase(elapsed, recommendation); notifyRestReady(item, timing, elapsed); labels.push(`Descanso ${formatElapsed(elapsed)} · ${phase === 'short' ? 'poco' : phase === 'ready' ? 'suficiente' : 'de más'}`); if (item.restDisplay) { item.restDisplay.hidden = false; item.restDisplay.className = `exerciseRest rest-${phase}`; item.restDisplay.innerHTML = `⏳ Descanso: <strong>${formatElapsed(elapsed)}</strong> · ${phase === 'short' ? 'poco' : phase === 'ready' ? 'tiempo suficiente' : 'de más'}`; } } else if (!row.complete && timing?.seriesStartedAt) labels.push(`S${row.done + 1} ${formatElapsed(now - timing.seriesStartedAt)}`); const exerciseElapsed = timing?.startedAt ? formatElapsed((timing.endedAt || now) - timing.startedAt) : '—'; const progressLabel = row.complete ? 'Completado' : 'Serie ' + (row.done + 1) + '/' + item.seriesKeys.length + ' —'; display.textContent = '⏱ ' + (labels.length ? labels.join(' · ') : progressLabel) + ' · Ejercicio ' + exerciseElapsed; if (item.restDisplay && !restActive) item.restDisplay.hidden = true; }); };
-  // El tiempo no comienza por visibilidad, enfoque o desplazamiento: requiere el boton explicito de inicio.
-  const warmupTracker = document.getElementById('warmupTracker'); const warmupPhaseEl = document.getElementById('warmupPhase'); const warmupCardioEl = document.getElementById('warmupCardioElapsed'); const warmupMobilityEl = document.getElementById('warmupMobilityElapsed'); const warmupTotalEl = document.getElementById('warmupTotalElapsed'); const warmupStartButton = document.getElementById('warmupStart'); const warmupAdvanceButton = document.getElementById('warmupAdvance'); const warmupFinishButton = document.getElementById('warmupFinish'); const getWarmupTiming = () => { const root = getTimingState(); if (!root.warmup || typeof root.warmup !== 'object') root.warmup = { phase: 'idle', startedAt: 0, cardioStartedAt: 0, cardioEndedAt: 0, mobilityStartedAt: 0, mobilityEndedAt: 0, endedAt: 0 }; return root.warmup; }; const renderWarmupTiming = () => { if (!warmupTracker) return; const warmup = getWarmupTiming(); const now = Date.now(); const segment = (start, end) => start ? formatElapsed((end || now) - start) : '—'; if (warmupCardioEl) warmupCardioEl.textContent = segment(warmup.cardioStartedAt, warmup.cardioEndedAt); if (warmupMobilityEl) warmupMobilityEl.textContent = segment(warmup.mobilityStartedAt, warmup.mobilityEndedAt); if (warmupTotalEl) warmupTotalEl.textContent = segment(warmup.startedAt, warmup.endedAt); if (warmupPhaseEl) warmupPhaseEl.textContent = ({ idle: 'Sin iniciar', cardio: 'Cardio en curso', mobility: 'Movilidad en curso', done: 'Calentamiento completo' })[warmup.phase] || 'Sin iniciar'; if (warmupStartButton) { warmupStartButton.disabled = warmup.phase !== 'idle'; warmupStartButton.textContent = warmup.phase === 'idle' ? '▶ Iniciar calentamiento' : warmup.phase === 'done' ? '✓ Calentamiento registrado' : '⏱ Calentamiento en curso'; } if (warmupAdvanceButton) warmupAdvanceButton.disabled = warmup.phase !== 'cardio'; if (warmupFinishButton) warmupFinishButton.disabled = warmup.phase !== 'mobility'; }; warmupStartButton?.addEventListener('click', () => { const warmup = getWarmupTiming(); if (warmup.phase !== 'idle') return; const timestamp = Date.now(); warmup.phase = 'cardio'; warmup.startedAt = timestamp; warmup.cardioStartedAt = timestamp; save(); renderWarmupTiming(); }); warmupAdvanceButton?.addEventListener('click', () => { const warmup = getWarmupTiming(); if (warmup.phase !== 'cardio') return; const timestamp = Date.now(); warmup.phase = 'mobility'; warmup.cardioEndedAt = timestamp; warmup.mobilityStartedAt = timestamp; save(); renderWarmupTiming(); }); warmupFinishButton?.addEventListener('click', () => { const warmup = getWarmupTiming(); if (warmup.phase !== 'mobility') return; const timestamp = Date.now(); warmup.phase = 'done'; warmup.mobilityEndedAt = timestamp; warmup.endedAt = timestamp; save(); renderWarmupTiming(); }); renderWarmupTiming(); const timingInterval = window.setInterval(() => { renderTimingDisplays(); renderWarmupTiming(); }, 1000);
+  const renderTimingDisplays = () => { const root = state.__timing; const now = Date.now(); const total = document.getElementById('summaryElapsed'); if (total) { const elapsed = root?.sessionStartedAt ? (root.sessionEndedAt || now) - root.sessionStartedAt : NaN; total.textContent = `⏱ Total de rutina: ${formatElapsed(elapsed)}`; total.classList.toggle('isLive', Boolean(root?.sessionStartedAt && !root.sessionEndedAt)); } exerciseItems.forEach(item => { const display = item.timingDisplay; if (!display) return; const timing = root?.exercises?.[String(item.index + 1)]; const row = snapshot(item); const labels = []; (timing?.seriesTimes || []).forEach((duration, index) => { if (Number.isFinite(duration)) labels.push(`S${index + 1} ${formatElapsed(duration)}`); }); (timing?.restTimes || []).forEach((duration, index) => { if (Number.isFinite(duration)) labels.push(`D${index + 1} ${formatElapsed(duration)}`); }); const preparing = isSeriesPreparing(item); if (preparing) { renderPreparationDisplay(item); if (item.restDisplay) item.restDisplay.hidden = true; return; } const restActive = Boolean(!row.complete && timing?.restStartedAt); if (restActive) { const elapsed = Math.max(0, now - timing.restStartedAt); const recommendation = getRestRecommendation(item); const phase = restPhase(elapsed, recommendation); notifyRestReady(item, timing, elapsed); labels.push(`Descanso ${formatElapsed(elapsed)} · ${phase === 'short' ? 'poco' : phase === 'ready' ? 'suficiente' : 'de más'}`); if (item.restDisplay) { item.restDisplay.hidden = false; item.restDisplay.className = `exerciseRest rest-${phase}`; item.restDisplay.innerHTML = `⏳ Descanso: <strong>${formatElapsed(elapsed)}</strong> · ${phase === 'short' ? 'poco' : phase === 'ready' ? 'tiempo suficiente' : 'de más'}`; } } else if (!row.complete && timing?.seriesStartedAt) labels.push(`S${row.done + 1} ${formatElapsed(now - timing.seriesStartedAt)}`); const exerciseElapsed = timing?.startedAt ? formatElapsed((timing.endedAt || now) - timing.startedAt) : '—'; const progressLabel = row.complete ? 'Completado' : 'Serie ' + (row.done + 1) + '/' + item.seriesKeys.length + ' —'; display.textContent = '⏱ ' + (labels.length ? labels.join(' · ') : progressLabel) + ' · Ejercicio ' + exerciseElapsed; if (item.restDisplay && !restActive) item.restDisplay.hidden = true; }); };
+  // El cronómetro empieza después de una preparación explícita de 5 segundos.
+  const PREPARATION_MS = 5000;
+  let warmupPreparationTimer = 0;
+  let warmupPreparationEndsAt = 0;
+  const seriesPreparation = new Map();
+  const clearPreparationTimers = () => {
+    if (warmupPreparationTimer) window.clearTimeout(warmupPreparationTimer);
+    warmupPreparationTimer = 0;
+    warmupPreparationEndsAt = 0;
+    for (const preparation of seriesPreparation.values()) window.clearTimeout(preparation.timer);
+    seriesPreparation.clear();
+  };
+  const warmupTracker = document.getElementById('warmupTracker');
+  const warmupPhaseEl = document.getElementById('warmupPhase');
+  const warmupCardioEl = document.getElementById('warmupCardioElapsed');
+  const warmupMobilityEl = document.getElementById('warmupMobilityElapsed');
+  const warmupTotalEl = document.getElementById('warmupTotalElapsed');
+  const warmupStartButton = document.getElementById('warmupStart');
+  const warmupAdvanceButton = document.getElementById('warmupAdvance');
+  const warmupFinishButton = document.getElementById('warmupFinish');
+  const getWarmupTiming = () => {
+    const root = getTimingState();
+    if (!root.warmup || typeof root.warmup !== 'object') root.warmup = { phase: 'idle', startedAt: 0, cardioStartedAt: 0, cardioEndedAt: 0, mobilityStartedAt: 0, mobilityEndedAt: 0, endedAt: 0 };
+    return root.warmup;
+  };
+  const warmupPreparationRemaining = () => Math.max(0, warmupPreparationEndsAt - Date.now());
+  const renderWarmupTiming = () => {
+    if (!warmupTracker) return;
+    const warmup = getWarmupTiming();
+    const preparing = warmup.phase === 'preparing';
+    const now = Date.now();
+    const segment = (start, end) => start ? formatElapsed((end || now) - start) : '—';
+    const phaseLabels = { idle: 'Pendiente', preparing: 'Preparación', cardio: 'Cardio', mobility: 'Movilidad', done: 'Completado' };
+    const phaseText = preparing ? `Preparación · ${formatElapsed(warmupPreparationRemaining())}` : phaseLabels[warmup.phase] || phaseLabels.idle;
+    if (warmupCardioEl) warmupCardioEl.textContent = segment(warmup.cardioStartedAt, warmup.cardioEndedAt);
+    if (warmupMobilityEl) warmupMobilityEl.textContent = segment(warmup.mobilityStartedAt, warmup.mobilityEndedAt);
+    if (warmupTotalEl) warmupTotalEl.textContent = segment(warmup.startedAt, warmup.endedAt);
+    if (warmupPhaseEl) warmupPhaseEl.textContent = phaseText;
+    if (warmupStartButton) {
+      warmupStartButton.disabled = warmup.phase !== 'idle';
+      warmupStartButton.textContent = warmup.phase === 'idle' ? '▶ Iniciar calentamiento' : preparing ? '⏳ Preparando…' : '✓ Calentamiento iniciado';
+    }
+    if (warmupAdvanceButton) {
+      warmupAdvanceButton.disabled = warmup.phase !== 'cardio';
+      warmupAdvanceButton.textContent = warmup.phase === 'cardio' ? '→ Pasar a movilidad' : '→ Movilidad';
+    }
+    if (warmupFinishButton) {
+      warmupFinishButton.disabled = warmup.phase !== 'mobility';
+      warmupFinishButton.textContent = warmup.phase === 'mobility' ? '✓ Finalizar calentamiento' : '✓ Calentamiento completo';
+    }
+    const warmupComplete = warmup.phase === 'done';
+    if (warmupTracker) warmupTracker.dataset.warmupComplete = warmupComplete ? 'true' : 'false';
+  };
+  const startWarmupPreparation = () => {
+    const warmup = getWarmupTiming();
+    if (warmup.phase !== 'idle') return;
+    warmup.phase = 'preparing';
+    warmupPreparationEndsAt = Date.now() + PREPARATION_MS;
+    renderWarmupTiming();
+    warmupPreparationTimer = window.setTimeout(() => {
+      warmupPreparationTimer = 0;
+      if (getWarmupTiming().phase !== 'preparing') return;
+      const timestamp = Date.now();
+      warmup.phase = 'cardio';
+      warmup.startedAt = timestamp;
+      warmup.cardioStartedAt = timestamp;
+      const root = getTimingState();
+      if (!root.sessionStartedAt) root.sessionStartedAt = timestamp;
+      save();
+      renderWarmupTiming();
+      renderTimingDisplays();
+    }, PREPARATION_MS);
+  };
+  const startSeriesPreparation = (item) => {
+    if (seriesPreparation.has(item.index)) return;
+    const endsAt = Date.now() + PREPARATION_MS;
+    const timer = window.setTimeout(() => {
+      seriesPreparation.delete(item.index);
+      beginSeries(item, Date.now());
+      updateTracker(item.tracker, false);
+      renderTimingDisplays();
+    }, PREPARATION_MS);
+    seriesPreparation.set(item.index, { endsAt, timer });
+    updateTracker(item.tracker, false);
+    renderTimingDisplays();
+  };
+  const isSeriesPreparing = item => seriesPreparation.has(item.index);
+  const renderPreparationDisplay = item => {
+    const preparation = seriesPreparation.get(item.index);
+    if (!preparation) return false;
+    const remaining = Math.max(0, preparation.endsAt - Date.now());
+    if (item.timingDisplay) item.timingDisplay.textContent = `⏳ Preparación · ${formatElapsed(remaining)}`;
+    return true;
+  };
+  warmupStartButton?.addEventListener('click', startWarmupPreparation);
+  warmupAdvanceButton?.addEventListener('click', () => {
+    const warmup = getWarmupTiming();
+    if (warmup.phase !== 'cardio') return;
+    const timestamp = Date.now();
+    warmup.phase = 'mobility';
+    warmup.cardioEndedAt = timestamp;
+    warmup.mobilityStartedAt = timestamp;
+    save();
+    renderWarmupTiming();
+  });
+  warmupFinishButton?.addEventListener('click', () => {
+    const warmup = getWarmupTiming();
+    if (warmup.phase !== 'mobility') return;
+    const timestamp = Date.now();
+    warmup.phase = 'done';
+    warmup.mobilityEndedAt = timestamp;
+    warmup.endedAt = timestamp;
+    save();
+    renderWarmupTiming();
+  });
+  renderWarmupTiming();
+  const timingInterval = window.setInterval(() => { renderTimingDisplays(); renderWarmupTiming(); }, 1000);
   document.addEventListener('visibilitychange', renderTimingDisplays); window.addEventListener('pagehide', () => { const timing = state.__timing; if (timing?.sessionStartedAt && !timing.sessionEndedAt) { timing.sessionAbandonedAt = Date.now(); save(); } }, { once: true });
   const updatePendingButton = item => {
     const button = item.tracker.querySelector('.machinePendingToggle');
@@ -3720,7 +3845,7 @@ body::before,body::after{animation:none!important}
       ['startedAt', 'seriesStartedAt', 'restStartedAt', 'restNotifiedAt', 'endedAt'].forEach(field => { current[field] = validTimestamp(current[field]); });
       current.seriesTimes = (Array.isArray(current.seriesTimes) ? current.seriesTimes : []).slice(0, item.seriesKeys.length).map(validDuration).filter(value => value !== null);
       current.restTimes = (Array.isArray(current.restTimes) ? current.restTimes : []).slice(0, Math.max(0, item.seriesKeys.length - 1)).map(validDuration).filter(value => value !== null);
-      if (current.restStartedAt && now - current.restStartedAt > MAX_TIMING_MS) { current.restStartedAt = 0; current.restNotifiedAt = 0; current.restReminderNotifiedAt = 0; current.restReminderNotifiedAt = 0; current.restReminderNotifiedAt = 0; current.restReminderNotifiedAt = 0; current.restReminderNotifiedAt = 0; current.restReminderNotifiedAt = 0; current.restReminderNotifiedAt = 0; current.restReminderNotifiedAt = 0; current.restReminderNotifiedAt = 0; current.restReminderNotifiedAt = 0; current.restReminderNotifiedAt = 0; current.restReminderNotifiedAt = 0; current.seriesStartedAt = 0; }
+      if (current.restStartedAt && now - current.restStartedAt > MAX_TIMING_MS) { current.restStartedAt = 0; current.restNotifiedAt = 0; current.restReminderNotifiedAt = 0;current.seriesStartedAt = 0; }
       if (current.startedAt && current.endedAt && current.endedAt < current.startedAt) current.endedAt = 0;
       if ((!hasCompletedSeries && !current.seriesTimes.length) || (!timing.warmup || timing.warmup.phase !== 'done') && !exerciseComplete) delete timing.exercises[key];
       else if (current.startedAt) hasStartedExercise = true;
@@ -3739,11 +3864,12 @@ body::before,body::after{animation:none!important}
     const started = isExerciseStarted(item);
     const timing = state.__timing?.exercises?.[String(item.index + 1)];
     const seriesActive = Boolean(timing?.seriesStartedAt && !timing?.restStartedAt);
+    const seriesPreparing = isSeriesPreparing(item);
     const globalWarmupComplete = getWarmupTiming().phase === 'done';
-    button.disabled = complete || !started || !globalWarmupComplete || !seriesActive;
+    button.disabled = complete || !started || !globalWarmupComplete || !seriesActive || seriesPreparing;
     button.textContent = complete ? '✓ Ejercicio completado' : !globalWarmupComplete ? 'Completa calentamiento' : !started ? 'Inicia el ejercicio' : !seriesActive ? 'Inicia la serie' : `Completar serie ${nextIndex + 1} de ${item.seriesKeys.length}`;
     button.setAttribute('aria-label', complete ? 'Ejercicio completado' : !globalWarmupComplete ? 'Completa primero el calentamiento' : !started ? 'Inicia el ejercicio' : !seriesActive ? `Iniciar serie ${nextIndex + 1} de ${item.seriesKeys.length}` : `Completar serie ${nextIndex + 1} de ${item.seriesKeys.length}`);
-    if (item.startSeriesButton) { item.startSeriesButton.hidden = complete || !started || !globalWarmupComplete || seriesActive; item.startSeriesButton.disabled = complete || !started || !globalWarmupComplete || seriesActive; if (!item.startSeriesButton.hidden) item.startSeriesButton.textContent = `▶ Iniciar serie ${nextIndex + 1} de ${item.seriesKeys.length}`; }
+    if (item.startSeriesButton) { item.startSeriesButton.hidden = complete || !started || !globalWarmupComplete || seriesActive; item.startSeriesButton.disabled = complete || !started || !globalWarmupComplete || seriesActive || seriesPreparing; if (!item.startSeriesButton.hidden) item.startSeriesButton.textContent = seriesPreparing ? `⏳ Preparación · ${formatElapsed(Math.max(0, seriesPreparation.get(item.index).endsAt - Date.now()))}` : `▶ Iniciar serie ${nextIndex + 1} de ${item.seriesKeys.length}`; }
   };
   const updateSummary = () => {
     const rows = exerciseItems.map(snapshot);
@@ -3861,7 +3987,7 @@ body::before,body::after{animation:none!important}
     if (warmup) warmup.setAttribute('aria-pressed', String(exerciseWarmupComplete));
     const startButton = item.startButton;
     const timing = state.__timing?.exercises?.[String(item.index + 1)];
-    if (item.startSeriesButton) { item.startSeriesButton.hidden = completed || !isExerciseStarted(item) || !globalWarmupComplete || Boolean(timing?.seriesStartedAt); item.startSeriesButton.disabled = item.startSeriesButton.hidden; }
+    if (item.startSeriesButton) { const preparing = isSeriesPreparing(item); item.startSeriesButton.hidden = completed || !isExerciseStarted(item) || !globalWarmupComplete || Boolean(timing?.seriesStartedAt); item.startSeriesButton.disabled = item.startSeriesButton.hidden || preparing; if (!item.startSeriesButton.hidden) item.startSeriesButton.textContent = preparing ? `⏳ Preparación · ${formatElapsed(Math.max(0, seriesPreparation.get(item.index).endsAt - Date.now()))}` : `▶ Iniciar serie ${done + 1} de ${item.seriesKeys.length}`; }
     if (startButton) {
       const started = isExerciseStarted(item);
       const canStart = globalWarmupComplete && (exerciseWarmupComplete || started);
@@ -3886,7 +4012,7 @@ body::before,body::after{animation:none!important}
     });
     item.startSeriesButton?.addEventListener('click', () => {
       if (!item || snapshot(item).complete || !isExerciseStarted(item) || getWarmupTiming().phase !== 'done') return;
-      beginSeries(item);
+      startSeriesPreparation(item);
       updateTracker(tracker, false);
     });
     tracker.querySelector('.warmupSet')?.addEventListener('click', event => {
@@ -3944,6 +4070,7 @@ body::before,body::after{animation:none!important}
     if (!resetSessionButton) return;
     const confirmed = window.confirm('¿Reiniciar el progreso de esta sesión? Se borrarán marcadores, pendientes y tiempos.');
     if (!confirmed) return;
+    clearPreparationTimers();
     state = {};
     save();
     exerciseItems.forEach(item => updateTracker(item.tracker));
@@ -4378,6 +4505,12 @@ body{height:auto!important;min-height:100%!important;overflow-x:hidden!important
 })();
 
 </script>
+<style data-enhancement="mobile-first-muscle-grid-v1">
+/* El contrato parte de una columna y escala progresivamente con el viewport. */
+.muscleDayGrid{grid-template-columns:1fr!important}
+@media(min-width:641px){.muscleDayGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(min-width:981px){.muscleDayGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+</style>
 
 <!-- canonical media contract references: 1350-7I6LNUG.jpg · 1350-7I6LNUG-final.png -->
 </body>

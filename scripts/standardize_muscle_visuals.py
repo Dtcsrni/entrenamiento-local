@@ -88,6 +88,27 @@ MUSCLE_FOCUS = {
     },
 }
 
+# Coordenadas normalizadas sobre la lámina cuadrada (0% = borde superior/izquierdo).
+# Los músculos pares llevan dos marcadores para evitar señalar la línea media o
+# el espacio intermuscular como si fuera el tejido objetivo.
+MUSCLE_MARKERS = {
+    "Dorsal ancho": (("izquierdo", "35%", "59%"), ("derecho", "65%", "59%")),
+    "Romboides": (("izquierdo", "43%", "39%"), ("derecho", "57%", "39%")),
+    "Trapecio medio": (("izquierdo", "41%", "48%"), ("derecho", "59%", "48%")),
+    "Deltoides posterior": (("izquierdo", "28%", "34%"), ("derecho", "72%", "34%")),
+    "Bíceps braquial": (("izquierdo", "23%", "53%"), ("derecho", "77%", "53%")),
+    "Pectoral mayor": (("izquierdo", "38%", "40%"), ("derecho", "62%", "40%")),
+    "Cuádriceps": (("izquierdo", "42%", "32%"), ("derecho", "58%", "32%")),
+    "Glúteo mayor": (("izquierdo", "42%", "18%"), ("derecho", "58%", "18%")),
+    "Isquiosurales": (("izquierdo", "42%", "37%"), ("derecho", "58%", "37%")),
+    "Aductores": (("izquierdo", "45%", "39%"), ("derecho", "55%", "39%")),
+    "Abductores": (("izquierdo", "29%", "25%"), ("derecho", "71%", "25%")),
+    "Gastrocnemio": (("izquierdo", "43%", "61%"), ("derecho", "57%", "61%")),
+    "Sóleo": (("izquierdo", "43%", "76%"), ("derecho", "57%", "76%")),
+    "Deltoides": (("izquierdo", "28%", "31%"), ("derecho", "72%", "31%")),
+    "Tríceps": (("izquierdo", "23%", "51%"), ("derecho", "77%", "51%")),
+}
+
 MUSCLE_CODE = {
     "Dorsal ancho": "DORSAL",
     "Romboides": "ROMBO",
@@ -125,40 +146,53 @@ UPPER_MUSCLES = {
 }
 
 
-MUSCLE_VISUAL_STYLE = r'''<style data-fix="muscle-specific-focus-v1">
+MUSCLE_VISUAL_STYLE = r'''<style data-fix="muscle-specific-focus-v1" data-enhancement="muscle-marker-precision-v2">
 /* Referencia ilustrativa: el halo localiza la región, no pretende ser una
    segmentación clínica ni una prueba de activación muscular. */
 .muscleDayItem[data-muscle-focus]{--focus-color:rgba(100,215,255,.92);--focus-x:50%;--focus-y:50%;--focus-r:38%;--focus-scale:1.18}
 .muscleDayVisual{position:relative!important;width:104px!important;height:104px!important;flex:0 0 104px!important;overflow:hidden!important;isolation:isolate!important;border-radius:16px!important;background:#f7f5ee!important}
 .muscleDayImage{display:block!important;width:100%!important;height:100%!important;max-width:none!important}
 .muscleDayVisual::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;background:radial-gradient(ellipse at var(--focus-x) var(--focus-y),var(--focus-color) 0%,rgba(255,255,255,.12) 10%,transparent var(--focus-r));mix-blend-mode:screen;opacity:.72}
-.muscleDayVisual::before{content:"";position:absolute;z-index:3;pointer-events:none;width:24px;height:24px;left:calc(var(--focus-x) - 12px);top:calc(var(--focus-y) - 12px);border:2px solid var(--focus-color);border-radius:50%;box-shadow:0 0 0 3px rgba(4,17,27,.36),0 0 18px var(--focus-color);opacity:.86}
+.muscleDayVisual::before{display:none}
+.muscleFocusMarker{position:absolute;z-index:4;left:var(--marker-x);top:var(--marker-y);width:24px;height:24px;transform:translate(-50%,-50%);border:2px solid var(--focus-color);border-radius:50%;box-shadow:0 0 0 3px rgba(4,17,27,.36),0 0 18px var(--focus-color);pointer-events:none;opacity:.92}
 .muscleDayItem[data-muscle-focus] .muscleDayImage{object-fit:cover!important;object-position:var(--focus-x) var(--focus-y)!important;transform:scale(var(--focus-scale))!important;transform-origin:var(--focus-x) var(--focus-y)!important}
-.muscleDayItem[data-muscle-focus="latissimus"]{--focus-x:58%;--focus-y:57%;--focus-r:42%;--focus-scale:1.22}
-.muscleDayItem[data-muscle-focus="rhomboids"]{--focus-x:50%;--focus-y:38%;--focus-r:30%;--focus-scale:1.34}
-.muscleDayItem[data-muscle-focus="middle-trapezius"]{--focus-x:50%;--focus-y:43%;--focus-r:28%;--focus-scale:1.35}
-.muscleDayItem[data-muscle-focus="rear-deltoid"]{--focus-x:23%;--focus-y:32%;--focus-r:27%;--focus-scale:1.32}
-.muscleDayItem[data-muscle-focus="biceps"]{--focus-x:21%;--focus-y:47%;--focus-r:30%;--focus-scale:1.28}
-.muscleDayItem[data-muscle-focus="pectoralis-major"]{--focus-x:50%;--focus-y:36%;--focus-r:35%;--focus-scale:1.25}
-.muscleDayItem[data-muscle-focus="quadriceps"]{--focus-x:50%;--focus-y:37%;--focus-r:35%;--focus-scale:1.22}
-.muscleDayItem[data-muscle-focus="gluteus-maximus"]{--focus-x:50%;--focus-y:22%;--focus-r:31%;--focus-scale:1.3}
-.muscleDayItem[data-muscle-focus="hamstrings"]{--focus-x:50%;--focus-y:38%;--focus-r:31%;--focus-scale:1.26}
-.muscleDayItem[data-muscle-focus="adductors"]{--focus-x:50%;--focus-y:40%;--focus-r:27%;--focus-scale:1.28}
-.muscleDayItem[data-muscle-focus="abductors"]{--focus-x:58%;--focus-y:28%;--focus-r:29%;--focus-scale:1.28}
-.muscleDayItem[data-muscle-focus="gastrocnemius"]{--focus-x:50%;--focus-y:60%;--focus-r:31%;--focus-scale:1.26}
-.muscleDayItem[data-muscle-focus="soleus"]{--focus-x:50%;--focus-y:72%;--focus-r:26%;--focus-scale:1.3}
-.muscleDayItem[data-muscle-focus="deltoid"]{--focus-x:22%;--focus-y:30%;--focus-r:27%;--focus-scale:1.28}
-.muscleDayItem[data-muscle-focus="triceps"]{--focus-x:22%;--focus-y:48%;--focus-r:30%;--focus-scale:1.26}
-.muscleDayItem[data-muscle-focus="biceps"] .muscleDayVisual::after,.muscleDayItem[data-muscle-focus="deltoid"] .muscleDayVisual::after{background:radial-gradient(ellipse at 21% 47%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 34%),radial-gradient(ellipse at 79% 47%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 34%)}
-.muscleDayItem[data-muscle-focus="biceps"] .muscleDayVisual::before,.muscleDayItem[data-muscle-focus="deltoid"] .muscleDayVisual::before{left:calc(21% - 12px)}
+.muscleDayItem[data-muscle-focus="latissimus"]{--focus-x:50%;--focus-y:59%;--focus-r:30%;--focus-scale:1.22}
+.muscleDayItem[data-muscle-focus="rhomboids"]{--focus-x:50%;--focus-y:39%;--focus-r:30%;--focus-scale:1.34}
+.muscleDayItem[data-muscle-focus="middle-trapezius"]{--focus-x:50%;--focus-y:48%;--focus-r:28%;--focus-scale:1.35}
+.muscleDayItem[data-muscle-focus="rear-deltoid"]{--focus-x:50%;--focus-y:34%;--focus-r:27%;--focus-scale:1.28}
+.muscleDayItem[data-muscle-focus="biceps"]{--focus-x:50%;--focus-y:53%;--focus-r:30%;--focus-scale:1.28}
+.muscleDayItem[data-muscle-focus="pectoralis-major"]{--focus-x:50%;--focus-y:40%;--focus-r:28%;--focus-scale:1.22}
+.muscleDayItem[data-muscle-focus="quadriceps"]{--focus-x:50%;--focus-y:32%;--focus-r:30%;--focus-scale:1.22}
+.muscleDayItem[data-muscle-focus="gluteus-maximus"]{--focus-x:50%;--focus-y:18%;--focus-r:26%;--focus-scale:1.24}
+.muscleDayItem[data-muscle-focus="hamstrings"]{--focus-x:50%;--focus-y:37%;--focus-r:28%;--focus-scale:1.24}
+.muscleDayItem[data-muscle-focus="adductors"]{--focus-x:50%;--focus-y:39%;--focus-r:24%;--focus-scale:1.26}
+.muscleDayItem[data-muscle-focus="abductors"]{--focus-x:50%;--focus-y:25%;--focus-r:28%;--focus-scale:1.24}
+.muscleDayItem[data-muscle-focus="gastrocnemius"]{--focus-x:50%;--focus-y:61%;--focus-r:27%;--focus-scale:1.24}
+.muscleDayItem[data-muscle-focus="soleus"]{--focus-x:50%;--focus-y:76%;--focus-r:24%;--focus-scale:1.24}
+.muscleDayItem[data-muscle-focus="deltoid"]{--focus-x:50%;--focus-y:31%;--focus-r:27%;--focus-scale:1.24}
+.muscleDayItem[data-muscle-focus="triceps"]{--focus-x:50%;--focus-y:51%;--focus-r:28%;--focus-scale:1.24}
+.muscleDayItem[data-muscle-focus="biceps"] .muscleDayVisual::after{background:radial-gradient(ellipse at 23% 53%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%),radial-gradient(ellipse at 77% 53%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%)}
+.muscleDayItem[data-muscle-focus="deltoid"] .muscleDayVisual::after{background:radial-gradient(ellipse at 28% 31%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%),radial-gradient(ellipse at 72% 31%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%)}
+.muscleDayItem[data-muscle-focus="pectoralis-major"] .muscleDayVisual::after{background:radial-gradient(ellipse at 38% 40%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%),radial-gradient(ellipse at 62% 40%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%)}
+.muscleDayItem[data-muscle-focus="rear-deltoid"] .muscleDayVisual::after{background:radial-gradient(ellipse at 28% 34%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%),radial-gradient(ellipse at 72% 34%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%)}
+.muscleDayItem[data-muscle-focus="quadriceps"] .muscleDayVisual::after{background:radial-gradient(ellipse at 42% 32%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%),radial-gradient(ellipse at 58% 32%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%)}
+.muscleDayItem[data-muscle-focus="gluteus-maximus"] .muscleDayVisual::after{background:radial-gradient(ellipse at 42% 18%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 29%),radial-gradient(ellipse at 58% 18%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 29%)}
+.muscleDayItem[data-muscle-focus="hamstrings"] .muscleDayVisual::after{background:radial-gradient(ellipse at 42% 37%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%),radial-gradient(ellipse at 58% 37%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%)}
+.muscleDayItem[data-muscle-focus="adductors"] .muscleDayVisual::after{background:radial-gradient(ellipse at 45% 39%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 27%),radial-gradient(ellipse at 55% 39%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 27%)}
+.muscleDayItem[data-muscle-focus="abductors"] .muscleDayVisual::after{background:radial-gradient(ellipse at 29% 25%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 30%),radial-gradient(ellipse at 71% 25%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 30%)}
+.muscleDayItem[data-muscle-focus="gastrocnemius"] .muscleDayVisual::after{background:radial-gradient(ellipse at 43% 61%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%),radial-gradient(ellipse at 57% 61%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%)}
+.muscleDayItem[data-muscle-focus="soleus"] .muscleDayVisual::after{background:radial-gradient(ellipse at 43% 76%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 29%),radial-gradient(ellipse at 57% 76%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 29%)}
+.muscleDayItem[data-muscle-focus="triceps"] .muscleDayVisual::after{background:radial-gradient(ellipse at 23% 51%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%),radial-gradient(ellipse at 77% 51%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%)}
+.muscleDayItem[data-muscle-focus="latissimus"] .muscleDayVisual::after{background:radial-gradient(ellipse at 35% 59%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%),radial-gradient(ellipse at 65% 59%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 31%)}
+.muscleDayItem[data-muscle-focus="rhomboids"] .muscleDayVisual::after{background:radial-gradient(ellipse at 43% 39%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 27%),radial-gradient(ellipse at 57% 39%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 27%)}
+.muscleDayItem[data-muscle-focus="middle-trapezius"] .muscleDayVisual::after{background:radial-gradient(ellipse at 41% 48%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 29%),radial-gradient(ellipse at 59% 48%,var(--focus-color) 0%,rgba(255,255,255,.12) 11%,transparent 29%)}
 .muscleDayCopy{display:flex!important;min-width:0!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:4px!important}
 .muscleDayCopy .muscleCode{display:inline-flex!important;align-items:center!important;min-height:22px;padding:3px 8px;border:1px solid currentColor;border-radius:999px;font-size:.68rem!important;line-height:1!important;letter-spacing:.03em!important}
 .muscleDayCopy .muscleName{display:block!important;font-size:clamp(.78rem,1.25vw,1rem)!important;line-height:1.15!important}
 .muscleDayCopy .muscleName{overflow-wrap:anywhere!important}
 @media(max-width:640px){
   .muscleDayVisual{width:76px!important;height:76px!important;flex:0 0 76px!important}
-  .muscleDayItem[data-muscle-focus] .muscleDayVisual::before{width:20px;height:20px;left:calc(var(--focus-x) - 10px);top:calc(var(--focus-y) - 10px)}
-  .muscleDayItem[data-muscle-focus="biceps"] .muscleDayVisual::before,.muscleDayItem[data-muscle-focus="deltoid"] .muscleDayVisual::before{left:calc(21% - 10px)}
+  .muscleFocusMarker{width:20px;height:20px}
 }
 @media(min-width:641px) and (max-width:980px){.muscleDayVisual{width:88px!important;height:88px!important;flex-basis:88px!important}}
 @media(prefers-reduced-motion:reduce){.muscleDayItem:hover{transform:none!important}}
@@ -174,6 +208,134 @@ article.card .phaseRow .photo img.realphoto{background:transparent!important;mix
 .warmupGuide .warmupMedia{overflow:hidden;border-radius:12px;}
 .warmupGuide .warmupMedia img{width:100%;height:100%;object-fit:cover!important;object-position:center!important;transform:scale(1.06);}
 </style>'''
+
+
+MOBILE_FIRST_MUSCLE_STYLE = r'''<style data-enhancement="mobile-first-muscle-grid-v1">
+/* El contrato parte de una columna y escala progresivamente con el viewport. */
+.muscleDayGrid{grid-template-columns:1fr!important}
+@media(min-width:641px){.muscleDayGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(min-width:981px){.muscleDayGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+</style>'''
+
+
+PREPARATION_TIMING_CONTRACT = r'''  // El cronómetro empieza después de una preparación explícita de 5 segundos.
+  const PREPARATION_MS = 5000;
+  let warmupPreparationTimer = 0;
+  let warmupPreparationEndsAt = 0;
+  const seriesPreparation = new Map();
+  const clearPreparationTimers = () => {
+    if (warmupPreparationTimer) window.clearTimeout(warmupPreparationTimer);
+    warmupPreparationTimer = 0;
+    warmupPreparationEndsAt = 0;
+    for (const preparation of seriesPreparation.values()) window.clearTimeout(preparation.timer);
+    seriesPreparation.clear();
+  };
+  const warmupTracker = document.getElementById('warmupTracker');
+  const warmupPhaseEl = document.getElementById('warmupPhase');
+  const warmupCardioEl = document.getElementById('warmupCardioElapsed');
+  const warmupMobilityEl = document.getElementById('warmupMobilityElapsed');
+  const warmupTotalEl = document.getElementById('warmupTotalElapsed');
+  const warmupStartButton = document.getElementById('warmupStart');
+  const warmupAdvanceButton = document.getElementById('warmupAdvance');
+  const warmupFinishButton = document.getElementById('warmupFinish');
+  const getWarmupTiming = () => {
+    const root = getTimingState();
+    if (!root.warmup || typeof root.warmup !== 'object') root.warmup = { phase: 'idle', startedAt: 0, cardioStartedAt: 0, cardioEndedAt: 0, mobilityStartedAt: 0, mobilityEndedAt: 0, endedAt: 0 };
+    return root.warmup;
+  };
+  const warmupPreparationRemaining = () => Math.max(0, warmupPreparationEndsAt - Date.now());
+  const renderWarmupTiming = () => {
+    if (!warmupTracker) return;
+    const warmup = getWarmupTiming();
+    const preparing = warmup.phase === 'preparing';
+    const now = Date.now();
+    const segment = (start, end) => start ? formatElapsed((end || now) - start) : '—';
+    const phaseLabels = { idle: 'Pendiente', preparing: 'Preparación', cardio: 'Cardio', mobility: 'Movilidad', done: 'Completado' };
+    const phaseText = preparing ? `Preparación · ${formatElapsed(warmupPreparationRemaining())}` : phaseLabels[warmup.phase] || phaseLabels.idle;
+    if (warmupCardioEl) warmupCardioEl.textContent = segment(warmup.cardioStartedAt, warmup.cardioEndedAt);
+    if (warmupMobilityEl) warmupMobilityEl.textContent = segment(warmup.mobilityStartedAt, warmup.mobilityEndedAt);
+    if (warmupTotalEl) warmupTotalEl.textContent = segment(warmup.startedAt, warmup.endedAt);
+    if (warmupPhaseEl) warmupPhaseEl.textContent = phaseText;
+    if (warmupStartButton) {
+      warmupStartButton.disabled = warmup.phase !== 'idle';
+      warmupStartButton.textContent = warmup.phase === 'idle' ? '▶ Iniciar calentamiento' : preparing ? '⏳ Preparando…' : '✓ Calentamiento iniciado';
+    }
+    if (warmupAdvanceButton) {
+      warmupAdvanceButton.disabled = warmup.phase !== 'cardio';
+      warmupAdvanceButton.textContent = warmup.phase === 'cardio' ? '→ Pasar a movilidad' : '→ Movilidad';
+    }
+    if (warmupFinishButton) {
+      warmupFinishButton.disabled = warmup.phase !== 'mobility';
+      warmupFinishButton.textContent = warmup.phase === 'mobility' ? '✓ Finalizar calentamiento' : '✓ Calentamiento completo';
+    }
+    const warmupComplete = warmup.phase === 'done';
+    if (warmupTracker) warmupTracker.dataset.warmupComplete = warmupComplete ? 'true' : 'false';
+  };
+  const startWarmupPreparation = () => {
+    const warmup = getWarmupTiming();
+    if (warmup.phase !== 'idle') return;
+    warmup.phase = 'preparing';
+    warmupPreparationEndsAt = Date.now() + PREPARATION_MS;
+    renderWarmupTiming();
+    warmupPreparationTimer = window.setTimeout(() => {
+      warmupPreparationTimer = 0;
+      if (getWarmupTiming().phase !== 'preparing') return;
+      const timestamp = Date.now();
+      warmup.phase = 'cardio';
+      warmup.startedAt = timestamp;
+      warmup.cardioStartedAt = timestamp;
+      const root = getTimingState();
+      if (!root.sessionStartedAt) root.sessionStartedAt = timestamp;
+      save();
+      renderWarmupTiming();
+      renderTimingDisplays();
+    }, PREPARATION_MS);
+  };
+  const startSeriesPreparation = (item) => {
+    if (seriesPreparation.has(item.index)) return;
+    const endsAt = Date.now() + PREPARATION_MS;
+    const timer = window.setTimeout(() => {
+      seriesPreparation.delete(item.index);
+      beginSeries(item, Date.now());
+      updateTracker(item.tracker, false);
+      renderTimingDisplays();
+    }, PREPARATION_MS);
+    seriesPreparation.set(item.index, { endsAt, timer });
+    updateTracker(item.tracker, false);
+    renderTimingDisplays();
+  };
+  const isSeriesPreparing = item => seriesPreparation.has(item.index);
+  const renderPreparationDisplay = item => {
+    const preparation = seriesPreparation.get(item.index);
+    if (!preparation) return false;
+    const remaining = Math.max(0, preparation.endsAt - Date.now());
+    if (item.timingDisplay) item.timingDisplay.textContent = `⏳ Preparación · ${formatElapsed(remaining)}`;
+    return true;
+  };
+  warmupStartButton?.addEventListener('click', startWarmupPreparation);
+  warmupAdvanceButton?.addEventListener('click', () => {
+    const warmup = getWarmupTiming();
+    if (warmup.phase !== 'cardio') return;
+    const timestamp = Date.now();
+    warmup.phase = 'mobility';
+    warmup.cardioEndedAt = timestamp;
+    warmup.mobilityStartedAt = timestamp;
+    save();
+    renderWarmupTiming();
+  });
+  warmupFinishButton?.addEventListener('click', () => {
+    const warmup = getWarmupTiming();
+    if (warmup.phase !== 'mobility') return;
+    const timestamp = Date.now();
+    warmup.phase = 'done';
+    warmup.mobilityEndedAt = timestamp;
+    warmup.endedAt = timestamp;
+    save();
+    renderWarmupTiming();
+  });
+  renderWarmupTiming();
+  const timingInterval = window.setInterval(() => { renderTimingDisplays(); renderWarmupTiming(); }, 1000);
+'''
 
 
 CANONICAL_CONTRACT_MARKUP = '''<div class="canonicalVisualContract" data-enhancement="canonical-card-contract-v1" data-fix="day1-rowing-phase-pair-v1" data-media-contract="muscle-day-realistic-media-v1" data-fallback-contract="muscle-day-image-fallback-v1" hidden aria-hidden="true">
@@ -296,21 +458,107 @@ def standardize_shared_session_contract(source: str) -> str:
         "['sessionStartedAt', 'sessionEndedAt']",
         "['sessionStartedAt', 'sessionEndedAt', 'sessionAbandonedAt']",
     )
-    if "timing.restReminderNotifiedAt = timing.restNotifiedAt; sendBrowserNotification" not in source:
+    notification_line = "timing.restNotifiedAt = Date.now(); timing.restReminderNotifiedAt = timing.restNotifiedAt; sendBrowserNotification('Descanso listo', `Puedes iniciar ${item.title}.`);"
+    source = re.sub(
+        r"timing\.restNotifiedAt = Date\.now\(\);\s*(?:timing\.restReminderNotifiedAt = timing\.restNotifiedAt; sendBrowserNotification\('Descanso listo', `Puedes iniciar \$\{item\.title\}\.`,?\);\s*)+",
+        notification_line,
+        source,
+    )
+    if notification_line not in source:
+        source = source.replace("timing.restNotifiedAt = Date.now();", notification_line, 1)
+    source = re.sub(
+        r"timing\.restNotifiedAt = 0;\s*(?:timing\.restReminderNotifiedAt = 0;\s*)+",
+        "timing.restNotifiedAt = 0; timing.restReminderNotifiedAt = 0;",
+        source,
+    )
+    source = re.sub(
+        r"current\.restNotifiedAt = 0;\s*(?:current\.restReminderNotifiedAt = 0;\s*)+",
+        "current.restNotifiedAt = 0; current.restReminderNotifiedAt = 0;",
+        source,
+    )
+    source = re.sub(
+        r"timing\.restNotifiedAt = 0;(?!\s*timing\.restReminderNotifiedAt = 0;)",
+        "timing.restNotifiedAt = 0; timing.restReminderNotifiedAt = 0;",
+        source,
+    )
+    source = re.sub(
+        r"current\.restNotifiedAt = 0;(?!\s*current\.restReminderNotifiedAt = 0;)",
+        "current.restNotifiedAt = 0; current.restReminderNotifiedAt = 0;",
+        source,
+    )
+    source = re.sub(
+        r"  // El tiempo no comienza por visibilidad, enfoque o desplazamiento:.*?const timingInterval = window\.setInterval\(\(\) => \{ renderTimingDisplays\(\); renderWarmupTiming\(\); \}, 1000\);\r?\n",
+        PREPARATION_TIMING_CONTRACT,
+        source,
+        count=1,
+        flags=re.S,
+    )
+    source = re.sub(
+        r"^\s*exerciseItems\.forEach\(item => updateTracker\(item\.tracker, false\)\);\r?\n(?=\s*\};)",
+        "",
+        source,
+        count=1,
+        flags=re.M,
+    )
+    source = source.replace(
+        "const startTiming = (item, timestamp = Date.now()) => { const root = getTimingState(); const timing = getExerciseTiming(item); if (!timing.startedAt) { timing.startedAt = timestamp; timing.seriesStartedAt = timestamp; if (!root.sessionStartedAt) root.sessionStartedAt = timestamp; save(); } else if (!timing.seriesStartedAt && !timing.restStartedAt && !timing.endedAt) { timing.seriesStartedAt = timestamp; save(); } return timing; };",
+        "const startTiming = (item, timestamp = Date.now(), startSeries = false) => { const root = getTimingState(); const timing = getExerciseTiming(item); if (!timing.startedAt) { timing.startedAt = timestamp; if (startSeries) timing.seriesStartedAt = timestamp; if (!root.sessionStartedAt) root.sessionStartedAt = timestamp; save(); } else if (startSeries && !timing.seriesStartedAt && !timing.restStartedAt && !timing.endedAt) { timing.seriesStartedAt = timestamp; save(); } return timing; };",
+        1,
+    )
+    source = source.replace(
+        "const beginSeries = (item, timestamp = Date.now()) => { const timing = startTiming(item, timestamp);",
+        "const beginSeries = (item, timestamp = Date.now()) => { const timing = startTiming(item, timestamp, true);",
+        1,
+    )
+    source = source.replace(
+        "const seriesActive = Boolean(timing?.seriesStartedAt && !timing?.restStartedAt);\n    const globalWarmupComplete",
+        "const seriesActive = Boolean(timing?.seriesStartedAt && !timing?.restStartedAt);\n    const seriesPreparing = isSeriesPreparing(item);\n    const globalWarmupComplete",
+        1,
+    )
+    source = source.replace(
+        "button.disabled = complete || !started || !globalWarmupComplete || !seriesActive;",
+        "button.disabled = complete || !started || !globalWarmupComplete || !seriesActive || seriesPreparing;",
+        1,
+    )
+    source = source.replace(
+        "if (item.startSeriesButton) { item.startSeriesButton.hidden = complete || !started || !globalWarmupComplete || seriesActive; item.startSeriesButton.disabled = complete || !started || !globalWarmupComplete || seriesActive; if (!item.startSeriesButton.hidden) item.startSeriesButton.textContent = `▶ Iniciar serie ${nextIndex + 1} de ${item.seriesKeys.length}`; }",
+        "if (item.startSeriesButton) { item.startSeriesButton.hidden = complete || !started || !globalWarmupComplete || seriesActive; item.startSeriesButton.disabled = complete || !started || !globalWarmupComplete || seriesActive || seriesPreparing; if (!item.startSeriesButton.hidden) item.startSeriesButton.textContent = seriesPreparing ? `⏳ Preparación · ${formatElapsed(Math.max(0, seriesPreparation.get(item.index).endsAt - Date.now()))}` : `▶ Iniciar serie ${nextIndex + 1} de ${item.seriesKeys.length}`; }",
+        1,
+    )
+    source = source.replace(
+        "if (item.startSeriesButton) { item.startSeriesButton.hidden = completed || !isExerciseStarted(item) || !globalWarmupComplete || Boolean(timing?.seriesStartedAt); item.startSeriesButton.disabled = item.startSeriesButton.hidden; }",
+        "if (item.startSeriesButton) { const preparing = isSeriesPreparing(item); item.startSeriesButton.hidden = completed || !isExerciseStarted(item) || !globalWarmupComplete || Boolean(timing?.seriesStartedAt); item.startSeriesButton.disabled = item.startSeriesButton.hidden || preparing; if (!item.startSeriesButton.hidden) item.startSeriesButton.textContent = preparing ? `⏳ Preparación · ${formatElapsed(Math.max(0, seriesPreparation.get(item.index).endsAt - Date.now()))}` : `▶ Iniciar serie ${done + 1} de ${item.seriesKeys.length}`; }",
+        1,
+    )
+    source = source.replace(
+        "      beginSeries(item);\n      updateTracker(tracker, false);",
+        "      startSeriesPreparation(item);\n      updateTracker(tracker, false);",
+        1,
+    )
+    source = re.sub(
+        r"(item\.startSeriesButton\?\.addEventListener\('click', \(\) => \{.*?\n\s*)beginSeries\(item\);",
+        r"\1startSeriesPreparation(item);",
+        source,
+        count=1,
+        flags=re.S,
+    )
+    if "const preparing = isSeriesPreparing(item); if (preparing)" not in source:
         source = source.replace(
-            "timing.restNotifiedAt = Date.now();",
-            "timing.restNotifiedAt = Date.now(); timing.restReminderNotifiedAt = timing.restNotifiedAt; sendBrowserNotification('Descanso listo', `Puedes iniciar ${item.title}.`);",
+            "const restActive = Boolean(!row.complete && timing?.restStartedAt); if (restActive) {",
+            "const preparing = isSeriesPreparing(item); if (preparing) { renderPreparationDisplay(item); if (item.restDisplay) item.restDisplay.hidden = true; return; } const restActive = Boolean(!row.complete && timing?.restStartedAt); if (restActive) {",
+            1,
         )
-    if "timing.restNotifiedAt = 0; timing.restReminderNotifiedAt = 0;" not in source:
-        source = source.replace(
-            "timing.restNotifiedAt = 0;",
-            "timing.restNotifiedAt = 0; timing.restReminderNotifiedAt = 0;",
-        )
-    if "current.restNotifiedAt = 0; current.restReminderNotifiedAt = 0;" not in source:
-        source = source.replace(
-            "current.restNotifiedAt = 0;",
-            "current.restNotifiedAt = 0; current.restReminderNotifiedAt = 0;",
-        )
+    source = source.replace(
+        "const preparing = isSeriesPreparing(item); if (preparing) { renderPreparationDisplay(item); if (item.restDisplay) item.restDisplay.hidden = true; return; } const preparing = isSeriesPreparing(item); if (preparing) { renderPreparationDisplay(item); if (item.restDisplay) item.restDisplay.hidden = true; return; }",
+        "const preparing = isSeriesPreparing(item); if (preparing) { renderPreparationDisplay(item); if (item.restDisplay) item.restDisplay.hidden = true; return; }",
+        1,
+    )
+    source = re.sub(
+        r"if \(!confirmed\) return;\r?\n(\s*)state = \{\};",
+        r"if (!confirmed) return;\n\1clearPreparationTimers();\n\1state = {};",
+        source,
+        count=1,
+    )
     if "sessionAbandonedAt = Date.now()" not in source:
         source = source.replace(
             "document.addEventListener('visibilitychange', renderTimingDisplays);",
@@ -348,9 +596,11 @@ def _muscle_item_replacement(match: re.Match[str]) -> str:
         f'class="muscleDayItem" data-muscle-focus="{focus["key"]}" data-muscle-view="{focus["view"]}"',
         1,
     )
+    item = re.sub(r'<span class="muscleFocusMarker"[^>]*></span>\s*', "", item)
     item = re.sub(
-        r'<span class="muscleDayVisual [^"]+">',
-        f'<span class="muscleDayVisual {focus["view"]}" title="Foco visual: {focus["region"]}">',
+        r'<span class="muscleDayVisual [^"]+"[^>]*>',
+        f'<span class="muscleDayVisual {focus["view"]}" title="Foco visual: {focus["region"]}">'
+        f'{_marker_markup(name)}',
         item,
         count=1,
     )
@@ -379,10 +629,20 @@ def _build_muscle_item(name: str) -> str:
         f'data-muscle-view="{focus["view"]}" data-muscle-visual="{("upper" if name in UPPER_MUSCLES else "lower")}-{focus["view"]}" '
         f'aria-label="{name}; foco visual en {focus["region"]}">'
         f'<span class="muscleDayVisual {focus["view"]}" title="Foco visual: {focus["region"]}">'
+        f'{_marker_markup(name)}'
         f'<img class="muscleDayImage" src="{image}" alt="Referencia anatómica ilustrativa {focus["view"]} del músculo {name}; foco visual aproximado en {focus["region"]}" decoding="async">'
         '<span class="muscleDayFallback" hidden>ANATOMÍA</span></span>'
         f'<span class="muscleDayCopy"><span class="muscleCode" style="color:{color}">{MUSCLE_CODE[name]}</span>'
         f'<span class="muscleName">{name}</span></span></div>'
+    )
+
+
+def _marker_markup(name: str) -> str:
+    """Genera marcadores de foco estables y repetibles para una tarjeta."""
+    return "".join(
+        f'<span class="muscleFocusMarker" data-marker-side="{side}" '
+        f'style="--marker-x:{x};--marker-y:{y}" aria-hidden="true"></span>'
+        for side, x, y in MUSCLE_MARKERS[name]
     )
 
 
@@ -444,4 +704,6 @@ def standardize_muscle_visuals(source: str) -> str:
         source = source.replace('<main class="cards">', CANONICAL_CONTRACT_MARKUP + '\n<main class="cards">', 1)
     if 'data-fix="phase-media-clarity-v5"' not in source:
         source = source.replace('</head>', CANONICAL_SHARED_STYLE + '\n</head>', 1)
+    if 'data-enhancement="mobile-first-muscle-grid-v1"' not in source:
+        source = source.replace('</body>', MOBILE_FIRST_MUSCLE_STYLE + '\n</body>', 1)
     return source
