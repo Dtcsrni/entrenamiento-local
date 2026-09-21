@@ -78,6 +78,7 @@ class HomepageContractTests(unittest.TestCase):
         self.assertIn("navigator.standalone === true", self.html)
         self.assertIn("window.addEventListener('appinstalled'", self.html)
         self.assertIn("installButton.hidden = isInstalled() || !deferredInstallPrompt", self.html)
+        self.assertIn("[hidden] { display:none !important; }", self.html)
 
     def test_homepage_shows_last_successful_update(self):
         self.assertIn('id="updateState"', self.html)
