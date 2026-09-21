@@ -82,8 +82,11 @@ class HomepageContractTests(unittest.TestCase):
 
     def test_homepage_shows_last_successful_update(self):
         self.assertIn('id="updateState"', self.html)
+        self.assertIn('Aplicación y recursos offline actualizados:', self.html)
+        self.assertIn('Aplicación y recursos offline: comprobando actualización…', self.html)
         self.assertIn("gymratik-last-update-v1", self.html)
-        self.assertIn("Actualizado:", self.html)
+        self.assertNotIn('id="connectionState"', self.html)
+        self.assertNotIn('Conectado', self.html)
 
     def test_homepage_exposes_persistent_progress_dashboard(self):
         self.assertIn('src="./progress-store.js"', self.html)
