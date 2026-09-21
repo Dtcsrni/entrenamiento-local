@@ -37,13 +37,12 @@ class HomepageContractTests(unittest.TestCase):
             self.assertIn(path, self.html)
 
     def test_homepage_summary_matches_all_four_routines(self):
-        self.assertIn("Cuatro sesiones claras", self.html)
+        self.assertIn("Cuatro sesiones visuales", self.html)
         self.assertIn('<span class="plan-pill">4 días · 82 series</span>', self.html)
-        self.assertIn('<div class="stat"><strong>4</strong><span>sesiones para rotar</span></div>', self.html)
-        self.assertIn('<div class="stat"><strong>82</strong><span>series efectivas programadas</span></div>', self.html)
-        self.assertIn('<span class="hero-card-label">Plan completo</span>', self.html)
-        self.assertIn('<h2 id="nextSessionTitle">4 días</h2>', self.html)
-        self.assertIn('href="#routines">Ver las 4 sesiones</a>', self.html)
+        self.assertIn('<div class="quick-stat"><strong>4</strong><span>sesiones para rotar</span></div>', self.html)
+        self.assertIn('<div class="quick-stat"><strong>82</strong><span>series efectivas programadas</span></div>', self.html)
+        self.assertIn('id="nextSessionTitle"', self.html)
+        self.assertIn('href="#routines">Ver plan completo</a>', self.html)
 
     def test_homepage_uses_four_local_visual_references(self):
         image_paths = (
@@ -91,8 +90,18 @@ class HomepageContractTests(unittest.TestCase):
     def test_homepage_keeps_mobile_hero_content_inside_the_viewport(self):
         self.assertIn('.hero > * { min-width:0; }', self.html)
         self.assertIn('overflow-wrap:anywhere', self.html)
-        self.assertIn('.hero-card-footer { display:flex; flex-wrap:wrap;', self.html)
-        self.assertIn('h1 { max-width:100%; font-size:clamp(2.75rem,14vw,5.5rem); }', self.html)
+        self.assertIn('grid-template-columns:96px minmax(0,1fr)', self.html)
+        self.assertIn('h1 { max-width:100%; font-size:clamp(2.8rem,14vw,5.2rem); }', self.html)
+
+    def test_homepage_prioritizes_next_session_and_gym_flow(self):
+        self.assertIn('id="nextSessionCta"', self.html)
+        self.assertIn('id="nextSessionLink"', self.html)
+        self.assertIn('function renderNextSession', self.html)
+        self.assertIn('Continúa donde te quedaste', self.html)
+        self.assertIn('Calentamiento incluido', self.html)
+        self.assertIn('Tres pasos y a entrenar.', self.html)
+        self.assertIn('Mi avance', self.html)
+        self.assertIn('Proteger avance', self.html)
 
     def test_homepage_exposes_persistent_progress_dashboard(self):
         self.assertIn('src="./progress-store.js"', self.html)
