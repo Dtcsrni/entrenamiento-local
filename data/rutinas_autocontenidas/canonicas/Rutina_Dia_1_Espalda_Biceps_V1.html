@@ -29,6 +29,15 @@ svg{width:100%;height:100%}
   background:linear-gradient(135deg,var(--navy),var(--navy2) 72%,#245D7E);
   box-shadow:0 18px 42px rgba(11,39,68,.16);position:relative;overflow:hidden;
 }
+.routine-home-link{
+  position:absolute;top:16px;left:28px;z-index:3;display:inline-flex;align-items:center;gap:7px;
+  padding:9px 14px;border:1px solid rgba(255,255,255,.24);border-radius:999px;
+  color:#E8F8FF;background:rgba(6,23,39,.34);font-size:17px;font-weight:900;text-decoration:none;
+}
+.hero>div:first-of-type{padding-top:38px}
+.routine-home-link:hover,.routine-home-link:focus-visible{
+  background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.5);
+}
 .hero:before{content:"";position:absolute;width:580px;height:580px;border:70px solid rgba(255,255,255,.045);border-radius:50%;right:-155px;top:-310px}
 .eyebrow{font-size:22px;font-weight:900;letter-spacing:2.2px;text-transform:uppercase;color:#BCE4F1}
 h1{font-size:88px;line-height:1;margin:7px 0 12px;font-weight:900;letter-spacing:.2px}
@@ -2707,6 +2716,7 @@ body::before,body::after{animation:none!important}
 <body>
 <div class="page">
 <header class="hero">
+<a class="routine-home-link" href="../../../index.html" aria-label="Volver a la portada">← Portada</a>
 <div>
 <div class="eyebrow"><span class="eyebrowIcon"><svg aria-hidden="true" viewbox="0 0 64 64"><path d="M32 7l5 14 14 5-14 5-5 14-5-14-14-5 14-5z" fill="currentColor" opacity=".95"></path><path d="M50 40l2 6 6 2-6 2-2 6-2-6-6-2 6-2zM14 41l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="currentColor" opacity=".5"></path></svg></span><span>GUÍA VISUAL · FUERZA E HIPERTROFIA</span></div>
 <h1>DÍA 1 · ESPALDA + BÍCEPS</h1>
@@ -3890,12 +3900,13 @@ body::before,body::after{animation:none!important}
   });
   summaryToggle = document.getElementById('summaryToggle');
   summaryBody = document.getElementById('summaryBody');
-  document.addEventListener('click', event => {
+  document.addEventListener('click', async event => {
     const resetSessionButton = event.target instanceof Element ? event.target.closest('#resetSession') : null;
     if (!resetSessionButton) return;
     const confirmed = window.confirm('¿Reiniciar el progreso de esta sesión? Se borrarán marcadores, pendientes y tiempos.');
     if (!confirmed) return;
     clearPreparationTimers();
+    try { await window.TrainingProgressStore?.clearRoutine?.(routineId); } catch (error) { console.error('Routine reset failed', error); }
     state = {};
     save();
     exerciseItems.forEach(item => updateTracker(item.tracker));
@@ -3974,7 +3985,7 @@ input[type="checkbox"]{touch-action:manipulation}
 .sessionFooter .summaryReset{width:auto!important;min-width:220px;min-height:44px;margin:0!important;padding:.65rem 1rem!important}
 @media(max-width:700px){.sessionFooter{margin:1.5rem auto 2.5rem;padding:0 .75rem}.sessionFooter .summaryReset{width:min(100%,280px)!important;min-width:0;min-height:48px}}
 </style>
-<footer class="sessionFooter" aria-label="Acciones de la sesión"><button type="button" class="summaryReset" id="resetSession">↺ Reiniciar sesión</button></footer><style data-enhancement="floating-summary-ultra-compact-v1">
+<footer class="sessionFooter" aria-label="Acciones de la sesión"><button type="button" class="summaryReset" id="resetSession">Reiniciar</button></footer><style data-enhancement="floating-summary-ultra-compact-v1">
 /* Resumen flotante: una sola lectura por dato y altura reducida; la lista conserva su scroll interno. */
 .floatingSessionSummary{width:min(150px,calc(100vw - .9rem))!important;max-height:126px!important;border-radius:.52rem!important}
 .summaryToggle{min-height:1.55rem!important;padding:.22rem .32rem!important;gap:.18rem!important;font-size:.54rem!important;line-height:1!important}
@@ -4336,5 +4347,6 @@ body{height:auto!important;min-height:100%!important;overflow-x:hidden!important
 @media(min-width:641px){.muscleDayGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(min-width:981px){.muscleDayGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
 </style>
+<link rel="stylesheet" href="../../../routine-liquid-glass-v13.css">
 </body>
 </html>

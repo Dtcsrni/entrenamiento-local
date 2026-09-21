@@ -29,6 +29,15 @@ svg{width:100%;height:100%}
   background:linear-gradient(135deg,var(--navy),var(--navy2) 72%,#245D7E);
   box-shadow:0 18px 42px rgba(11,39,68,.16);position:relative;overflow:hidden;
 }
+.routine-home-link{
+  position:absolute;top:16px;left:28px;z-index:3;display:inline-flex;align-items:center;gap:7px;
+  padding:9px 14px;border:1px solid rgba(255,255,255,.24);border-radius:999px;
+  color:#E8F8FF;background:rgba(6,23,39,.34);font-size:17px;font-weight:900;text-decoration:none;
+}
+.hero>div:first-of-type{padding-top:38px}
+.routine-home-link:hover,.routine-home-link:focus-visible{
+  background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.5);
+}
 .hero:before{content:"";position:absolute;width:580px;height:580px;border:70px solid rgba(255,255,255,.045);border-radius:50%;right:-155px;top:-310px}
 .eyebrow{font-size:22px;font-weight:900;letter-spacing:2.2px;text-transform:uppercase;color:#BCE4F1}
 h1{font-size:88px;line-height:1;margin:7px 0 12px;font-weight:900;letter-spacing:.2px}
@@ -2714,6 +2723,7 @@ body::before,body::after{animation:none!important}
 </style></head><body>
 <div class="page">
 <header class="hero">
+<a class="routine-home-link" href="../../../index.html" aria-label="Volver a la portada">← Portada</a>
 <div>
 <div class="eyebrow"><span class="eyebrowIcon"><svg aria-hidden="true" viewbox="0 0 64 64"><path d="M32 7l5 14 14 5-14 5-5 14-5-14-14-5 14-5z" fill="currentColor" opacity=".95"></path><path d="M50 40l2 6 6 2-6 2-2 6-2-6-6-2 6-2zM14 41l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="currentColor" opacity=".5"></path></svg></span><span>GUÍA VISUAL · FUERZA E HIPERTROFIA</span></div>
 <h1>DÍA 3 · PECHO + HOMBRO + TRÍCEPS</h1>
@@ -3017,7 +3027,7 @@ body::before,body::after{animation:none!important}
 <button type="button" class="summaryToggle" id="summaryToggle" aria-expanded="true" aria-controls="summaryBody"><span aria-hidden="true">📋</span><span id="summaryHeadline">0/7 ejercicios · 0/22 series</span><span class="summaryChevron" aria-hidden="true">⌃</span></button>
 <div class="summaryBody" id="summaryBody"><div class="summaryTotals"><span id="summaryPending">22 pendientes</span></div><div class="summaryTime" id="summaryElapsed" aria-live="polite">⏱ Total de rutina: —</div><ul class="sessionSummaryList" id="sessionSummaryList"></ul></div>
 </aside>
-<footer class="sessionFooter" aria-label="Acciones de la sesión"><button type="button" class="summaryReset" id="resetSession">↺ Reiniciar sesión</button></footer>
+<footer class="sessionFooter" aria-label="Acciones de la sesión"><button type="button" class="summaryReset" id="resetSession">Reiniciar</button></footer>
 </div>
 <script>
 (function(){
@@ -3852,12 +3862,13 @@ body::before,body::after{animation:none!important}
   });
   summaryToggle = document.getElementById('summaryToggle');
   summaryBody = document.getElementById('summaryBody');
-  document.addEventListener('click', event => {
+  document.addEventListener('click', async event => {
     const resetSessionButton = event.target instanceof Element ? event.target.closest('#resetSession') : null;
     if (!resetSessionButton) return;
     const confirmed = window.confirm('¿Reiniciar el progreso de esta sesión? Se borrarán marcadores, pendientes y tiempos.');
     if (!confirmed) return;
     clearPreparationTimers();
+    try { await window.TrainingProgressStore?.clearRoutine?.(routineId); } catch (error) { console.error('Routine reset failed', error); }
     state = {};
     save();
     exerciseItems.forEach(item => updateTracker(item.tracker));
@@ -4271,5 +4282,6 @@ body{height:auto!important;min-height:100%!important;overflow-x:hidden!important
 </script>
 </div>
 <!-- canonical media contract references: 1350-7I6LNUG.jpg · 1350-7I6LNUG-final.png -->
+<link rel="stylesheet" href="../../../routine-liquid-glass-v13.css">
 </body>
 </html>

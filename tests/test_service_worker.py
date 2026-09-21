@@ -20,6 +20,15 @@ class ServiceWorkerContractTests(unittest.TestCase):
             self.assertIn("event.waitUntil(refresh(request, cache).catch(() => undefined))", source)
             self.assertIn("if (cached) return cached", source)
 
+    def test_profile_mascots_are_part_of_the_offline_precache(self):
+        for asset in ("mouse-female-effort.png", "mouse-male-effort.png"):
+            self.assertIn(f"data/profile/{asset}", self.service_worker)
+            self.assertIn(f"data/profile/{asset}", self.generator)
+
+    def test_shared_routine_stylesheet_is_part_of_the_offline_precache(self):
+        for source in (self.service_worker, self.generator):
+            self.assertIn("routine-liquid-glass-v13.css", source)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -2,10 +2,14 @@
   'use strict';
 
   const DB_NAME = 'entrenamiento-progress';
-  const DB_VERSION = 2;
+  const DB_VERSION = 3;
   const PROGRESS_STORE = 'routineProgress';
   const SESSION_STORE = 'sessions';
   const ACTIVITY_STORE = 'activity';
+  const PROFILE_STORE = 'profiles';
+  const META_STORE = 'meta';
+  const DEFAULT_PROFILE_ID = 'local-default';
+  const PROFILE_SCHEMA_VERSION = 1;
   const FALLBACK_KEY = 'entrenamiento-progress-fallback-v1';
   const ROUTINES = {
     day1: { label: 'Día 1 · Espalda + Bíceps', totalExercises: 6, totalSeries: 20 },
@@ -26,6 +30,51 @@
     return Number.isFinite(numeric) ? numeric : 0;
   };
   const nonNegativeNumber = value => Math.max(0, numberOrZero(value));
+
+  function defaultProfile(timestamp = Date.now()) {
+    return {
+      profileId: DEFAULT_PROFILE_ID,
+      displayName: '',
+      birthDate: '',
+      sex: '',
+      heightCm: null,
+      goal: 'general-fitness',
+      units: 'metric',
+      createdAt: timestamp,
+      updatedAt: timestamp,
+      schemaVersion: PROFILE_SCHEMA_VERSION,
+    };
+  }
+
+  function normalizeProfile(input = {}) {
+    const value = input && typeof input === 'object' ? input : {};
+    const base = defaultProfile(Number(value.createdAt) || Date.now());
+    const displayName = String(value.displayName || '').trim().slice(0, 80);
+    const birthDate = String(value.birthDate || '').trim();
+    if (birthDate && !/^\d{4}-\d{2}-\d{2}$/.test(birthDate)) throw new Error('La fecha de nacimiento no es válida');
+    if (birthDate) {
+      const parsed = new Date(`${birthDate}T00:00:00`);
+      if (Number.isNaN(parsed.getTime()) || parsed > new Date()) throw new Error('La fecha de nacimiento no puede estar en el futuro');
+    }
+    const sex = ['', 'female', 'male', 'nonbinary', 'prefer-not-to-say'].includes(value.sex) ? value.sex : '';
+    const height = value.heightCm === '' || value.heightCm === null || value.heightCm === undefined ? null : Number(value.heightCm);
+    if (height !== null && (!Number.isFinite(height) || height < 100 || height > 250)) throw new Error('La altura debe estar entre 100 y 250 cm');
+    const goal = ['strength', 'hypertrophy', 'general-fitness', 'mobility', 'health'].includes(value.goal) ? value.goal : base.goal;
+    const units = value.units === 'imperial' ? 'imperial' : 'metric';
+    return {
+      ...base,
+      profileId: DEFAULT_PROFILE_ID,
+      displayName,
+      birthDate,
+      sex,
+      heightCm: height === null ? null : Math.round(height * 10) / 10,
+      goal,
+      units,
+      createdAt: Number(value.createdAt) || base.createdAt,
+      updatedAt: Number(value.updatedAt) || Date.now(),
+      schemaVersion: PROFILE_SCHEMA_VERSION,
+    };
+  }
 
   function timeKeys(timestamp = Date.now()) {
     const date = new Date(timestamp);
@@ -77,6 +126,34 @@
           store.createIndex('minuteKey', 'minuteKey');
           store.createIndex('updatedAt', 'updatedAt');
         }
+        if (!db.objectStoreNames.contains(PROFILE_STORE)) {
+          db.createObjectStore(PROFILE_STORE, { keyPath: 'profileId' });
+        }
+        if (!db.objectStoreNames.contains(META_STORE)) {
+          db.createObjectStore(META_STORE, { keyPath: 'key' });
+        }
+        const stores = [PROGRESS_STORE, SESSION_STORE, ACTIVITY_STORE];
+        stores.forEach((storeName) => {
+          const store = request.transaction.objectStore(storeName);
+          if (!store.indexNames.contains('profileId')) store.createIndex('profileId', 'profileId');
+          const cursorRequest = store.openCursor();
+          cursorRequest.onsuccess = () => {
+            const cursor = cursorRequest.result;
+            if (!cursor) return;
+            const value = cursor.value;
+            if (!value.profileId) {
+              value.profileId = DEFAULT_PROFILE_ID;
+              cursor.update(value);
+            }
+            cursor.continue();
+          };
+        });
+        const profileStore = request.transaction.objectStore(PROFILE_STORE);
+        const profileRequest = profileStore.get(DEFAULT_PROFILE_ID);
+        profileRequest.onsuccess = () => {
+          if (!profileRequest.result) profileStore.put(defaultProfile());
+        };
+        request.transaction.objectStore(META_STORE).put({ key: 'schemaVersion', value: DB_VERSION, updatedAt: Date.now() });
       };
       request.onsuccess = () => {
         const db = request.result;
@@ -128,9 +205,10 @@
         progress: value.progress && typeof value.progress === 'object' ? value.progress : {},
         sessions: value.sessions && typeof value.sessions === 'object' ? value.sessions : {},
         activity: value.activity && typeof value.activity === 'object' ? value.activity : {},
+        profiles: value.profiles && typeof value.profiles === 'object' ? value.profiles : {},
       };
     } catch (_) {
-      return { progress: {}, sessions: {}, activity: {} };
+      return { progress: {}, sessions: {}, activity: {}, profiles: {} };
     }
   }
 
@@ -146,6 +224,21 @@
     } catch (error) {
       emit('training-storage-error', { error });
     }
+  }
+
+  function writeFallbackProfile(profile) {
+    const fallback = readFallback();
+    fallback.profiles[DEFAULT_PROFILE_ID] = profile;
+    window.localStorage.setItem(FALLBACK_KEY, JSON.stringify(fallback));
+  }
+
+  function fallbackData() {
+    const fallback = readFallback();
+    return {
+      progress: Object.values(fallback.progress).map((record) => ({ ...record, profileId: record.profileId || DEFAULT_PROFILE_ID })),
+      sessions: Object.values(fallback.sessions).map((session) => ({ ...session, profileId: session.profileId || DEFAULT_PROFILE_ID })),
+      activity: Object.values(fallback.activity).map((item) => ({ ...item, profileId: item.profileId || DEFAULT_PROFILE_ID })),
+    };
   }
 
   function stateMetrics(state, routine) {
@@ -182,6 +275,7 @@
     const temporal = timeKeys(capturedAt);
     const sessionId = metrics.sessionId;
     return {
+      profileId: DEFAULT_PROFILE_ID,
       routineId,
       label: routine.label,
       totalExercises: metrics.totalExercises,
@@ -200,6 +294,7 @@
 
   function toSession(record) {
     return {
+      profileId: record.profileId || DEFAULT_PROFILE_ID,
       sessionId: record.sessionId,
       routineId: record.routineId,
       label: record.label,
@@ -219,6 +314,7 @@
     const sessionId = record.sessionId || null;
     const activityKey = record.activityKey || `${record.routineId}:${sessionId || 'unscheduled'}:${temporal.minuteKey}`;
     return {
+      profileId: record.profileId || DEFAULT_PROFILE_ID,
       activityKey,
       routineId: record.routineId,
       sessionId,
@@ -254,6 +350,187 @@
         return { source: 'localstorage', record };
       }
     });
+  }
+
+  async function getProfile() {
+    const fallbackProfile = readFallback().profiles[DEFAULT_PROFILE_ID];
+    let databaseProfile;
+    try {
+      const db = await openDatabase();
+      databaseProfile = await transaction(db, [PROFILE_STORE], 'readonly', (tx) => {
+        const request = tx.objectStore(PROFILE_STORE).get(DEFAULT_PROFILE_ID);
+        return request;
+      }).then((request) => request.result);
+    } catch (_) {
+      databaseProfile = undefined;
+    }
+    const selected = [fallbackProfile, databaseProfile]
+      .filter(Boolean)
+      .sort((left, right) => Number(right.updatedAt || 0) - Number(left.updatedAt || 0))[0];
+    return normalizeProfile(selected || defaultProfile());
+  }
+
+  async function saveProfile(input) {
+    const profile = normalizeProfile(input);
+    return enqueueWrite('__profile__', async () => {
+      try {
+        const db = await openDatabase();
+        await transaction(db, [PROFILE_STORE, META_STORE], 'readwrite', (tx) => {
+          tx.objectStore(PROFILE_STORE).put(profile);
+          tx.objectStore(META_STORE).put({ key: 'activeProfileId', value: DEFAULT_PROFILE_ID, updatedAt: profile.updatedAt });
+        });
+        try { writeFallbackProfile(profile); } catch (fallbackError) { emit('training-storage-error', { error: fallbackError, source: 'fallback-mirror' }); }
+        emit('training-profile-updated', { source: 'indexeddb', profile });
+        return { source: 'indexeddb', profile };
+      } catch (error) {
+        try { writeFallbackProfile(profile); } catch (fallbackError) { emit('training-storage-error', { error: fallbackError }); throw fallbackError; }
+        emit('training-storage-error', { error, fallback: true });
+        emit('training-profile-updated', { source: 'localstorage', profile });
+        return { source: 'localstorage', profile };
+      }
+    });
+  }
+
+  async function getHistory(limit = 12) {
+    const data = await readDatabase();
+    return data.sessions
+      .filter((session) => session && session.sessionId)
+      .sort((left, right) => Number(right.updatedAt || right.endedAt || right.startedAt || 0) - Number(left.updatedAt || left.endedAt || left.startedAt || 0))
+      .slice(0, Math.max(1, Math.min(50, Number(limit) || 12)));
+  }
+
+  function exportFallbackData(profile, data) {
+    const fallback = readFallback();
+    fallback.profiles[DEFAULT_PROFILE_ID] = profile;
+    fallback.progress = Object.fromEntries(data.progress.map((record) => [record.routineId, record]));
+    fallback.sessions = Object.fromEntries(data.sessions.map((session) => [session.sessionId, session]));
+    fallback.activity = Object.fromEntries(data.activity.map((item) => [item.activityKey, item]));
+    window.localStorage.setItem(FALLBACK_KEY, JSON.stringify(fallback));
+  }
+
+  async function exportData() {
+    const profile = await getProfile();
+    const data = await readDatabase();
+    return {
+      format: 'gymratik-backup',
+      schemaVersion: 1,
+      exportedAt: Date.now(),
+      profile,
+      data,
+    };
+  }
+
+  function normalizeImport(payload) {
+    if (!payload || payload.format !== 'gymratik-backup' || payload.schemaVersion !== 1) throw new Error('El archivo no es un respaldo Gymratik compatible');
+    const data = payload.data && typeof payload.data === 'object' ? payload.data : {};
+    const arrays = ['progress', 'sessions', 'activity'];
+    arrays.forEach((name) => { if (!Array.isArray(data[name]) || data[name].length > 10000) throw new Error(`El respaldo tiene una colección inválida: ${name}`); });
+    const progress = data.progress.filter((record) => record && ROUTINES[record.routineId]).map((record) => ({ ...record, profileId: DEFAULT_PROFILE_ID }));
+    const sessions = data.sessions.filter((session) => session && typeof session.sessionId === 'string' && ROUTINES[session.routineId]).map((session) => ({ ...session, profileId: DEFAULT_PROFILE_ID }));
+    const activity = data.activity.filter((item) => item && typeof item.activityKey === 'string' && ROUTINES[item.routineId]).map((item) => ({ ...item, profileId: DEFAULT_PROFILE_ID }));
+    return { profile: normalizeProfile(payload.profile), data: { progress, sessions, activity } };
+  }
+
+  async function importData(payload) {
+    const imported = normalizeImport(payload);
+    await Promise.all([...writeQueues.values()].map((queue) => queue.catch(() => {})));
+    try {
+      const db = await openDatabase();
+      await transaction(db, [PROGRESS_STORE, SESSION_STORE, ACTIVITY_STORE, PROFILE_STORE, META_STORE], 'readwrite', (tx) => {
+        tx.objectStore(PROGRESS_STORE).clear();
+        tx.objectStore(SESSION_STORE).clear();
+        tx.objectStore(ACTIVITY_STORE).clear();
+        imported.data.progress.forEach((record) => tx.objectStore(PROGRESS_STORE).put(record));
+        imported.data.sessions.forEach((session) => tx.objectStore(SESSION_STORE).put(session));
+        imported.data.activity.forEach((item) => tx.objectStore(ACTIVITY_STORE).put(item));
+        tx.objectStore(PROFILE_STORE).put(imported.profile);
+        tx.objectStore(META_STORE).put({ key: 'activeProfileId', value: DEFAULT_PROFILE_ID, updatedAt: Date.now() });
+      });
+      try { exportFallbackData(imported.profile, imported.data); } catch (fallbackError) { emit('training-storage-error', { error: fallbackError, source: 'fallback-mirror' }); }
+      emit('training-progress-updated', { source: 'indexeddb', imported: true });
+      emit('training-profile-updated', { source: 'indexeddb', profile: imported.profile });
+      return { source: 'indexeddb', imported: true, profile: imported.profile, counts: { progress: imported.data.progress.length, sessions: imported.data.sessions.length, activity: imported.data.activity.length } };
+    } catch (error) {
+      exportFallbackData(imported.profile, imported.data);
+      emit('training-storage-error', { error, fallback: true });
+      emit('training-progress-updated', { source: 'localstorage', imported: true });
+      emit('training-profile-updated', { source: 'localstorage', profile: imported.profile });
+      return { source: 'localstorage', imported: true, profile: imported.profile, counts: { progress: imported.data.progress.length, sessions: imported.data.sessions.length, activity: imported.data.activity.length } };
+    }
+  }
+
+  async function clearAll() {
+    await Promise.all([...writeQueues.values()].map((queue) => queue.catch(() => {})));
+    let source = 'indexeddb';
+    let databaseError;
+    if ('indexedDB' in window) {
+      try {
+        const db = await openDatabase();
+        await transaction(db, [PROGRESS_STORE, SESSION_STORE, ACTIVITY_STORE], 'readwrite', (tx) => {
+          tx.objectStore(PROGRESS_STORE).clear();
+          tx.objectStore(SESSION_STORE).clear();
+          tx.objectStore(ACTIVITY_STORE).clear();
+        });
+      } catch (error) {
+        databaseError = error;
+        source = 'localstorage';
+        emit('training-storage-error', { error, fallback: true });
+      }
+    }
+    try {
+      window.localStorage.removeItem(FALLBACK_KEY);
+      Object.values(LEGACY_KEYS).forEach((key) => window.localStorage.removeItem(key));
+    } catch (error) {
+      emit('training-storage-error', { error });
+      throw error;
+    }
+    if (databaseError) throw databaseError;
+    emit('training-progress-updated', { source, cleared: true });
+    return { source, cleared: true };
+  }
+
+  function deleteByRoutine(tx, storeName, routineId) {
+    const store = tx.objectStore(storeName);
+    const request = store.index('routineId').openCursor(window.IDBKeyRange.only(routineId));
+    request.onsuccess = () => {
+      const cursor = request.result;
+      if (!cursor) return;
+      cursor.delete();
+      cursor.continue();
+    };
+  }
+
+  async function clearRoutine(routineId) {
+    if (!ROUTINES[routineId]) throw new Error(`Rutina no reconocida: ${routineId}`);
+    await (writeQueues.get(routineId) || Promise.resolve()).catch(() => {});
+    let databaseError;
+    if ('indexedDB' in window) {
+      try {
+        const db = await openDatabase();
+        await transaction(db, [PROGRESS_STORE, SESSION_STORE, ACTIVITY_STORE], 'readwrite', (tx) => {
+          tx.objectStore(PROGRESS_STORE).delete(routineId);
+          deleteByRoutine(tx, SESSION_STORE, routineId);
+          deleteByRoutine(tx, ACTIVITY_STORE, routineId);
+        });
+      } catch (error) {
+        databaseError = error;
+        emit('training-storage-error', { error, fallback: true });
+      }
+    }
+    try {
+      window.localStorage.removeItem(LEGACY_KEYS[routineId]);
+      const fallback = readFallback();
+      delete fallback.progress[routineId];
+      Object.keys(fallback.sessions).forEach((key) => { if (fallback.sessions[key]?.routineId === routineId) delete fallback.sessions[key]; });
+      Object.keys(fallback.activity).forEach((key) => { if (fallback.activity[key]?.routineId === routineId) delete fallback.activity[key]; });
+      window.localStorage.setItem(FALLBACK_KEY, JSON.stringify(fallback));
+    } catch (error) {
+      emit('training-storage-error', { error });
+      throw error;
+    }
+    if (databaseError) throw databaseError;
+    emit('training-progress-updated', { routineId, cleared: true });
+    return { routineId, cleared: true };
   }
 
   function legacySnapshots() {
@@ -298,8 +575,7 @@
       });
       return { progress: [...progress.values()], sessions: [...sessions.values()], activity: [...activity.values()] };
     } catch (_) {
-      const fallback = readFallback();
-      return { progress: Object.values(fallback.progress), sessions: Object.values(fallback.sessions), activity: Object.values(fallback.activity) };
+      return fallbackData();
     }
   }
 
@@ -411,5 +687,5 @@
     return { indexedDB: 'indexedDB' in window, persistent };
   }
 
-  window.TrainingProgressStore = Object.freeze({ capture, getDashboard, requestPersistence, storageStatus, classifyTemporalRelation: temporalRelation });
+  window.TrainingProgressStore = Object.freeze({ capture, clearAll, clearRoutine, getDashboard, getProfile, saveProfile, getHistory, exportData, importData, requestPersistence, storageStatus, classifyTemporalRelation: temporalRelation });
 })();

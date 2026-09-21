@@ -22,7 +22,8 @@ class HomepageContractTests(unittest.TestCase):
         self.assertIn("Gymratik: Rutinas y progreso", self.html)
         self.assertIn('aria-label="Gymratik, inicio"', self.html)
         self.assertIn("background:rgba(11,16,23,.72) url('./icon.png')", self.html)
-        self.assertIn('class="hero-mascot" src="./icon.png"', self.html)
+        self.assertIn(".hero-mascot-bg", self.html)
+        self.assertIn('class="hero-mascot-bg" src="./icon.png"', self.html)
         self.assertNotIn("Gymratic", self.html)
         self.assertNotIn("<title>Entrenamiento", self.html)
 
@@ -109,6 +110,52 @@ class HomepageContractTests(unittest.TestCase):
         self.assertIn('progressTodaySeries', self.html)
         self.assertIn('TrainingProgressStore', self.html)
         self.assertIn('persistButton', self.html)
+        self.assertIn('id="resetAllButton"', self.html)
+        self.assertIn('clearAll()', self.html)
+
+    def test_homepage_exposes_local_profile_and_backup_controls(self):
+        for marker in (
+            'id="profile"',
+            'id="profileBirthDate"',
+            'id="profileSex"',
+            'id="profileHeightCm"',
+            'id="profileGoal"',
+            'id="profileUnits"',
+            'id="exportDataButton"',
+            'id="importDataInput"',
+            'id="sessionHistory"',
+            'saveProfile',
+            'getHistory',
+            'Exportar datos',
+            'Importar respaldo',
+        ):
+            with self.subTest(marker=marker):
+                self.assertIn(marker, self.html)
+
+    def test_homepage_derives_effort_mascot_from_profile_sex(self):
+        for asset in ("data/profile/mouse-female-effort.png", "data/profile/mouse-male-effort.png"):
+            with self.subTest(asset=asset):
+                self.assertTrue((ROOT / asset).is_file())
+                self.assertEqual((ROOT / asset).read_bytes()[:8], b"\x89PNG\r\n\x1a\n")
+        self.assertIn("female: { src: './data/profile/mouse-female-effort.png'", self.html)
+        self.assertIn("male: { src: './data/profile/mouse-male-effort.png'", self.html)
+        self.assertIn("return profileAvatars[sex] || profileAvatars.neutral;", self.html)
+        self.assertIn("profileSex.addEventListener('change', () => renderProfileAvatar(profileSex.value));", self.html)
+        self.assertIn("alt: 'Ratona haciendo press con mancuerna, con expresión de esfuerzo'", self.html)
+        self.assertIn("alt: 'Ratón haciendo press con mancuerna, con expresión de esfuerzo'", self.html)
+
+    def test_homepage_places_recorded_statistics_below_start(self):
+        hero_end = self.html.index('</section>', self.html.index('<section class="hero"'))
+        stats_start = self.html.index('<section id="progress" class="recorded-summary"')
+        self.assertGreater(stats_start, hero_end)
+        self.assertIn('Estadísticas registradas', self.html)
+        self.assertIn('series de hoy', self.html)
+        self.assertIn('sesiones completas', self.html)
+
+    def test_homepage_exposes_explicit_reset_at_bottom(self):
+        self.assertIn('id="resetAllButton"', self.html)
+        self.assertIn('Reiniciar registros', self.html)
+        self.assertIn('Se borrarán sesiones, series y actividad', self.html)
 
     def test_homepage_normalizes_partial_dashboard_data(self):
         self.assertIn('function normalizeDashboard', self.html)
@@ -126,6 +173,12 @@ class HomepageContractTests(unittest.TestCase):
         self.assertNotIn('Preparar sesiones', self.html)
         self.assertNotIn('cacheButton', self.html)
         self.assertNotIn('prepareOffline', self.html)
+
+    def test_homepage_exposes_liquid_glass_accessibility_redesign(self):
+        self.assertIn('data-redesign="liquid-glass-wcag-v13"', self.html)
+        self.assertIn('backdrop-filter:blur(18px) saturate(145%)', self.html)
+        self.assertIn('#ffd166', self.html)
+        self.assertIn('@media (prefers-reduced-motion:reduce)', self.html)
 
     def test_canonical_routines_use_distinct_progress_storage_keys(self):
         keys = []

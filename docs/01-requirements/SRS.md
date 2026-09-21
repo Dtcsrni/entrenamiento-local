@@ -98,6 +98,19 @@ Definir requisitos verificables para Gymratik: Rutinas y progreso. Este document
 - **FUN-EXP-001 · P0:** deberá exportar datos y metadatos en un formato documentado.
 - **FUN-EXP-002 · P0:** deberá restaurar un respaldo compatible sin pérdida silenciosa.
 
+### 4.8 Perfil local y administración de datos
+
+- **FUN-PRO-001 · P0:** el usuario deberá poder crear y editar un perfil local con nombre visible, fecha de nacimiento, sexo, altura, objetivo y unidades.
+  - Aceptación: los campos se validan, se conservan tras recargar y no requieren conectividad.
+- **FUN-PRO-002 · P0:** el sistema deberá asociar el progreso y las sesiones al perfil local activo.
+  - Aceptación: la migración de datos existentes conserva las series y las sesiones con `profileId=local-default`.
+- **FUN-PRO-003 · P0:** el usuario deberá consultar sesiones recientes con estado, fecha, rutina y series completadas.
+  - Aceptación: una sesión activa o completada aparece sin duplicarse después de recargar.
+- **FUN-PRO-004 · P0:** el usuario deberá exportar e importar un respaldo versionado del perfil y sus registros.
+  - Aceptación: un respaldo válido se restaura después de validación y confirmación; un archivo inválido no modifica los datos.
+- **FUN-PRO-005 · P1:** la portada deberá mostrar automáticamente una mascota de perfil derivada del sexo seleccionado, con una variante de ratón para `male`, una de ratona para `female` y una mascota neutral para valores no binarios o no indicados.
+  - Aceptación: al cambiar el selector sin recargar, las imágenes y textos alternativos se actualizan; ambas variantes se sirven offline y no se persiste una imagen separada del sexo.
+
 ## 5. Requisitos no funcionales
 
 ### Fiabilidad y disponibilidad
@@ -121,6 +134,7 @@ Definir requisitos verificables para Gymratik: Rutinas y progreso. Este document
 - **NFR-SEC-003 · P0:** las entradas de imagen/texto deberán validarse y tratarse como no confiables.
 - **NFR-PRI-001 · P0:** el usuario deberá controlar retención y eliminación de imágenes.
 - **NFR-PRI-002 · P0:** logs y métricas deberán excluir contenido personal por defecto.
+- **NFR-PRI-003 · P0:** ningún token, contraseña o identificador de autenticación deberá almacenarse en `localStorage` o IndexedDB.
 
 ### Usabilidad, mantenibilidad y compatibilidad
 

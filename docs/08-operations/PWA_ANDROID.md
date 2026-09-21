@@ -1,6 +1,6 @@
 # Consulta de rutinas en Android
 
-La raíz del repositorio contiene una PWA estática (`index.html`, `manifest.webmanifest` y `sw.js`). La PWA muestra los tres HTML canónicos y precachea sus recursos locales publicados para que las sesiones sigan disponibles sin conexión.
+La raíz del repositorio contiene una PWA estática (`index.html`, `manifest.webmanifest` y `sw.js`). La PWA muestra los cuatro HTML canónicos y precachea sus recursos locales publicados para que las sesiones sigan disponibles sin conexión.
 
 ## Uso en Android
 
@@ -10,7 +10,7 @@ La raíz del repositorio contiene una PWA estática (`index.html`, `manifest.web
 4. Abrir la PWA instalada; el service worker descarga automáticamente la portada, las rutinas y sus medios locales.
 5. En el gimnasio, abrir la PWA instalada sin conexión.
 
-La instalación del service worker precachea la portada, las tres rutinas y los medios locales referenciados por ellas. No existe una preparación manual: la PWA prioriza la copia local y sincroniza cambios en segundo plano cuando hay conexión.
+La instalación del service worker precachea la portada, las cuatro rutinas y los medios locales referenciados por ellas. No existe una preparación manual: la PWA prioriza la copia local y sincroniza cambios en segundo plano cuando hay conexión.
 
 ## Persistencia del avance
 
@@ -18,7 +18,9 @@ El avance de series se guarda en `IndexedDB`, separado de la caché del service 
 
 La actividad se agrupa con la hora local del dispositivo: varios guardados en el mismo minuto se consolidan; dentro de la misma hora o del mismo día actualizan el mismo contexto; al detectar otro día se conserva el historial anterior y se marca una nueva jornada de actividad. Esta clasificación evita duplicados por cada clic y permite mostrar las series de hoy sin reiniciar silenciosamente una rutina incompleta.
 
-Si `IndexedDB` no está disponible o una transacción falla, la aplicación usa un respaldo compacto en `localStorage` y muestra el estado de error en la portada. `Proteger almacenamiento` solicita al navegador persistencia adicional; no sustituye una copia externa y el usuario puede perder los datos al borrar los datos del sitio, usar navegación privada o cambiar de dispositivo. La exportación/importación aún no forma parte del contrato actual.
+La base IndexedDB v3 contiene el perfil local, el progreso, las sesiones y la actividad; los registros existentes de v2 se migran al perfil `local-default`. La portada permite editar fecha de nacimiento, sexo, altura, objetivo y unidades, revisar sesiones recientes y exportar/importar un respaldo JSON versionado. La mascota de perfil se deriva del sexo seleccionado: ratón para `male`, ratona para `female` y la mascota neutral existente para valores no binarios o no indicados. La importación valida el archivo y exige confirmación antes de reemplazar los datos.
+
+Si `IndexedDB` no está disponible o una transacción falla, la aplicación usa un respaldo compacto en `localStorage` y muestra el estado de error en la portada. `Proteger almacenamiento` solicita al navegador persistencia adicional; no sustituye una copia externa y el usuario puede perder los datos al borrar los datos del sitio, usar navegación privada o cambiar de dispositivo. El perfil local no es una cuenta autenticada ni permite sincronización entre dispositivos.
 
 ## Actualización desde el repositorio
 

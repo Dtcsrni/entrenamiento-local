@@ -16,7 +16,9 @@ class ProgressStoreContractTests(unittest.TestCase):
         self.assertIn("routineProgress", self.source)
         self.assertIn("sessions", self.source)
         self.assertIn("ACTIVITY_STORE", self.source)
-        self.assertIn("DB_VERSION = 2", self.source)
+        self.assertIn("DB_VERSION = 3", self.source)
+        self.assertIn("PROFILE_STORE", self.source)
+        self.assertIn("META_STORE", self.source)
 
     def test_progress_store_has_fallback_and_migration_contract(self):
         self.assertIn("entrenamiento-progress-fallback-v1", self.source)
@@ -35,6 +37,11 @@ class ProgressStoreContractTests(unittest.TestCase):
         self.assertIn("writeQueues", self.source)
         self.assertIn("enqueueWrite", self.source)
         self.assertIn("Object.values(fallback.progress)", self.source)
+
+    def test_progress_store_exposes_profile_history_and_backup_contract(self):
+        for marker in ("getProfile", "saveProfile", "getHistory", "exportData", "importData", "gymratik-backup"):
+            with self.subTest(marker=marker):
+                self.assertIn(marker, self.source)
 
 
 if __name__ == "__main__":

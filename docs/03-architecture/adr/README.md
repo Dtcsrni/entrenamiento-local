@@ -16,6 +16,7 @@ Estados: `Proposed`, `Accepted`, `Superseded`, `Rejected`.
 | [ADR-010](ADR-010-health-connect.md) | Health Connect como adaptador | Accepted |
 | [ADR-011](ADR-011-backup.md) | Respaldo verificable | Accepted |
 | [ADR-012](ADR-012-zepp-poc.md) | Zepp condicionado por PoC | Accepted |
+| [ADR-013](ADR-013-perfil-local-y-respaldo-pwa.md) | Perfil local, historial y respaldo de la PWA | Accepted |
 
 ## Plantilla
 

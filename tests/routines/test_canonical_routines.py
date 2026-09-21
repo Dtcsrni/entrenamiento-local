@@ -168,6 +168,30 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
                 card_indexes = [int(value) for value in re.findall(r'<article class="card" data-exercise-index="(\d+)">', source)]
                 self.assertEqual(card_indexes, list(range(1, expected_cards[path.name] + 1)))
 
+    def test_all_routines_expose_access_to_homepage(self) -> None:
+        for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
+            source = path.read_text(encoding="utf-8")
+            with self.subTest(path=path.name):
+                match = re.search(
+                    r'<a class="routine-home-link" href="([^"]+)"[^>]*>', source
+                )
+                self.assertIsNotNone(match)
+                self.assertEqual((path.parent / match.group(1)).resolve(), ROOT / "index.html")
+                self.assertIn('aria-label="Volver a la portada"', source)
+                self.assertIn('>← Portada</a>', source)
+
+    def test_all_routines_use_the_shared_liquid_glass_redesign(self) -> None:
+        stylesheet = ROOT / "routine-liquid-glass-v13.css"
+        self.assertTrue(stylesheet.is_file())
+        css = stylesheet.read_text(encoding="utf-8")
+        for marker in ("backdrop-filter:blur(18px)", "#ffd166", "prefers-reduced-motion:reduce"):
+            self.assertIn(marker, css)
+        for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
+            with self.subTest(path=path.name):
+                source = path.read_text(encoding="utf-8")
+                self.assertIn('href="../../../routine-liquid-glass-v13.css"', source)
+                self.assertIn('grid-template-areas:"intro meta" "details details"', css)
+
     def test_all_routines_share_the_canonical_exercise_card_contract(self) -> None:
         required_markers = (
             r'class="machineRefBox(?:\s|\")',
