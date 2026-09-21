@@ -88,6 +88,12 @@ class HomepageContractTests(unittest.TestCase):
         self.assertNotIn('id="connectionState"', self.html)
         self.assertNotIn('Conectado', self.html)
 
+    def test_homepage_keeps_mobile_hero_content_inside_the_viewport(self):
+        self.assertIn('.hero > * { min-width:0; }', self.html)
+        self.assertIn('overflow-wrap:anywhere', self.html)
+        self.assertIn('.hero-card-footer { display:flex; flex-wrap:wrap;', self.html)
+        self.assertIn('h1 { max-width:100%; font-size:clamp(2.75rem,14vw,5.5rem); }', self.html)
+
     def test_homepage_exposes_persistent_progress_dashboard(self):
         self.assertIn('src="./progress-store.js"', self.html)
         self.assertIn('progressRecordedSeries', self.html)
