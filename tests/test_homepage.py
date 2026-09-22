@@ -74,12 +74,20 @@ class HomepageContractTests(unittest.TestCase):
         self.assertIn("event.data?.type === 'APP_UPDATED'", self.html)
         self.assertIn("navigator.serviceWorker.addEventListener('message'", self.html)
 
-    def test_homepage_hides_install_button_when_app_is_already_installed(self):
-        self.assertIn("display-mode: standalone", self.html)
-        self.assertIn("navigator.standalone === true", self.html)
-        self.assertIn("window.addEventListener('appinstalled'", self.html)
-        self.assertIn("installButton.hidden = isInstalled() || !deferredInstallPrompt", self.html)
-        self.assertIn("[hidden] { display:none !important; }", self.html)
+    def test_browser_context_invites_installation_and_hides_profile_and_history(self):
+        self.assertTrue((ROOT / "install-gate.js").is_file())
+        self.assertIn('src="./install-gate.js"', self.html)
+        self.assertIn("data-gymratik-installed=\"false\"", self.html)
+        gate = (ROOT / "install-gate.js").read_text(encoding="utf-8")
+        self.assertIn("Instala la aplicación para guardar tu perfil y el avance de tus rutinas.", gate)
+        self.assertIn("display-mode: standalone", gate)
+        self.assertIn("window.navigator.standalone === true", gate)
+        self.assertIn("tracker.inert = !installed", gate)
+        for selector in ('#progress', '#progress-detail', '#profile', '.profile-chip', '.footer-actions'):
+            with self.subTest(selector=selector):
+                self.assertIn(f'html[data-gymratik-installed="false"] {selector}', self.html)
+        self.assertIn('aria-label="Cerrar invitación y continuar"', (ROOT / "install-gate.js").read_text(encoding="utf-8"))
+        self.assertIn("window.addEventListener('appinstalled'", (ROOT / "install-gate.js").read_text(encoding="utf-8"))
 
     def test_homepage_shows_last_successful_update(self):
         self.assertIn('id="updateState"', self.html)
@@ -232,7 +240,15 @@ class HomepageContractTests(unittest.TestCase):
         for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
             source = path.read_text(encoding="utf-8")
             self.assertIn('src="../../../progress-store.js"', source)
+            self.assertIn('src="../../../install-gate.js"', source)
             self.assertIn('TrainingProgressStore?.capture', source)
+            self.assertIn("if (!window.GymratikInstallGate?.isInstalled()) return;", source)
+            self.assertIn("const saved = window.GymratikInstallGate?.isInstalled() ?", source)
+            self.assertIn("if (window.GymratikInstallGate?.isInstalled() && window.TrainingProgressStore?.getHistory)", source)
+
+    def test_profile_and_progress_reads_are_gated_by_installation(self):
+        self.assertIn("if (!window.GymratikInstallGate?.isInstalled()) return;", self.html.split("async function refreshProfile()", 1)[1])
+        self.assertIn("async function refreshProgress() {\n      if (!window.GymratikInstallGate?.isInstalled()) return;", self.html)
 
     def test_day1_replaces_cross_day_duplicate_media_id(self):
         day1 = json.loads((ROOT / "data/rutinas_autocontenidas/evidencia/dia1_media_manifest.json").read_text(encoding="utf-8"))

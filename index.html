@@ -9,6 +9,7 @@
   <meta name="description" content="Rutinas visuales para entrenar en el gimnasio con calentamiento, técnica y registro de series.">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.png" type="image/png">
+  <script src="./install-gate.js"></script>
   <script src="./progress-store.js"></script>
   <title>Gymratik: Rutinas y progreso</title>
   <style data-home-redesign="v2">
@@ -20,6 +21,14 @@
     button { font:inherit; }
     :focus-visible { outline:3px solid var(--focus); outline-offset:4px; }
     [hidden] { display:none !important; }
+    html[data-gymratik-installed="false"] #progress,
+    html[data-gymratik-installed="false"] #progress-detail,
+    html[data-gymratik-installed="false"] #profile,
+    html[data-gymratik-installed="false"] .profile-chip,
+    html[data-gymratik-installed="false"] a[href="#profile"],
+    html[data-gymratik-installed="false"] a[href="#progress"],
+    html[data-gymratik-installed="false"] .hero-trust,
+    html[data-gymratik-installed="false"] .footer-actions { display:none !important; }
     .shell { width:min(100% - 32px,1160px); margin:0 auto; }
     .topbar { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:22px 0 16px; }
     .brand { display:inline-flex; align-items:center; gap:10px; color:var(--text); font-size:.92rem; font-weight:900; letter-spacing:.08em; text-decoration:none; text-transform:uppercase; }
@@ -232,7 +241,7 @@
           <p class="hero-copy">Cuatro sesiones visuales para llegar al gimnasio, calentar, ejecutar con buena técnica y registrar cada serie sin perder el ritmo.</p>
           <p id="motivationMessage" class="hero-motivation" role="status" aria-live="polite">Cuando quieras empezar, sigue el calentamiento y avanza a tu ritmo.</p>
           <div id="routineReminder" class="routine-reminder" role="status" hidden><span id="routineReminderText"></span><button id="dismissRoutineReminder" class="button secondary" type="button">Hoy no</button></div>
-          <div class="hero-actions"><a id="nextSessionCta" class="button" href="./data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html">Empezar Día 1</a><a class="button secondary" href="#routines">Ver plan completo</a><a class="button secondary" href="#profile">Mi perfil</a><button id="installButton" class="button secondary" type="button" hidden>Instalar aplicación</button></div>
+          <div class="hero-actions"><a id="nextSessionCta" class="button" href="./data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html">Empezar Día 1</a><a class="button secondary" href="#routines">Ver plan completo</a><a class="button secondary" href="#profile">Mi perfil</a></div>
           <p class="hero-trust"><span class="status-dot" aria-hidden="true"></span>Tu avance se guarda en este dispositivo.</p>
         </div>
         <aside class="next-session-card" aria-labelledby="nextSessionTitle">
@@ -293,7 +302,6 @@
       <footer><p>Material de entrenamiento general. Respeta el calentamiento indicado y ajusta la sesión a tu situación.</p><div class="footer-actions"><p id="resetNote" class="progress-note" role="status" aria-live="polite">Los registros se conservan en este dispositivo.</p><button id="resetAllButton" class="button secondary reset-button" type="button">Reiniciar registros</button></div><p id="updateState" class="update-state" role="status" aria-live="polite">Aplicación y recursos offline: comprobando actualización…</p></footer>
   </div>
   <script>
-    const installButton = document.querySelector('#installButton');
     const updateState = document.querySelector('#updateState');
     const nextSessionCta = document.querySelector('#nextSessionCta');
     const nextSessionLink = document.querySelector('#nextSessionLink');
@@ -344,7 +352,6 @@
       { routineId: 'day4', day: 'Día 4', title: 'Pierna equilibrada', summary: 'Rodilla, cadera, isquiosurales, pantorrilla y core con volumen trazable y apoyo visual.', totalExercises: 7, totalSeries: 20, image: './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/2287-V07qpXy.jpg', href: './data/rutinas_autocontenidas/canonicas/Rutina_Dia_4_Pierna_Equilibrio_V1.html' },
     ];
     const fallbackRoutineProgress = routineCatalog.map(({ routineId, day, title, totalExercises, totalSeries }) => ({ routineId, label: `${day} · ${title}`, totalExercises, totalSeries }));
-    let deferredInstallPrompt;
     let activeProfile = null;
     let latestDashboard = null;
     let recentSessions = [];
@@ -508,6 +515,7 @@
     }
 
     async function refreshProfile() {
+      if (!window.GymratikInstallGate?.isInstalled()) return;
       if (!window.TrainingProgressStore) return;
       const [profile, history] = await Promise.all([window.TrainingProgressStore.getProfile(), window.TrainingProgressStore.getHistory(100)]);
       renderProfile(profile);
@@ -582,16 +590,9 @@
     }
 
     async function refreshProgress() {
+      if (!window.GymratikInstallGate?.isInstalled()) return;
       if (!window.TrainingProgressStore) return;
       renderProgress(await window.TrainingProgressStore.getDashboard());
-    }
-
-    function isInstalled() {
-      return window.matchMedia?.('(display-mode: standalone)').matches === true || window.navigator.standalone === true;
-    }
-
-    function updateInstallVisibility() {
-      installButton.hidden = isInstalled() || !deferredInstallPrompt;
     }
 
     function formatUpdateTimestamp(timestamp) {
@@ -617,10 +618,10 @@
     try { renderLastUpdate(localStorage.getItem(LAST_UPDATE_KEY)); } catch (_) { renderLastUpdate(0); }
     const installMode = window.matchMedia?.('(display-mode: standalone)');
     installMode?.addEventListener?.('change', updateInstallVisibility);
-    window.addEventListener('appinstalled', () => { deferredInstallPrompt = undefined; updateInstallVisibility(); });
-    persistButton.addEventListener('click', async () => { persistButton.disabled = true; const granted = await window.TrainingProgressStore?.requestPersistence(); progressNote.textContent = granted ? 'El navegador protegió este almacenamiento contra limpieza automática.' : 'El navegador no concedió protección adicional; conserva una copia del dispositivo.'; persistButton.disabled = false; });
+    persistButton.addEventListener('click', async () => { if (!window.GymratikInstallGate?.isInstalled()) return; persistButton.disabled = true; const granted = await window.TrainingProgressStore?.requestPersistence(); progressNote.textContent = granted ? 'El navegador protegió este almacenamiento contra limpieza automática.' : 'El navegador no concedió protección adicional; conserva una copia del dispositivo.'; persistButton.disabled = false; });
     profileForm.addEventListener('submit', async (event) => {
       event.preventDefault();
+      if (!window.GymratikInstallGate?.isInstalled()) return;
       profileStatus.textContent = 'Guardando perfil…';
       try {
         const selectedReminderDays = reminderDaysInputs.filter(input => input.checked).map(input => Number(input.value));
@@ -641,6 +642,7 @@
       routineReminder.hidden = true;
     });
     exportDataButton.addEventListener('click', async () => {
+      if (!window.GymratikInstallGate?.isInstalled()) return;
       exportDataButton.disabled = true;
       profileStatus.textContent = 'Preparando respaldo…';
       try {
@@ -658,6 +660,7 @@
       } finally { exportDataButton.disabled = false; }
     });
     importDataInput.addEventListener('change', async () => {
+      if (!window.GymratikInstallGate?.isInstalled()) return;
       const file = importDataInput.files?.[0];
       importDataInput.value = '';
       if (!file) return;
@@ -675,6 +678,7 @@
       }
     });
     resetAllButton.addEventListener('click', async () => {
+      if (!window.GymratikInstallGate?.isInstalled()) return;
       const confirmed = window.confirm('¿Reiniciar todos los registros? Se borrarán sesiones, series y actividad guardadas en este dispositivo.');
       if (!confirmed) return;
       resetAllButton.disabled = true;
@@ -694,9 +698,9 @@
     window.addEventListener('training-storage-error', event => {
       progressNote.textContent = 'No se pudo guardar el avance en este momento.';
     });
-    window.addEventListener('beforeinstallprompt', (event) => { event.preventDefault(); deferredInstallPrompt = event; updateInstallVisibility(); });
-    installButton.addEventListener('click', async () => { if (!deferredInstallPrompt) return; deferredInstallPrompt.prompt(); await deferredInstallPrompt.userChoice; deferredInstallPrompt = undefined; updateInstallVisibility(); });
-    updateInstallVisibility();
+    window.addEventListener('gymratik-install-state-change', (event) => {
+      if (event.detail?.installed) Promise.all([refreshProgress(), refreshProfile()]).catch((error) => console.error('Installed app data refresh failed', error));
+    });
     window.addEventListener('pageshow', event => { if (event.persisted) { refreshProfile(); refreshProgress(); } });
     document.addEventListener('visibilitychange', () => { if (!document.hidden) { refreshProfile(); refreshProgress(); } });
     Promise.all([refreshProgress(), refreshProfile()]).then(() => {

@@ -72,6 +72,7 @@ def build_precache() -> list[str]:
         "./index.html",
         "./manifest.webmanifest",
         "./icon.png",
+        "./install-gate.js",
         "./progress-store.js",
         "./routine-liquid-glass-v13.css",
         "./data/profile/mouse-female-effort.png",

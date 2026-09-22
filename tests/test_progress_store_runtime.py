@@ -15,7 +15,7 @@ const fs = require('fs');
 const vm = require('vm');
 const assert = require('assert');
 const source = fs.readFileSync(process.argv[1], 'utf8');
-const window = {
+const window = { GymratikInstallGate: { isInstalled() { return true; } },
   CustomEvent: class CustomEvent { constructor(name, init) { this.name = name; this.detail = init?.detail; } },
   dispatchEvent() {},
   localStorage: { getItem() { return null; }, setItem() {} }
@@ -56,7 +56,7 @@ const fallback = JSON.stringify({
     bad: { activityKey: 'bad', routineId: 'day1', dayKey: '2026-09-19', completedSeries: 'invalid', updatedAt: 'invalid' }
   }
 });
-const window = {
+const window = { GymratikInstallGate: { isInstalled() { return true; } },
   CustomEvent: class CustomEvent { constructor(name, init) { this.name = name; this.detail = init?.detail; } },
   dispatchEvent() {},
   localStorage: { getItem() { return fallback; }, setItem() {} }
@@ -89,7 +89,7 @@ const fs = require('fs');
 const vm = require('vm');
 const assert = require('assert');
 const source = fs.readFileSync(process.argv[1], 'utf8');
-const window = {
+const window = { GymratikInstallGate: { isInstalled() { return true; } },
   CustomEvent: class CustomEvent { constructor(name, init) { this.name = name; this.detail = init?.detail; } },
   dispatchEvent() {},
   localStorage: { getItem() { return null; }, setItem() {}, removeItem() {} }
@@ -116,7 +116,7 @@ const vm = require('vm');
 const assert = require('assert');
 const source = fs.readFileSync(process.argv[1], 'utf8');
 let persisted = null;
-const window = {
+const window = { GymratikInstallGate: { isInstalled() { return true; } },
   CustomEvent: class CustomEvent { constructor(name, init) { this.name = name; this.detail = init?.detail; } },
   dispatchEvent() {},
   localStorage: {
@@ -159,7 +159,7 @@ const vm = require('vm');
 const assert = require('assert');
 const source = fs.readFileSync(process.argv[1], 'utf8');
 let persisted = null;
-const window = {
+const window = { GymratikInstallGate: { isInstalled() { return true; } },
   CustomEvent: class CustomEvent { constructor(name, init) { this.name = name; this.detail = init?.detail; } },
   dispatchEvent() {},
   localStorage: { getItem() { return persisted; }, setItem(_key, value) { persisted = value; }, removeItem() {} }
@@ -204,7 +204,7 @@ const fs = require('fs');
 const vm = require('vm');
 const assert = require('assert');
 const source = fs.readFileSync(process.argv[1], 'utf8');
-const window = {
+const window = { GymratikInstallGate: { isInstalled() { return true; } },
   CustomEvent: class CustomEvent { constructor(name, init) { this.name = name; this.detail = init?.detail; } },
   dispatchEvent() {},
   localStorage: { getItem() { return null; }, setItem() {}, removeItem() {} }
@@ -257,7 +257,7 @@ async function verify(oldVersion) {
       return tx;
     }, close() {}
   };
-  const window = {
+  const window = { GymratikInstallGate: { isInstalled() { return true; } },
     CustomEvent: class CustomEvent { constructor(name, init) { this.name = name; this.detail = init?.detail; } },
     dispatchEvent(event) { events.push(event); },
     localStorage: { getItem(key) { return storage.get(key) || null; }, setItem(key, value) { storage.set(key, value); }, removeItem(key) { storage.delete(key); } },
@@ -295,7 +295,7 @@ const vm = require('vm');
 const assert = require('assert');
 const source = fs.readFileSync(process.argv[1], 'utf8');
 let persisted = null;
-const window = {
+const window = { GymratikInstallGate: { isInstalled() { return true; } },
   CustomEvent: class CustomEvent { constructor(name, init) { this.name = name; this.detail = init?.detail; } },
   dispatchEvent() {},
   localStorage: { getItem() { return persisted; }, setItem(_key, value) { persisted = value; }, removeItem() {} }
@@ -316,6 +316,45 @@ window.TrainingProgressStore.capture({ routineId: 'day1', state }).then(() => wi
   assert.strictEqual(history[0].performance[0].exerciseName, 'Jalón al pecho');
   assert.strictEqual(history[0].performance[0].reps, 12);
   assert.strictEqual(history[0].performance[0].load, 40);
+  console.log(JSON.stringify({ ok: true }));
+}).catch(error => { console.error(error); process.exit(1); });
+"""
+        result = subprocess.run(
+            ["node", "-e", script, str(STORE)], cwd=ROOT, check=False, capture_output=True, text=True
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout), {"ok": True})
+
+    def test_uninstalled_browser_cannot_read_or_write_profile_or_progress(self):
+        script = r"""
+const fs = require('fs');
+const vm = require('vm');
+const assert = require('assert');
+const source = fs.readFileSync(process.argv[1], 'utf8');
+let writes = 0;
+const window = {
+  GymratikInstallGate: { isInstalled() { return false; } },
+  CustomEvent: class CustomEvent { constructor(name, init) { this.name = name; this.detail = init?.detail; } },
+  dispatchEvent() {},
+  localStorage: { getItem() { return null; }, setItem() { writes += 1; }, removeItem() {} }
+};
+const context = { window, localStorage: window.localStorage, navigator: {}, console, Date, setTimeout, clearTimeout };
+vm.runInNewContext(source, context);
+const store = window.TrainingProgressStore;
+const checks = [
+  store.capture({ routineId: 'day1', state: {} }),
+  store.getProfile(),
+  store.saveProfile({ displayName: 'No guardar' }),
+  store.getHistory(),
+  store.getDashboard(),
+  store.exportData(),
+  store.importData({}),
+  store.clearAll(),
+  store.clearRoutine('day1'),
+  store.requestPersistence()
+];
+Promise.all(checks.map(operation => assert.rejects(operation, /Instala Gymratik/))).then(() => {
+  assert.strictEqual(writes, 0);
   console.log(JSON.stringify({ ok: true }));
 }).catch(error => { console.error(error); process.exit(1); });
 """

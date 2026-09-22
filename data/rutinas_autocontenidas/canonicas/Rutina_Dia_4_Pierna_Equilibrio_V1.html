@@ -2661,6 +2661,7 @@ body::before,body::after{animation:none!important}
 }
 </style>
 <script src="../../../progress-store.js"></script>
+<script src="../../../install-gate.js"></script>
 <style data-fix="muscle-specific-focus-v1" data-enhancement="muscle-marker-precision-v2">
 /* Referencia ilustrativa: el halo localiza la región, no pretende ser una
    segmentación clínica ni una prueba de activación muscular. */
@@ -3215,7 +3216,7 @@ body::before,body::after{animation:none!important}
   let soundEnabled = true;
   const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   try {
-    const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    const saved = window.GymratikInstallGate?.isInstalled() ? JSON.parse(localStorage.getItem(storageKey) || '{}') : {};
     if (saved && typeof saved === 'object') state = saved;
     soundEnabled = localStorage.getItem(soundKey) !== 'off';
   } catch (_) {}
@@ -3225,6 +3226,7 @@ body::before,body::after{animation:none!important}
   document.head.append(performanceStyle);
   const plannedSeries = trackers.reduce((sum, tracker) => sum + (tracker.dataset.seriesKeys || '').trim().split(/\s+/).filter(Boolean).length, 0);
   const publishProgress = () => {
+    if (!window.GymratikInstallGate?.isInstalled()) return;
     window.TrainingProgressStore?.capture({
       routineId,
       state,
@@ -3233,6 +3235,7 @@ body::before,body::after{animation:none!important}
     });
   };
   const save = () => {
+    if (!window.GymratikInstallGate?.isInstalled()) return;
     try { localStorage.setItem(storageKey, JSON.stringify(state)); }
     catch (error) { window.dispatchEvent(new CustomEvent('training-storage-error', { detail: { error } })); }
     publishProgress();
@@ -3359,7 +3362,7 @@ body::before,body::after{animation:none!important}
       state.__performanceDraft[String(item.index + 1)] = { reps: item.performanceReps.value, load: item.performanceLoad.value };
       save();
     }));
-    if (window.TrainingProgressStore?.getHistory) Promise.all([window.TrainingProgressStore.getHistory(100), window.TrainingProgressStore.getProfile?.() || Promise.resolve({})]).then(([history, profile]) => {
+    if (window.GymratikInstallGate?.isInstalled() && window.TrainingProgressStore?.getHistory) Promise.all([window.TrainingProgressStore.getHistory(100), window.TrainingProgressStore.getProfile?.() || Promise.resolve({})]).then(([history, profile]) => {
       item.performanceLoadUnit = profile.units === 'imperial' ? 'lb' : 'kg';
       item.performanceLoad.closest('label').firstChild.textContent = `Carga (${item.performanceLoadUnit}, opcional) `;
       const currentSessionId = state.__timing?.sessionStartedAt ? `${routineId}:${state.__timing.sessionStartedAt}` : '';

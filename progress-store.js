@@ -31,6 +31,12 @@
   };
   const nonNegativeNumber = value => Math.max(0, numberOrZero(value));
 
+  function requireInstalledApp() {
+    if (!window.GymratikInstallGate?.isInstalled()) {
+      throw new Error('Instala Gymratik para guardar y consultar tu perfil y avance.');
+    }
+  }
+
   function defaultProfile(timestamp = Date.now()) {
     return {
       profileId: DEFAULT_PROFILE_ID,
@@ -357,6 +363,7 @@
   }
 
   async function capture(payload) {
+    requireInstalledApp();
     const record = normalizeSnapshot(payload);
     return enqueueWrite(record.routineId, async () => {
       try {
@@ -378,6 +385,7 @@
   }
 
   async function getProfile() {
+    requireInstalledApp();
     const fallbackProfile = readFallback().profiles[DEFAULT_PROFILE_ID];
     let databaseProfile;
     try {
@@ -396,6 +404,7 @@
   }
 
   async function saveProfile(input) {
+    requireInstalledApp();
     const profile = normalizeProfile(input);
     return enqueueWrite('__profile__', async () => {
       try {
@@ -417,6 +426,7 @@
   }
 
   async function getHistory(limit = 12) {
+    requireInstalledApp();
     const data = await readDatabase();
     return data.sessions
       .filter((session) => session && session.sessionId)
@@ -434,6 +444,7 @@
   }
 
   async function exportData() {
+    requireInstalledApp();
     const profile = await getProfile();
     const data = await readDatabase();
     return {
@@ -467,6 +478,7 @@
   }
 
   async function importData(payload) {
+    requireInstalledApp();
     const imported = normalizeImport(payload);
     await Promise.all([...writeQueues.values()].map((queue) => queue.catch(() => {})));
     try {
@@ -495,6 +507,7 @@
   }
 
   async function clearAll() {
+    requireInstalledApp();
     await Promise.all([...writeQueues.values()].map((queue) => queue.catch(() => {})));
     let source = 'indexeddb';
     let databaseError;
@@ -535,6 +548,7 @@
   }
 
   async function clearRoutine(routineId) {
+    requireInstalledApp();
     if (!ROUTINES[routineId]) throw new Error(`Rutina no reconocida: ${routineId}`);
     await (writeQueues.get(routineId) || Promise.resolve()).catch(() => {});
     let databaseError;
@@ -678,11 +692,13 @@
   }
 
   async function getDashboard() {
+    requireInstalledApp();
     const data = await backfillActivity(await readDatabase());
     return dashboardFrom(data);
   }
 
   async function requestPersistence() {
+    requireInstalledApp();
     if (!navigator.storage?.persist) return false;
     try {
       return await navigator.storage.persist();

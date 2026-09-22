@@ -10,6 +10,8 @@ La raíz del repositorio contiene una PWA estática (`index.html`, `manifest.web
 4. Abrir la PWA instalada; el service worker descarga automáticamente la portada, las rutinas y sus medios locales.
 5. En el gimnasio, abrir la PWA instalada sin conexión.
 
+En una pestaña del navegador se puede consultar el plan y sus rutinas. La página muestra una invitación descartable para instalar Gymratik; el perfil, el historial y el registro de series solo se habilitan cuando la aplicación se abre en modo instalado.
+
 La instalación del service worker precachea la portada, las cuatro rutinas y los medios locales referenciados por ellas. No existe una preparación manual: la PWA prioriza la copia local y sincroniza cambios en segundo plano cuando hay conexión.
 
 ## Persistencia del avance
@@ -18,7 +20,7 @@ El avance de series se guarda en `IndexedDB`, separado de la caché del service 
 
 La actividad se agrupa con la hora local del dispositivo: varios guardados en el mismo minuto se consolidan; dentro de la misma hora o del mismo día actualizan el mismo contexto; al detectar otro día se conserva el historial anterior y se marca una nueva jornada de actividad. Esta clasificación evita duplicados por cada clic y permite mostrar las series de hoy sin reiniciar silenciosamente una rutina incompleta.
 
-La base IndexedDB v3 contiene el perfil local, el progreso, las sesiones y la actividad. Al abrir una base anterior a v3, la actualización elimina sus almacenes y crea una base v3 vacía; el historial guardado en esa base se pierde. También se eliminan las claves de respaldo local anteriores. La portada informa cuando se reinicia una base existente. La portada permite editar el perfil, revisar sesiones recientes y exportar/importar respaldos JSON v3 después de validar el archivo y confirmar el reemplazo de datos.
+La base IndexedDB v3 contiene el perfil local, el progreso, las sesiones y la actividad. Al abrir una base anterior a v3, la actualización elimina sus almacenes y crea una base v3 vacía; el historial guardado en esa base se pierde. También se eliminan las claves de respaldo local anteriores. La portada informa cuando se reinicia una base existente. En modo instalado, la portada permite editar el perfil, revisar sesiones recientes y exportar/importar respaldos JSON v3 después de validar el archivo y confirmar el reemplazo de datos.
 
 Si `IndexedDB` no está disponible o una transacción falla por un error operativo, la aplicación usa un respaldo compacto nuevo en `localStorage` y muestra el estado de error en la portada. Los respaldos importados deben usar esquema 3. `Proteger almacenamiento` solicita al navegador persistencia adicional; no sustituye una copia externa y el usuario puede perder los datos al borrar los datos del sitio, usar navegación privada o cambiar de dispositivo. El perfil local no es una cuenta autenticada ni permite sincronización entre dispositivos.
 

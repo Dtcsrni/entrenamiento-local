@@ -120,6 +120,8 @@ Definir requisitos verificables para Gymratik: Rutinas y progreso. Este document
   - Aceptación: el resumen cuenta sesiones iniciadas en las últimas ocho semanas; los días sugeridos pueden editarse; el aviso aparece al abrir o volver a la portada, se puede descartar por el día, se suprime si ya se entrenó ese día y no se promete entrega con la PWA cerrada.
 - **FUN-PRO-010 · P1:** el nombre visible podrá contextualizar la frase de la portada.
   - Aceptación: el texto se construye localmente y se representa como texto, sin interpolación HTML ni envío remoto.
+- **FUN-PRO-011 · P0:** el perfil y la lectura o escritura del avance solo estarán disponibles al usar Gymratik en modo de aplicación instalada.
+  - Aceptación: al abrirse en una pestaña del navegador se muestra una invitación descartable para instalar; se pueden consultar las rutinas, pero la portada no expone perfil, historial ni estadísticas y las rutinas no restauran ni guardan progreso. En modo instalado, perfil e historial vuelven a estar disponibles sin cambiar los datos guardados.
 
 **Estabilidad de rutina:** el objetivo guardado en el perfil es informativo y no altera ejercicios, volumen ni frecuencia del plan. La rutina permanece estable mientras resulte tolerable y permita progresar; su revisión responde a estancamiento persistente, recuperación/adherencia insuficientes, dolor o cambios contextuales, no a una rotación automática por calendario.
 

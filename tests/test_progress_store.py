@@ -48,6 +48,10 @@ class ProgressStoreContractTests(unittest.TestCase):
             with self.subTest(marker=marker):
                 self.assertIn(marker, self.source)
 
+    def test_profile_and_progress_api_requires_installed_app(self):
+        self.assertIn("function requireInstalledApp()", self.source)
+        self.assertGreaterEqual(self.source.count("requireInstalledApp();"), 10)
+
 
 if __name__ == "__main__":
     unittest.main()
