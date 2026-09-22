@@ -148,9 +148,22 @@ class HomepageContractTests(unittest.TestCase):
         save_handler = self.html.split("profileForm.addEventListener('submit'", 1)[1].split("profileSex.addEventListener", 1)[0]
         save_profile = save_handler.index('await window.TrainingProgressStore.saveProfile')
         close_editor = save_handler.index('profileEditor.open = false')
-        reload_page = save_handler.index('window.location.reload()')
+        reload_page = save_handler.index('reloadPageOnce()')
         self.assertLess(save_profile, close_editor)
         self.assertLess(close_editor, reload_page)
+
+    def test_homepage_debounces_page_reloads_and_omits_generic_section_descriptions(self):
+        self.assertIn('PAGE_RELOAD_GUARD_MS = 4000', self.html)
+        self.assertIn('sessionStorage.getItem(PAGE_RELOAD_GUARD_KEY)', self.html)
+        self.assertIn("addEventListener('controllerchange', reloadPageOnce)", self.html)
+        for phrase in (
+            'La portada te acompaña sin pedirte que prepares nada antes de salir.',
+            'Lo que llevas registrado en este dispositivo, actualizado al abrir la portada.',
+            'Consulta el avance de cada rutina. El progreso permanece en este dispositivo.',
+            'Elige una sesión para ver ejercicios, descansos, técnica y controles de registro.',
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, self.html)
 
     def test_homepage_derives_effort_mascot_from_profile_sex(self):
         for asset in ("data/profile/mouse-female-effort.png", "data/profile/mouse-male-effort.png"):
@@ -186,6 +199,7 @@ class HomepageContractTests(unittest.TestCase):
 
     def test_homepage_reloads_after_service_worker_controller_change(self):
         self.assertIn("addEventListener('controllerchange'", self.html)
+        self.assertIn("addEventListener('controllerchange', reloadPageOnce)", self.html)
         self.assertIn('window.location.reload()', self.html)
 
     def test_homepage_is_offline_first_without_manual_preparation_prompt(self):

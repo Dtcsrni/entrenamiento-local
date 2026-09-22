@@ -29,6 +29,14 @@ class ServiceWorkerContractTests(unittest.TestCase):
         for source in (self.service_worker, self.generator):
             self.assertIn("routine-liquid-glass-v13.css", source)
 
+    def test_only_worker_activation_announces_an_update_to_the_page(self):
+        for source in (self.service_worker, self.generator):
+            with self.subTest(source=source[:40]):
+                self.assertIn("refreshApplication(notifyClients = false)", source)
+                self.assertIn("if (!notifyClients) return", source)
+                self.assertIn("refreshApplication(true)", source)
+                self.assertIn("event.waitUntil(refreshApplication())", source)
+
 
 if __name__ == "__main__":
     unittest.main()

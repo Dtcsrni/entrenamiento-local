@@ -247,12 +247,12 @@
         </aside>
       </section>
       <section id="progress" class="recorded-summary" aria-labelledby="recordedSummaryTitle">
-        <div class="section-head"><div><p class="eyebrow">Registro local</p><h2 id="recordedSummaryTitle">Estadísticas registradas</h2></div><p>Lo que llevas registrado en este dispositivo, actualizado al abrir la portada.</p></div>
+        <div class="section-head"><div><p class="eyebrow">Registro local</p><h2 id="recordedSummaryTitle">Estadísticas registradas</h2></div></div>
         <div class="progress-dashboard" aria-live="polite"><div class="progress-card"><strong id="progressTodaySeries">0</strong><span>series de hoy</span></div><div class="progress-card"><strong id="progressPlanPercent">0%</strong><span>avance del plan</span></div><div class="progress-card"><strong id="progressCompletedSessions">0</strong><span>sesiones completas</span></div><div class="progress-card"><strong id="progressRecordedSeries">0</strong><span>series registradas</span></div></div>
       </section>
       <section class="quick-start" aria-label="Resumen del plan"><div class="quick-stats"><div class="quick-stat"><strong>4</strong><span>sesiones para rotar</span></div><div class="quick-stat"><strong>82</strong><span>series efectivas programadas</span></div><div class="quick-stat"><strong>100%</strong><span>guías con calentamiento</span></div></div></section>
       <section id="progress-detail" aria-labelledby="progressTitle">
-        <div class="section-head"><div><p class="eyebrow">Detalle del registro</p><h2 id="progressTitle">Tu avance</h2></div><p>Consulta el avance de cada rutina. El progreso permanece en este dispositivo.</p></div>
+        <div class="section-head"><div><p class="eyebrow">Detalle del registro</p><h2 id="progressTitle">Tu avance</h2></div></div>
         <div id="routineProgressList" class="routine-progress-list" aria-label="Avance por rutina"></div>
         <div class="progress-actions"><p id="progressNote" class="progress-note" role="status">Aún no hay series registradas en este dispositivo.</p><button id="persistButton" class="button secondary" type="button">Proteger avance</button></div>
       </section>
@@ -280,7 +280,7 @@
         </div>
       </section>
       <section id="routines" aria-labelledby="routinesTitle">
-        <div class="section-head"><div><p class="eyebrow">Plan completo</p><h2 id="routinesTitle">Tus sesiones</h2></div><p>Elige una sesión para ver ejercicios, descansos, técnica y controles de registro.</p></div>
+        <div class="section-head"><div><p class="eyebrow">Plan completo</p><h2 id="routinesTitle">Tus sesiones</h2></div></div>
         <div class="routine-grid">
           <a class="routine-card" href="./data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html"><div class="routine-visual"><img src="./data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/1350-7I6LNUG.jpg" alt="Remo horizontal en máquina, referencia visual del Día 1" loading="eager"><span class="routine-day">Día 1</span><span class="routine-status">6 ejercicios · 20 series</span></div><div class="routine-body"><h3>Espalda + Bíceps</h3><p>Tracción, remo y trabajo de brazos con instrucciones visuales y registro por ejercicio.</p><span class="routine-link"><span>Abrir sesión</span><span>→</span></span></div></a>
           <a class="routine-card" href="./data/rutinas_autocontenidas/canonicas/Rutina_Dia_2_Pierna_Gluteo_V1.html"><div class="routine-visual"><img src="./data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0739-10Z2DXU.jpg" alt="Prensa de piernas, referencia visual del Día 2" loading="lazy"><span class="routine-day">Día 2</span><span class="routine-status">6 ejercicios · 20 series</span></div><div class="routine-body"><h3>Pierna + Glúteo</h3><p>Tren inferior con énfasis en máquinas, progresión reproducible y fases técnicas visibles.</p><span class="routine-link"><span>Abrir sesión</span><span>→</span></span></div></a>
@@ -288,7 +288,7 @@
           <a class="routine-card" href="./data/rutinas_autocontenidas/canonicas/Rutina_Dia_4_Pierna_Equilibrio_V1.html"><div class="routine-visual"><img src="./data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/2287-V07qpXy.jpg" alt="Prensa unilateral alterna, referencia visual del Día 4" loading="lazy"><span class="routine-day">Día 4</span><span class="routine-status">7 ejercicios · 20 series</span></div><div class="routine-body"><h3>Pierna equilibrada</h3><p>Rodilla, cadera, isquiosurales, pantorrilla y core con volumen trazable y apoyo visual.</p><span class="routine-link"><span>Abrir sesión</span><span>→</span></span></div></a>
         </div>
       </section>
-      <section class="how-to" aria-labelledby="howToTitle"><div><p class="eyebrow">En el gimnasio</p><h2 id="howToTitle">Tres pasos y a entrenar.</h2><p>La portada te acompaña sin pedirte que prepares nada antes de salir.</p></div><ol class="how-to-list"><li>Calienta siguiendo la guía de la sesión.</li><li>Registra cada serie al terminarla.</li><li>Revisa tu avance antes de irte.</li></ol></section>
+      <section class="how-to" aria-labelledby="howToTitle"><div><p class="eyebrow">En el gimnasio</p><h2 id="howToTitle">Tres pasos y a entrenar.</h2></div><ol class="how-to-list"><li>Calienta siguiendo la guía de la sesión.</li><li>Registra cada serie al terminarla.</li><li>Revisa tu avance antes de irte.</li></ol></section>
     </main>
       <footer><p>Material de entrenamiento general. Respeta el calentamiento indicado y ajusta la sesión a tu situación.</p><div class="footer-actions"><p id="resetNote" class="progress-note" role="status" aria-live="polite">Los registros se conservan en este dispositivo.</p><button id="resetAllButton" class="button secondary reset-button" type="button">Reiniciar registros</button></div><p id="updateState" class="update-state" role="status" aria-live="polite">Aplicación y recursos offline: comprobando actualización…</p></footer>
   </div>
@@ -333,6 +333,8 @@
     const exportDataButton = document.querySelector('#exportDataButton');
     const importDataInput = document.querySelector('#importDataInput');
     const LAST_UPDATE_KEY = 'gymratik-last-update-v1';
+    const PAGE_RELOAD_GUARD_KEY = 'gymratik-page-reload-at-v1';
+    const PAGE_RELOAD_GUARD_MS = 4000;
     const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
     const MOTIVATION_RECENT_WINDOW_MS = 7 * MILLISECONDS_PER_DAY;
     const routineCatalog = [
@@ -347,6 +349,7 @@
     let latestDashboard = null;
     let recentSessions = [];
     let databaseResetNotice = false;
+    let pageReloadRequested = false;
     const WEEKDAY_NAMES = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
 
     function numberOr(value, fallback = 0) {
@@ -600,6 +603,17 @@
     function renderLastUpdate(timestamp) { updateState.textContent = formatUpdateTimestamp(timestamp); }
     function rememberLastUpdate(timestamp) { try { localStorage.setItem(LAST_UPDATE_KEY, String(timestamp)); } catch (_) {} renderLastUpdate(timestamp); }
 
+    function reloadPageOnce() {
+      if (pageReloadRequested) return;
+      pageReloadRequested = true;
+      try {
+        const lastReloadAt = Number(sessionStorage.getItem(PAGE_RELOAD_GUARD_KEY)) || 0;
+        if (Date.now() - lastReloadAt < PAGE_RELOAD_GUARD_MS) return;
+        sessionStorage.setItem(PAGE_RELOAD_GUARD_KEY, String(Date.now()));
+      } catch (_) {}
+      window.location.reload();
+    }
+
     try { renderLastUpdate(localStorage.getItem(LAST_UPDATE_KEY)); } catch (_) { renderLastUpdate(0); }
     const installMode = window.matchMedia?.('(display-mode: standalone)');
     installMode?.addEventListener?.('change', updateInstallVisibility);
@@ -613,7 +627,7 @@
         await window.TrainingProgressStore.saveProfile({ displayName: profileDisplayName.value, birthDate: profileBirthDate.value, sex: profileSex.value, heightCm: profileHeightCm.value, goal: profileGoal.value, units: profileUnits.value, reminderDays: selectedReminderDays, remindersEnabled: remindersEnabled.checked });
         profileEditor.open = false;
         window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
-        window.location.reload();
+        reloadPageOnce();
       } catch (error) {
         profileStatus.textContent = error.message || 'No se pudo guardar el perfil.';
         console.error('Profile save failed', error);
@@ -692,8 +706,7 @@
       console.error('Progress dashboard failed', error);
     });
     if ('serviceWorker' in navigator) {
-      let reloadingForServiceWorker = false;
-      navigator.serviceWorker.addEventListener('controllerchange', () => { if (reloadingForServiceWorker) return; reloadingForServiceWorker = true; window.location.reload(); });
+      navigator.serviceWorker.addEventListener('controllerchange', reloadPageOnce);
       navigator.serviceWorker.addEventListener('message', (event) => { if (event.data?.type === 'APP_UPDATED') rememberLastUpdate(event.data.updatedAt); });
       navigator.serviceWorker.register('./sw.js', { scope: './', updateViaCache: 'none' }).then((registration) => { registration.update().catch((error) => console.error('Service worker update check failed', error)); if (navigator.onLine) { const sync = () => registration.active?.postMessage({ type: 'SYNC_APP' }); if (registration.active) sync(); else navigator.serviceWorker.ready.then((readyRegistration) => readyRegistration.active?.postMessage({ type: 'SYNC_APP' })); } }).catch((error) => console.error('Service worker registration failed', error));
     }

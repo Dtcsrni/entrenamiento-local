@@ -1,4 +1,4 @@
-const CACHE_NAME = 'entrenamiento-pwa-6413d584f0a6';
+const CACHE_NAME = 'entrenamiento-pwa-73225e3a12c7';
 const PRECACHE = [
   './',
   './index.html',
@@ -153,10 +153,11 @@ async function refreshRoutine(url, cache) {
   await Promise.allSettled([...new Set(assetUrls)].map((assetUrl) => refresh(assetUrl, cache)));
 }
 
-async function refreshApplication() {
+async function refreshApplication(notifyClients = false) {
   const cache = await caches.open(CACHE_NAME);
   await Promise.allSettled(PRECACHE.map((url) => refresh(new Request(url), cache)));
   await Promise.allSettled(ROUTINE_URLS.map((url) => refreshRoutine(url, cache)));
+  if (!notifyClients) return;
   const updatedAt = Date.now();
   const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
   clients.forEach((client) => client.postMessage({ type: 'APP_UPDATED', updatedAt, cacheName: CACHE_NAME }));
@@ -175,7 +176,7 @@ self.addEventListener('activate', (event) => {
     caches.keys()
       .then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))))
       .then(() => self.clients.claim())
-      .then(() => refreshApplication())
+      .then(() => refreshApplication(true))
   );
 });
 
