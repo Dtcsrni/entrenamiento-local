@@ -1,5 +1,8 @@
 import unittest
 from pathlib import Path
+from tempfile import TemporaryDirectory
+
+from scripts.build_pwa_service_worker import fingerprint_content
 
 
 ROOT = Path(__file__).parents[1]
@@ -24,6 +27,16 @@ class ServiceWorkerContractTests(unittest.TestCase):
         for asset in ("mouse-female-effort.png", "mouse-male-effort.png", "mascot-install-phone.png"):
             self.assertIn(f"data/profile/{asset}", self.service_worker)
             self.assertIn(f"data/profile/{asset}", self.generator)
+
+    def test_worker_fingerprint_normalizes_text_line_endings_only(self):
+        with TemporaryDirectory() as temp_dir:
+            text_asset = Path(temp_dir) / "routine.css"
+            binary_asset = Path(temp_dir) / "image.png"
+            text_asset.write_bytes(b"a\r\nb\rc")
+            binary_asset.write_bytes(b"a\r\nb\rc")
+
+            self.assertEqual(fingerprint_content(text_asset), b"a\nb\nc")
+            self.assertEqual(fingerprint_content(binary_asset), b"a\r\nb\rc")
 
     def test_shared_routine_stylesheet_is_part_of_the_offline_precache(self):
         for source in (self.service_worker, self.generator):

@@ -18,6 +18,7 @@ ROUTINE_FILES = (
     "Rutina_Dia_4_Pierna_Equilibrio_V1.html",
 )
 HTML_ATTR_PATTERN = re.compile(r"(?:src|data-static-src|gif|thumbnail)\s*[:=]\s*[\"']([^\"']+)")
+TEXT_RESOURCE_SUFFIXES = {".css", ".html", ".js", ".json", ".svg", ".txt", ".webmanifest", ".xml"}
 
 
 class ResourceParser(HTMLParser):
@@ -86,13 +87,20 @@ def build_precache() -> list[str]:
     return base + routines + sorted(resources - set(base + routines))
 
 
+def fingerprint_content(target: Path) -> bytes:
+    content = target.read_bytes()
+    if target.suffix.lower() in TEXT_RESOURCE_SUFFIXES:
+        return content.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return content
+
+
 def render(resources: list[str]) -> str:
     material = []
     for resource in resources:
         target = ROOT / Path(resource.removeprefix("./"))
         material.append(resource.encode("utf-8"))
         if target.is_file():
-            material.append(target.read_bytes())
+            material.append(fingerprint_content(target))
     fingerprint = hashlib.sha256(b"\n".join(material)).hexdigest()[:12]
     precache = ",\n  ".join(f"{resource!r}" for resource in resources)
     return rf"""const CACHE_NAME = 'entrenamiento-pwa-{fingerprint}';

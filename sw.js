@@ -1,4 +1,4 @@
-const CACHE_NAME = 'entrenamiento-pwa-dea0466ebaa4';
+const CACHE_NAME = 'entrenamiento-pwa-27c90bcd00f4';
 const PRECACHE = [
   './',
   './index.html',
