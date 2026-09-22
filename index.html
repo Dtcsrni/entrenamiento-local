@@ -396,9 +396,7 @@
         image.alt = avatar.alt;
       });
       profileAvatarTitle.textContent = avatar.title;
-      profileAvatarNote.textContent = sex === 'female' || sex === 'male'
-        ? 'Tu mascota se eligió automáticamente con el sexo indicado en tu perfil.'
-        : 'Usamos la mascota neutral cuando no se indica una opción binaria.';
+      profileAvatarNote.textContent = 'La imagen se actualiza automáticamente según los datos de tu perfil.';
     }
 
     function renderProfile(profile) {
