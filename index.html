@@ -109,7 +109,11 @@
     .reset-button { color:#ffd3d3; border-color:rgba(255,157,162,.38); }
     .reset-button:hover { background:rgba(145,53,70,.28); border-color:rgba(255,157,162,.68); }
     .profile-panel { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr); gap:16px; padding:20px; border:1px solid rgba(115,230,207,.2); border-radius:21px; background:linear-gradient(145deg,rgba(31,52,61,.86),rgba(24,33,45,.82)); }
-    .profile-form,.profile-history { min-width:0; }
+    .profile-editor,.profile-history { min-width:0; }
+    .profile-editor > summary { width:fit-content; padding:9px 13px; border:1px solid var(--line); border-radius:11px; color:var(--text); cursor:pointer; font-size:.86rem; font-weight:850; }
+    .profile-editor > summary:focus-visible { outline:3px solid rgba(158,223,255,.5); outline-offset:3px; }
+    .profile-editor[open] > summary { margin-bottom:16px; }
+    .profile-form { min-width:0; }
     .profile-identity { display:flex; align-items:center; gap:14px; margin-bottom:18px; padding-bottom:18px; border-bottom:1px solid var(--line); }
     .profile-avatar { width:118px; height:118px; flex:0 0 118px; object-fit:contain; border:1px solid rgba(115,230,207,.28); border-radius:22px; background:rgba(9,16,24,.44); }
     .profile-avatar-copy { max-width:38ch; color:var(--muted); font-size:.9rem; }
@@ -254,7 +258,9 @@
       <section id="profile" aria-labelledby="profileTitle">
         <div class="section-head"><div><p class="eyebrow">Datos personales locales</p><h2 id="profileTitle">Mi perfil</h2></div></div>
         <div class="profile-panel">
-          <form id="profileForm" class="profile-form" novalidate>
+          <details id="profileEditor" class="profile-editor">
+            <summary>Editar datos del perfil</summary>
+            <form id="profileForm" class="profile-form" novalidate>
             <div class="profile-identity"><img id="profileAvatar" class="profile-avatar" src="./icon.png" alt="Pareja de mascotas de entrenamiento de Gymratik"><div class="profile-avatar-copy"><p>Estos datos permanecen en este dispositivo y ayudan a contextualizar tus rutinas.</p></div></div>
             <div class="profile-grid">
               <div class="profile-field"><label for="profileDisplayName">Nombre visible</label><input id="profileDisplayName" name="displayName" type="text" maxlength="80" autocomplete="name" placeholder="Cómo quieres que te llamemos"></div>
@@ -267,7 +273,8 @@
             <fieldset class="routine-days"><legend>Días habituales y avisos al abrir la PWA</legend><p id="routineDaySuggestion" class="profile-status">Al guardar sesiones, aquí aparecerán los días más frecuentes. Puedes elegir otros días.</p><div class="routine-day-options"><label><input type="checkbox" name="reminderDay" value="1"> Lun</label><label><input type="checkbox" name="reminderDay" value="2"> Mar</label><label><input type="checkbox" name="reminderDay" value="3"> Mié</label><label><input type="checkbox" name="reminderDay" value="4"> Jue</label><label><input type="checkbox" name="reminderDay" value="5"> Vie</label><label><input type="checkbox" name="reminderDay" value="6"> Sáb</label><label><input type="checkbox" name="reminderDay" value="0"> Dom</label></div><label class="reminder-enable"><input id="remindersEnabled" type="checkbox"> Mostrar un aviso dentro de la PWA en esos días</label><p class="profile-status">El aviso aparece al abrir o volver a la portada; no se ejecuta con la app cerrada. Puedes cambiar de día o descartarlo cada fecha.</p></fieldset>
             <div class="profile-actions"><button class="button" type="submit">Guardar perfil</button><p id="profileStatus" class="profile-status" role="status" aria-live="polite"></p></div>
             <div class="data-actions"><button id="exportDataButton" class="button secondary" type="button">Exportar datos</button><label class="button secondary" for="importDataInput">Importar respaldo</label><input id="importDataInput" class="file-input" type="file" accept="application/json,.json"></div>
-          </form>
+            </form>
+          </details>
           <aside class="profile-history" aria-labelledby="historyTitle"><h3 id="historyTitle">Sesiones recientes</h3><div id="sessionHistory" class="session-history" aria-live="polite"><p class="session-history-empty">Cargando historial…</p></div><p class="profile-status">Para borrar sesiones, utiliza «Reiniciar registros» al final de la portada.</p></aside>
         </div>
       </section>
@@ -305,6 +312,7 @@
     const resetAllButton = document.querySelector('#resetAllButton');
     const resetNote = document.querySelector('#resetNote');
     const profileForm = document.querySelector('#profileForm');
+    const profileEditor = document.querySelector('#profileEditor');
     const profileDisplayName = document.querySelector('#profileDisplayName');
     const profileBirthDate = document.querySelector('#profileBirthDate');
     const profileSex = document.querySelector('#profileSex');
@@ -443,6 +451,8 @@
         || profile?.heightCm !== null && profile?.heightCm !== undefined
         || profile?.goal && profile.goal !== 'general-fitness'
         || profile?.units && profile.units !== 'metric'
+        || profile?.remindersEnabled
+        || profile?.reminderDays?.length
       );
     }
 
@@ -451,6 +461,7 @@
       if (!initialProfileCheckComplete) {
         initialProfileCheckComplete = true;
         if (!profileIsDefined) {
+          profileEditor.open = true;
           redirectedToIncompleteProfile = true;
           if (window.location.hash !== '#profile') window.location.hash = 'profile';
         }
@@ -599,8 +610,9 @@
       try {
         const selectedReminderDays = reminderDaysInputs.filter(input => input.checked).map(input => Number(input.value));
         await window.TrainingProgressStore.saveProfile({ displayName: profileDisplayName.value, birthDate: profileBirthDate.value, sex: profileSex.value, heightCm: profileHeightCm.value, goal: profileGoal.value, units: profileUnits.value, reminderDays: selectedReminderDays, remindersEnabled: remindersEnabled.checked });
-        renderProfileAvatar(profileSex.value);
-        profileStatus.textContent = 'Perfil guardado en este dispositivo.';
+        profileEditor.open = false;
+        window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+        window.location.reload();
       } catch (error) {
         profileStatus.textContent = error.message || 'No se pudo guardar el perfil.';
         console.error('Profile save failed', error);

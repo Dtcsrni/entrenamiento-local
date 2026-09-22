@@ -140,6 +140,17 @@ class HomepageContractTests(unittest.TestCase):
             with self.subTest(marker=marker):
                 self.assertIn(marker, self.html)
 
+    def test_profile_editor_closes_and_page_reloads_after_successful_save(self):
+        self.assertIn('<details id="profileEditor" class="profile-editor">', self.html)
+        self.assertIn('<summary>Editar datos del perfil</summary>', self.html)
+        self.assertIn("profileEditor.open = true", self.html)
+        save_handler = self.html.split("profileForm.addEventListener('submit'", 1)[1].split("profileSex.addEventListener", 1)[0]
+        save_profile = save_handler.index('await window.TrainingProgressStore.saveProfile')
+        close_editor = save_handler.index('profileEditor.open = false')
+        reload_page = save_handler.index('window.location.reload()')
+        self.assertLess(save_profile, close_editor)
+        self.assertLess(close_editor, reload_page)
+
     def test_homepage_derives_effort_mascot_from_profile_sex(self):
         for asset in ("data/profile/mouse-female-effort.png", "data/profile/mouse-male-effort.png"):
             with self.subTest(asset=asset):
