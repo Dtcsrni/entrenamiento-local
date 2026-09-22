@@ -44,6 +44,8 @@ se conservan para la aplicación Android y los servicios previstos.
 - **TST-WEA-001:** desconexión/reenvío/deduplicación en reloj real.
 - **TST-SEC-001:** servicio no es alcanzable públicamente.
 - **TST-REC-001:** respaldo se restaura en almacenamiento limpio.
+- **TST-PRO-006:** abrir la portada con perfil predeterminado debe navegar a `#profile`; al definir un dato, una recarga debe conservar el inicio normal; un perfil ya definido no debe cambiar la navegación ni borrar el progreso.
+- **TST-PRO-007:** validar que series de hoy, actividad dentro de siete días, actividad más antigua, timestamps futuros y ausencia de registros produzcan la frase correspondiente sin inventar resultados ni modificar datos.
 
 ## Casos frontera
 

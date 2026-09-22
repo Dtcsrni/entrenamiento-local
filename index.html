@@ -39,6 +39,7 @@
     h1,h2,h3,p { margin-top:0; }
     h1 { max-width:10ch; margin-bottom:20px; overflow-wrap:anywhere; font-size:clamp(3rem,7vw,6.2rem); line-height:.91; letter-spacing:-.075em; }
     .hero-copy { max-width:52ch; margin-bottom:26px; overflow-wrap:anywhere; color:var(--muted); font-size:1.05rem; }
+    .hero-motivation { max-width:52ch; margin:-8px 0 22px; padding:12px 15px; border:1px solid rgba(115,230,207,.24); border-left:3px solid var(--accent); border-radius:12px; background:rgba(16,35,49,.72); color:var(--text); font-size:.92rem; font-weight:750; line-height:1.45; overflow-wrap:anywhere; }
     .hero-actions { display:flex; flex-wrap:wrap; align-items:center; gap:11px; }
     .button { display:inline-flex; align-items:center; justify-content:center; min-height:47px; padding:11px 17px; border:1px solid transparent; border-radius:13px; color:#09231e; background:var(--accent); box-shadow:0 10px 25px rgba(55,199,173,.16); cursor:pointer; font-weight:900; text-decoration:none; transition:transform .18s ease,background .18s ease,border-color .18s ease; }
     .button:hover { transform:translateY(-2px); background:#8af1dc; }
@@ -217,6 +218,7 @@
           <p class="eyebrow">Tu siguiente paso</p>
           <h1 id="pageTitle">Entrena con un plan claro.</h1>
           <p class="hero-copy">Cuatro sesiones visuales para llegar al gimnasio, calentar, ejecutar con buena técnica y registrar cada serie sin perder el ritmo.</p>
+          <p id="motivationMessage" class="hero-motivation" role="status" aria-live="polite">Cuando quieras empezar, sigue el calentamiento y avanza a tu ritmo.</p>
           <div class="hero-actions"><a id="nextSessionCta" class="button" href="./data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html">Empezar Día 1</a><a class="button secondary" href="#routines">Ver plan completo</a><a class="button secondary" href="#profile">Mi perfil</a><button id="installButton" class="button secondary" type="button" hidden>Instalar aplicación</button></div>
           <p class="hero-trust"><span class="status-dot" aria-hidden="true"></span>Tu avance se guarda en este dispositivo.</p>
         </div>
@@ -283,6 +285,7 @@
     const nextSessionTitle = document.querySelector('#nextSessionTitle');
     const nextSessionSummary = document.querySelector('#nextSessionSummary');
     const nextSessionMeta = document.querySelector('#nextSessionMeta');
+    const motivationMessage = document.querySelector('#motivationMessage');
     const progressRecordedSeries = document.querySelector('#progressRecordedSeries');
     const progressTodaySeries = document.querySelector('#progressTodaySeries');
     const progressCompletedSessions = document.querySelector('#progressCompletedSessions');
@@ -308,6 +311,8 @@
     const exportDataButton = document.querySelector('#exportDataButton');
     const importDataInput = document.querySelector('#importDataInput');
     const LAST_UPDATE_KEY = 'gymratik-last-update-v1';
+    const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+    const MOTIVATION_RECENT_WINDOW_MS = 7 * MILLISECONDS_PER_DAY;
     const routineCatalog = [
       { routineId: 'day1', day: 'Día 1', title: 'Espalda + Bíceps', summary: 'Tracción, remo y trabajo de brazos con instrucciones visuales y registro por ejercicio.', totalExercises: 6, totalSeries: 20, image: './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/1350-7I6LNUG.jpg', href: './data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html' },
       { routineId: 'day2', day: 'Día 2', title: 'Pierna + Glúteo', summary: 'Tren inferior con énfasis en máquinas, progresión reproducible y fases técnicas visibles.', totalExercises: 6, totalSeries: 20, image: './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0739-10Z2DXU.jpg', href: './data/rutinas_autocontenidas/canonicas/Rutina_Dia_2_Pierna_Gluteo_V1.html' },
@@ -346,6 +351,32 @@
       return new Intl.DateTimeFormat('es-MX', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(timestamp));
     }
 
+    function motivationFor(rawDashboard) {
+      const dashboard = normalizeDashboard(rawDashboard);
+      if (dashboard.todaySeries > 0) {
+        const seriesLabel = dashboard.todaySeries === 1 ? 'serie' : 'series';
+        return `Hoy ya registraste ${dashboard.todaySeries} ${seriesLabel}. Tu avance está guardado; sigue a tu ritmo.`;
+      }
+
+      const elapsedSinceActivity = Date.now() - dashboard.lastActivity;
+      const hasRecentActivity = dashboard.lastActivity > 0
+        && elapsedSinceActivity >= 0
+        && elapsedSinceActivity <= MOTIVATION_RECENT_WINDOW_MS;
+      if (hasRecentActivity) {
+        const activityDate = new Date(dashboard.lastActivity);
+        const currentDate = new Date();
+        const activityDay = Date.UTC(activityDate.getFullYear(), activityDate.getMonth(), activityDate.getDate());
+        const currentDay = Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+        const elapsedDays = Math.floor((currentDay - activityDay) / MILLISECONDS_PER_DAY);
+        const relativeDate = elapsedDays <= 0 ? 'hoy' : elapsedDays === 1 ? 'ayer' : `hace ${elapsedDays} días`;
+        return `Tu última actividad fue ${relativeDate}. El plan sigue listo para cuando quieras retomarlo.`;
+      }
+
+      return dashboard.lastActivity > 0
+        ? 'Tu plan sigue aquí para cuando quieras volver. Retómalo con el calentamiento y avanza a tu ritmo.'
+        : 'Cuando quieras empezar, sigue el calentamiento y avanza a tu ritmo.';
+    }
+
     const sessionStatusLabels = { active: 'En curso', completed: 'Completada', abandoned: 'Abandonada', edited: 'Editada' };
     const profileAvatars = {
       female: { src: './data/profile/mouse-female-effort.png', title: 'Ratona en esfuerzo', alt: 'Ratona haciendo press con mancuerna, con expresión de esfuerzo' },
@@ -380,6 +411,36 @@
       renderProfileAvatar(profileSex.value);
     }
 
+    let redirectedToIncompleteProfile = false;
+    let initialProfileCheckComplete = false;
+
+    function hasUserProfileData(profile) {
+      return Boolean(
+        profile?.displayName?.trim()
+        || profile?.birthDate
+        || profile?.sex
+        || profile?.heightCm !== null && profile?.heightCm !== undefined
+        || profile?.goal && profile.goal !== 'general-fitness'
+        || profile?.units && profile.units !== 'metric'
+      );
+    }
+
+    function routeToProfileWhenMissingData(profile) {
+      const profileIsDefined = hasUserProfileData(profile);
+      if (!initialProfileCheckComplete) {
+        initialProfileCheckComplete = true;
+        if (!profileIsDefined) {
+          redirectedToIncompleteProfile = true;
+          if (window.location.hash !== '#profile') window.location.hash = 'profile';
+        }
+        return;
+      }
+      if (profileIsDefined && redirectedToIncompleteProfile && window.location.hash === '#profile') {
+        window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+        redirectedToIncompleteProfile = false;
+      }
+    }
+
     function renderHistory(sessions) {
       sessionHistory.replaceChildren();
       if (!sessions?.length) {
@@ -411,6 +472,7 @@
       const [profile, history] = await Promise.all([window.TrainingProgressStore.getProfile(), window.TrainingProgressStore.getHistory(8)]);
       renderProfile(profile);
       renderHistory(history);
+      routeToProfileWhenMissingData(profile);
     }
 
     function renderNextSession(dashboard) {
@@ -435,6 +497,7 @@
       const temporal = dashboard.temporal;
       const activityDays = dashboard.activityDays || (dashboard.lastActivity ? 1 : 0);
       renderNextSession(dashboard);
+      motivationMessage.textContent = motivationFor(dashboard);
       progressRecordedSeries.textContent = String(dashboard.recordedSeries);
       progressTodaySeries.textContent = String(dashboard.todaySeries);
       progressCompletedSessions.textContent = String(dashboard.sessionsCompleted);

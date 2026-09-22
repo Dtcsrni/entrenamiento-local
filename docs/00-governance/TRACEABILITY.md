@@ -19,6 +19,8 @@ La matriz crecerá con la implementación. `Planned` significa que no existe tod
 | FUN-SYN-002 | RISK-004 | ADR-004 | TST-SYN-002 | Planned |
 | NFR-COM-001 | RISK-004 | ADR-001 | TST-CON-001 | Implemented |
 | FUN-EXP-001 | RISK-014 | ADR-011 | TST-REC-001 | Planned |
+| FUN-PRO-006 | — | ADR-013 | TST-PRO-006 | Implemented |
+| FUN-PRO-007 | — | ADR-013 | TST-PRO-007 | Implemented |
 | NFR-SEC-001 | RISK-003, RISK-010 | ADR-008 | TST-SEC-001 | Planned |
 | NFR-REL-001 | RISK-004 | ADR-003, ADR-004 | TST-REL-001 | Planned |
 | NFR-AI-001 | RISK-009 | ADR-006 | TST-AI-003 | Planned |

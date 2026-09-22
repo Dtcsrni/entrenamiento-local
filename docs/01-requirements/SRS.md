@@ -110,6 +110,10 @@ Definir requisitos verificables para Gymratik: Rutinas y progreso. Este document
   - Aceptación: un respaldo válido se restaura después de validación y confirmación; un archivo inválido no modifica los datos.
 - **FUN-PRO-005 · P1:** la portada deberá mostrar automáticamente una mascota de perfil derivada del sexo seleccionado, con una variante de ratón para `male`, una de ratona para `female` y una mascota neutral para valores no binarios o no indicados.
   - Aceptación: al cambiar el selector sin recargar, las imágenes y textos alternativos se actualizan; ambas variantes se sirven offline y no se persiste una imagen separada del sexo.
+- **FUN-PRO-006 · P1:** en la primera apertura de la portada, si no hay datos de usuario definidos en el perfil local, el sistema deberá llevar al usuario a la sección de perfil.
+  - Aceptación: un perfil sin nombre, fecha de nacimiento, sexo, altura ni preferencias distintas de los valores predeterminados abre la portada en `#profile`; un perfil con algún dato definido conserva la navegación normal y el progreso existente.
+- **FUN-PRO-007 · P1:** la primera sección de la portada deberá mostrar una frase breve, amable y personalizada a partir del historial local reciente de entrenamiento.
+  - Aceptación: reconoce las series registradas hoy; si no hay actividad hoy, usa la fecha de la última actividad solo dentro de una ventana de siete días; sin actividad reciente ofrece un mensaje neutral. El texto se deriva localmente, no usa datos corporales ni promete resultados.
 
 ## 5. Requisitos no funcionales
 
