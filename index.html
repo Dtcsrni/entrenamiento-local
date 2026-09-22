@@ -110,12 +110,8 @@
     .reset-button:hover { background:rgba(145,53,70,.28); border-color:rgba(255,157,162,.68); }
     .profile-panel { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr); gap:16px; padding:20px; border:1px solid rgba(115,230,207,.2); border-radius:21px; background:linear-gradient(145deg,rgba(31,52,61,.86),rgba(24,33,45,.82)); }
     .profile-form,.profile-history { min-width:0; }
-    .profile-identity { display:flex; align-items:center; gap:14px; margin-bottom:18px; padding-bottom:18px; border-bottom:1px solid var(--line); }
+    .profile-identity { display:flex; align-items:center; margin-bottom:18px; padding-bottom:18px; border-bottom:1px solid var(--line); }
     .profile-avatar { width:118px; height:118px; flex:0 0 118px; object-fit:contain; border:1px solid rgba(115,230,207,.28); border-radius:22px; background:rgba(9,16,24,.44); }
-    .profile-avatar-copy { min-width:0; }
-    .profile-avatar-copy .eyebrow { margin-bottom:6px; }
-    .profile-avatar-copy strong { display:block; margin-bottom:6px; color:var(--text); font-size:1.05rem; }
-    .profile-avatar-copy p:last-child { max-width:38ch; margin-bottom:0; color:var(--muted); font-size:.82rem; }
     .profile-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; }
     .profile-field { display:grid; gap:6px; min-width:0; }
     .profile-field label { color:var(--muted); font-size:.76rem; font-weight:850; }
@@ -173,7 +169,7 @@
     .hero-mascot-bg { opacity:.26; filter:saturate(1.08) contrast(1.06) drop-shadow(0 28px 46px rgba(0,0,0,.28)); transition:opacity .35s ease,transform .55s cubic-bezier(.2,.8,.2,1); }
     .hero:hover .hero-mascot-bg { opacity:.31; transform:scale(1.018) translateY(-4px); }
     .eyebrow,.card-kicker { color:#72f0d2; }
-    .hero-copy,.next-session-summary,.section-head p,.routine-body p,.how-to p,.profile-avatar-copy p:last-child,.progress-note,.profile-status { color:var(--muted)!important; }
+    .hero-copy,.next-session-summary,.section-head p,.routine-body p,.how-to p,.progress-note,.profile-status { color:var(--muted)!important; }
     .button { min-height:48px; border-color:rgba(255,255,255,.12); background:linear-gradient(135deg,#70efd2,#45d2cf)!important; box-shadow:0 12px 30px rgba(38,207,177,.22),inset 0 1px 0 rgba(255,255,255,.42)!important; transition:transform .24s ease,box-shadow .24s ease,filter .24s ease!important; }
     .button:hover { background:linear-gradient(135deg,#92f6df,#63e2df)!important; box-shadow:0 16px 34px rgba(38,207,177,.3),inset 0 1px 0 rgba(255,255,255,.6)!important; filter:saturate(1.08); }
     .button.secondary { color:var(--text)!important; background:rgba(11,29,42,.55)!important; border-color:rgba(164,223,231,.32)!important; box-shadow:inset 0 1px 0 rgba(255,255,255,.08)!important; }
@@ -209,7 +205,7 @@
   <div class="shell">
     <header class="topbar">
       <a class="brand" href="./" aria-label="Gymratik, inicio"><span class="brand-mark" aria-hidden="true"></span><span>Gymratik</span></a>
-      <div class="topbar-meta"><span class="plan-pill">4 días · 82 series</span><a class="topbar-link" href="#progress">Mi avance</a><a class="profile-chip" href="#profile"><img id="profileAvatarCompact" src="./icon.png" alt="Mascota neutral de tu perfil"><span>Perfil</span></a></div>
+      <div class="topbar-meta"><span class="plan-pill">4 días · 82 series</span><a class="topbar-link" href="#progress">Mi avance</a><a class="profile-chip" href="#profile"><img id="profileAvatarCompact" src="./icon.png" alt="Pareja de mascotas de entrenamiento de Gymratik"><span>Perfil</span></a></div>
     </header>
     <main>
       <section class="hero" aria-labelledby="pageTitle">
@@ -247,7 +243,7 @@
         <div class="section-head"><div><p class="eyebrow">Datos personales locales</p><h2 id="profileTitle">Mi perfil</h2></div><p>Estos datos permanecen en este dispositivo y ayudan a contextualizar tus rutinas.</p></div>
         <div class="profile-panel">
           <form id="profileForm" class="profile-form" novalidate>
-            <div class="profile-identity"><img id="profileAvatar" class="profile-avatar" src="./icon.png" alt="Mascota neutral de tu perfil"><div class="profile-avatar-copy"><p class="eyebrow">Mascota de entrenamiento</p><strong id="profileAvatarTitle">Mascota neutral</strong><p id="profileAvatarNote">Se actualiza automáticamente con el sexo elegido en tu perfil.</p></div></div>
+            <div class="profile-identity"><img id="profileAvatar" class="profile-avatar" src="./icon.png" alt="Pareja de mascotas de entrenamiento de Gymratik"></div>
             <div class="profile-grid">
               <div class="profile-field"><label for="profileDisplayName">Nombre visible</label><input id="profileDisplayName" name="displayName" type="text" maxlength="80" autocomplete="name" placeholder="Cómo quieres que te llamemos"></div>
               <div class="profile-field"><label for="profileBirthDate">Fecha de nacimiento</label><input id="profileBirthDate" name="birthDate" type="date" autocomplete="bday"></div>
@@ -305,8 +301,6 @@
     const profileStatus = document.querySelector('#profileStatus');
     const profileAvatar = document.querySelector('#profileAvatar');
     const profileAvatarCompact = document.querySelector('#profileAvatarCompact');
-    const profileAvatarTitle = document.querySelector('#profileAvatarTitle');
-    const profileAvatarNote = document.querySelector('#profileAvatarNote');
     const sessionHistory = document.querySelector('#sessionHistory');
     const exportDataButton = document.querySelector('#exportDataButton');
     const importDataInput = document.querySelector('#importDataInput');
@@ -379,9 +373,9 @@
 
     const sessionStatusLabels = { active: 'En curso', completed: 'Completada', abandoned: 'Abandonada', edited: 'Editada' };
     const profileAvatars = {
-      female: { src: './data/profile/mouse-female-effort.png', title: 'Ratona en esfuerzo', alt: 'Ratona haciendo press con mancuerna, con expresión de esfuerzo' },
-      male: { src: './data/profile/mouse-male-effort.png', title: 'Ratón en esfuerzo', alt: 'Ratón haciendo press con mancuerna, con expresión de esfuerzo' },
-      neutral: { src: './icon.png', title: 'Mascota neutral', alt: 'Pareja de mascotas atletas de Gymratik' },
+      female: { src: './data/profile/mouse-female-effort.png', alt: 'Ratona haciendo press con mancuerna, con expresión de esfuerzo' },
+      male: { src: './data/profile/mouse-male-effort.png', alt: 'Ratón haciendo press con mancuerna, con expresión de esfuerzo' },
+      neutral: { src: './icon.png', alt: 'Pareja de mascotas de entrenamiento de Gymratik' },
     };
 
     function profileAvatarForSex(sex) {
@@ -395,8 +389,6 @@
         image.src = avatar.src;
         image.alt = avatar.alt;
       });
-      profileAvatarTitle.textContent = avatar.title;
-      profileAvatarNote.textContent = 'La imagen se actualiza automáticamente según los datos de tu perfil.';
     }
 
     function renderProfile(profile) {
