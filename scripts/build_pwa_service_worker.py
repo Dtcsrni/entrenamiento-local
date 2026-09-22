@@ -98,38 +98,13 @@ const PRECACHE = [
   {precache}
 ];
 
-const ROUTINE_URLS = [
-  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html',
-  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_2_Pierna_Gluteo_V1.html',
-  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_3_Pecho_Hombro_Triceps_V1.html',
-  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_4_Pierna_Equilibrio_V1.html'
-];
-const LOCAL_REFERENCE = /(?:src|data-static-src|gif|thumbnail)\s*[:=]\s*[\"'](\.\.[^\"']+)[\"']/g;
-
 async function refresh(request, cache) {{
   const response = await fetch(request, {{ cache: 'no-store' }});
   if (response.ok) await cache.put(request, response.clone());
   return response;
 }}
 
-async function refreshRoutine(url, cache) {{
-  const response = await fetch(url, {{ cache: 'no-store' }});
-  if (!response.ok) throw new Error(`${{url}}: HTTP ${{response.status}}`);
-  await cache.put(url, response.clone());
-  const html = await response.text();
-  const base = new URL(url, self.location.href);
-  const assetUrls = [...html.matchAll(LOCAL_REFERENCE)]
-    .map((match) => new URL(match[1], base))
-    .filter((assetUrl) => assetUrl.origin === self.location.origin)
-    .map(String);
-  await Promise.allSettled([...new Set(assetUrls)].map((assetUrl) => refresh(assetUrl, cache)));
-}}
-
-async function refreshApplication(notifyClients = false) {{
-  const cache = await caches.open(CACHE_NAME);
-  await Promise.allSettled(PRECACHE.map((url) => refresh(new Request(url), cache)));
-  await Promise.allSettled(ROUTINE_URLS.map((url) => refreshRoutine(url, cache)));
-  if (!notifyClients) return;
+async function notifyClientsAppUpdated() {{
   const updatedAt = Date.now();
   const clients = await self.clients.matchAll({{ type: 'window', includeUncontrolled: true }});
   clients.forEach((client) => client.postMessage({{ type: 'APP_UPDATED', updatedAt, cacheName: CACHE_NAME }}));
@@ -148,12 +123,8 @@ self.addEventListener('activate', (event) => {{
     caches.keys()
       .then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))))
       .then(() => self.clients.claim())
-      .then(() => refreshApplication(true))
+      .then(() => notifyClientsAppUpdated())
   );
-}});
-
-self.addEventListener('message', (event) => {{
-  if (event.data?.type === 'SYNC_APP') event.waitUntil(refreshApplication());
 }});
 
 self.addEventListener('fetch', (event) => {{

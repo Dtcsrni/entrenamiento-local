@@ -24,7 +24,7 @@ Si `IndexedDB` no está disponible o una transacción falla por un error operati
 
 ## Actualización desde el repositorio
 
-Al abrir la PWA, `index.html` solicita una comprobación de actualización de `sw.js` sin usar la caché HTTP. El service worker usa una estrategia `cache-first`: entrega inmediatamente la copia local y actualiza esa copia en segundo plano cuando hay conexión; si no hay red, la última versión disponible sigue funcionando. La caché está versionada y se precarga completa antes de activar una versión nueva, evitando mezclar archivos incompatibles. Cuando cambia el service worker, activa la nueva caché inmediatamente, solicita una recarga controlada de las pestañas abiertas y elimina la anterior. En cada sincronización también actualiza los recursos precacheados.
+Cada vez que se abre la portada, `index.html` solicita una comprobación de actualización de `sw.js` sin usar la caché HTTP. El generador cambia la versión del service worker cuando cambia cualquier recurso precacheado; si hay una versión nueva y conexión, el navegador instala el worker y precarga sus recursos antes de activarlo. La activación elimina la caché anterior, toma el control de las pestañas y solicita una sola recarga controlada. Si no hay red o la comprobación falla, la última versión disponible sigue funcionando desde la caché local. No se ejecuta una sincronización paralela de todos los recursos en cada apertura.
 
 Por tanto, el flujo de actualización es: publicar cambios en el repositorio y abrir la PWA cuando haya conexión para recibir la actualización; después puede seguir funcionando sin conexión. No es necesario borrar datos ni reinstalarla.
 

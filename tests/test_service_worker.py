@@ -32,10 +32,12 @@ class ServiceWorkerContractTests(unittest.TestCase):
     def test_only_worker_activation_announces_an_update_to_the_page(self):
         for source in (self.service_worker, self.generator):
             with self.subTest(source=source[:40]):
-                self.assertIn("refreshApplication(notifyClients = false)", source)
-                self.assertIn("if (!notifyClients) return", source)
-                self.assertIn("refreshApplication(true)", source)
-                self.assertIn("event.waitUntil(refreshApplication())", source)
+                self.assertIn("cache.addAll(PRECACHE)", source)
+                self.assertIn("self.skipWaiting()", source)
+                self.assertIn("self.clients.claim()", source)
+                self.assertIn("notifyClientsAppUpdated()", source)
+                self.assertNotIn("refreshApplication", source)
+                self.assertNotIn("SYNC_APP", source)
 
 
 if __name__ == "__main__":

@@ -708,7 +708,7 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.addEventListener('controllerchange', reloadPageOnce);
       navigator.serviceWorker.addEventListener('message', (event) => { if (event.data?.type === 'APP_UPDATED') rememberLastUpdate(event.data.updatedAt); });
-      navigator.serviceWorker.register('./sw.js', { scope: './', updateViaCache: 'none' }).then((registration) => { registration.update().catch((error) => console.error('Service worker update check failed', error)); if (navigator.onLine) { const sync = () => registration.active?.postMessage({ type: 'SYNC_APP' }); if (registration.active) sync(); else navigator.serviceWorker.ready.then((readyRegistration) => readyRegistration.active?.postMessage({ type: 'SYNC_APP' })); } }).catch((error) => console.error('Service worker registration failed', error));
+      navigator.serviceWorker.register('./sw.js', { scope: './', updateViaCache: 'none' }).then((registration) => { registration.update().catch((error) => console.error('Service worker update check failed', error)); }).catch((error) => console.error('Service worker registration failed', error));
     }
   </script>
 </body>

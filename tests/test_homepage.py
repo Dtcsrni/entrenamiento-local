@@ -67,10 +67,10 @@ class HomepageContractTests(unittest.TestCase):
         self.assertEqual(self.manifest["icons"][0]["purpose"], "any maskable")
         self.assertTrue((ROOT / "icon.png").is_file())
 
-    def test_homepage_requests_service_worker_update_and_sync(self):
+    def test_homepage_checks_for_service_worker_updates_on_open(self):
         self.assertIn("updateViaCache: 'none'", self.html)
         self.assertIn("registration.update()", self.html)
-        self.assertIn("type: 'SYNC_APP'", self.html)
+        self.assertNotIn("SYNC_APP", self.html)
         self.assertIn("event.data?.type === 'APP_UPDATED'", self.html)
         self.assertIn("navigator.serviceWorker.addEventListener('message'", self.html)
 
