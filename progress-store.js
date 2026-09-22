@@ -244,7 +244,7 @@
       if (record.sessionId) {
         fallback.sessions[record.sessionId] = toSession(record);
       }
-      if (record.doneSeries > 0 || record.sessionStartedAt) fallback.activity[record.activityKey] = toActivity(record);
+      if (record.warmupCompleted && record.doneSeries > 0) fallback.activity[record.activityKey] = toActivity(record);
       window.localStorage.setItem(FALLBACK_KEY, JSON.stringify(fallback));
     } catch (error) {
       emit('training-storage-error', { error });
@@ -278,12 +278,14 @@
     const doneSeries = seriesKeys.reduce((sum, key) => sum + Number(state[key] === true), 0);
     const completedExercises = [...byExercise.values()].filter((series) => series.length > 0 && series.every(Boolean)).length;
     const timing = state && state.__timing && typeof state.__timing === 'object' ? state.__timing : {};
+    const warmupCompleted = timing.warmup?.phase === 'done';
     const sessionStartedAt = Number.isFinite(Number(timing.sessionStartedAt)) ? Number(timing.sessionStartedAt) : 0;
     const sessionEndedAt = Number.isFinite(Number(timing.sessionEndedAt)) ? Number(timing.sessionEndedAt) : 0;
     return {
       totalExercises: routine.totalExercises,
       totalSeries: routine.totalSeries,
       doneSeries,
+      warmupCompleted,
       completedExercises,
       sessionStartedAt,
       sessionEndedAt,
@@ -306,6 +308,7 @@
       totalExercises: metrics.totalExercises,
       totalSeries: metrics.totalSeries,
       doneSeries: metrics.doneSeries,
+      warmupCompleted: metrics.warmupCompleted,
       completedExercises: metrics.completedExercises,
       sessionStartedAt: metrics.sessionStartedAt,
       sessionEndedAt: metrics.sessionEndedAt,
@@ -335,6 +338,7 @@
       endedAt: record.sessionEndedAt || 0,
       status: record.sessionEndedAt ? 'completed' : 'active',
       completedSeries: nonNegativeNumber(record.doneSeries),
+      warmupCompleted: record.warmupCompleted === true,
       completedExercises: nonNegativeNumber(record.completedExercises),
       totalSeries: nonNegativeNumber(record.totalSeries),
       updatedAt: record.updatedAt,
@@ -358,6 +362,7 @@
       minuteKey: record.minuteKey || temporal.minuteKey,
       capturedAt,
       completedSeries: nonNegativeNumber(record.doneSeries),
+      warmupCompleted: record.warmupCompleted === true,
       totalSeries: nonNegativeNumber(record.totalSeries),
       startedAt: record.sessionStartedAt || 0,
       endedAt: record.sessionEndedAt || 0,
@@ -375,7 +380,7 @@
         await transaction(db, [PROGRESS_STORE, SESSION_STORE, ACTIVITY_STORE], 'readwrite', (tx) => {
           tx.objectStore(PROGRESS_STORE).put(record);
           if (record.sessionId) tx.objectStore(SESSION_STORE).put(toSession(record));
-          if (record.doneSeries > 0 || record.sessionStartedAt) tx.objectStore(ACTIVITY_STORE).put(toActivity(record));
+          if (record.warmupCompleted && record.doneSeries > 0) tx.objectStore(ACTIVITY_STORE).put(toActivity(record));
         });
         emit('training-progress-updated', { source: 'indexeddb', record });
         return { source: 'indexeddb', record };
@@ -623,7 +628,7 @@
   async function backfillActivity(data) {
     const known = new Set(data.activity.map((item) => item.activityKey));
     const missing = data.progress
-      .filter((record) => record.doneSeries > 0 || record.sessionStartedAt)
+      .filter((record) => record.warmupCompleted === true && nonNegativeNumber(record.doneSeries) > 0)
       .map(toActivity)
       .filter((item) => !known.has(item.activityKey));
     if (!missing.length) return data;
@@ -652,9 +657,9 @@
     const plannedSeries = Object.values(ROUTINES).reduce((sum, routine) => sum + routine.totalSeries, 0);
     const now = Date.now();
     const nowKeys = timeKeys(now);
-    const activity = data.activity || [];
+    const activity = (data.activity || []).filter((item) => item.warmupCompleted === true && nonNegativeNumber(item.completedSeries) > 0);
     const latestActivity = activity.reduce((latest, item) => (item.capturedAt || item.updatedAt || 0) > (latest?.capturedAt || latest?.updatedAt || 0) ? item : latest, null);
-    const lastActivity = latestActivity?.capturedAt || latestActivity?.updatedAt || [...data.progress, ...data.sessions].reduce((latest, item) => Math.max(latest, item.updatedAt || item.endedAt || item.startedAt || 0), 0);
+    const lastActivity = latestActivity?.capturedAt || latestActivity?.updatedAt || 0;
     const relation = temporalRelation(lastActivity, now);
     const todayBySession = new Map();
     activity.filter((item) => item.dayKey === nowKeys.dayKey).forEach((item) => {

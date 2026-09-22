@@ -22,9 +22,9 @@ class HomepageContractTests(unittest.TestCase):
         self.assertIn("Gymratik: Rutinas y progreso", self.html)
         self.assertIn('aria-label="Gymratik, inicio"', self.html)
         self.assertIn('<span class="brand-mark" aria-hidden="true"><img src="./icon.png" alt=""></span>', self.html)
-        self.assertIn("background:rgba(11,16,23,.72) url('./icon.png')", self.html)
+        self.assertIn("background:rgba(11,16,23,.72)", self.html)
         self.assertIn(".hero-mascot-bg", self.html)
-        self.assertIn('class="hero-mascot-bg" src="./data/profile/mascot-install-phone.png"', self.html)
+        self.assertIn('class="hero-mascot-bg" src="./icon.png"', self.html)
         self.assertNotIn("Gymratic", self.html)
         self.assertNotIn("<title>Entrenamiento", self.html)
 
@@ -111,7 +111,7 @@ class HomepageContractTests(unittest.TestCase):
     def test_homepage_shows_a_brief_splash_until_local_data_initialization_settles(self):
         self.assertIn("document.documentElement.classList.add('gymratik-loading')", self.html)
         self.assertIn('id="appSplash" class="app-splash" role="status"', self.html)
-        self.assertIn('class="splash-mascot" src="./data/profile/mascot-install-phone.png"', self.html)
+        self.assertIn('class="splash-mascot" src="./icon.png"', self.html)
         self.assertIn('html.gymratik-loading .app-splash', self.html)
         self.assertIn("document.documentElement.classList.remove('gymratik-loading')", self.html)
         self.assertIn(".finally(() => {", self.html)
@@ -128,6 +128,15 @@ class HomepageContractTests(unittest.TestCase):
         self.assertIn('Tres pasos y a entrenar.', self.html)
         self.assertIn('Mi avance', self.html)
         self.assertIn('Proteger avance', self.html)
+
+    def test_homepage_uses_animated_original_pair_outside_install_invitation(self):
+        self.assertIn('<img class="hero-mascot-bg" src="./icon.png"', self.html)
+        self.assertIn('<img class="splash-mascot" src="./icon.png"', self.html)
+        self.assertIn('animation:mascotDrift 9s ease-in-out infinite alternate', self.html)
+        self.assertIn('width:62px; height:62px; flex:0 0 62px', self.html)
+        self.assertIn('font-size:1.25rem', self.html)
+        self.assertIn('font-size:1.15rem', self.html)
+        self.assertNotIn('class="hero-mascot-bg" src="./data/profile/mascot-install-phone.png"', self.html)
 
     def test_homepage_exposes_persistent_progress_dashboard(self):
         self.assertIn('src="./progress-store.js"', self.html)

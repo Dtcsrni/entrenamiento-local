@@ -9,6 +9,44 @@ STORE = ROOT / "progress-store.js"
 
 
 class ProgressStoreRuntimeTests(unittest.TestCase):
+    def test_activity_requires_completed_warmup_and_at_least_one_work_set_for_all_routines(self):
+        script = r"""
+const fs = require('fs');
+const vm = require('vm');
+const assert = require('assert');
+const source = fs.readFileSync(process.argv[1], 'utf8');
+let persisted = null;
+const window = { GymratikInstallGate: { isInstalled() { return true; } },
+  CustomEvent: class CustomEvent { constructor(name, init) { this.name = name; this.detail = init?.detail; } },
+  dispatchEvent() {},
+  localStorage: { getItem() { return persisted; }, setItem(_key, value) { persisted = value; } }
+};
+const context = { window, CustomEvent: window.CustomEvent, localStorage: window.localStorage, navigator: {}, console, Date, setTimeout, clearTimeout };
+vm.runInNewContext(source, context);
+const store = window.TrainingProgressStore;
+(async () => {
+  for (const routineId of ['day1', 'day2', 'day3', 'day4']) {
+    const start = Date.now();
+    const activityCountBefore = (await store.exportData()).data.activity.length;
+    await store.capture({ routineId, state: { __timing: { sessionStartedAt: start, warmup: { phase: 'idle' } }, e1s1: true } });
+    assert.strictEqual((await store.exportData()).data.activity.length, activityCountBefore, `${routineId}: no activity before warm-up`);
+    await store.capture({ routineId, state: { __timing: { sessionStartedAt: start, warmup: { phase: 'done' } } } });
+    assert.strictEqual((await store.exportData()).data.activity.length, activityCountBefore, `${routineId}: warm-up alone is not activity`);
+    await store.capture({ routineId, state: { __timing: { sessionStartedAt: start, warmup: { phase: 'done' } }, e1s1: true } });
+  }
+  const backup = await store.exportData();
+  assert.strictEqual(backup.data.activity.length, 4);
+  assert.ok(backup.data.activity.every((item) => item.warmupCompleted === true && item.completedSeries >= 1));
+  assert.strictEqual((await store.getDashboard()).activityDays, 1);
+  console.log(JSON.stringify({ ok: true }));
+})().catch((error) => { console.error(error); process.exit(1); });
+"""
+        result = subprocess.run(
+            ["node", "-e", script, str(STORE)], cwd=ROOT, check=False, capture_output=True, text=True
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout), {"ok": True})
+
     def test_temporal_boundaries_are_classified_without_duplicate_contexts(self):
         script = r"""
 const fs = require('fs');

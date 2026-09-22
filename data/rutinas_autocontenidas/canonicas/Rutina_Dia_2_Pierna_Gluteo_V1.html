@@ -2713,6 +2713,11 @@ body::before,body::after{animation:none!important}
 <style data-fix="phase-media-clarity-v5">article.card .phaseRow .photo img.realphoto{background:transparent!important;mix-blend-mode:normal!important;object-fit:cover!important}</style>
 <style data-fix="day1-rowing-phase-pair-v1">/* Contrato común de pareja Inicio → Final; cada builder conserva sus medios locales. */</style>
 <style data-enhancement="warmup-motion-zoom-v2">.warmupVisual img{object-fit:cover!important}</style>
+<style data-fix="tech-step-mobile-layout">
+.techSteps{grid-template-columns:minmax(0,1fr)!important}
+.techStep{display:grid!important;grid-template-columns:minmax(0,1fr)!important;align-items:start!important;gap:4px!important}
+.techStepTitle,.techStepText{grid-column:1!important;min-width:0!important;overflow-wrap:anywhere!important}
+</style>
 <style data-fix="day2-lower-body-visuals">
 .muscleDayIcon.lower{border-color:rgba(100,215,255,.55)!important;color:#64D7FF!important;background:rgba(100,215,255,.09)!important}
 .warmupStep.cardio,.warmupStep.mobility{grid-template-columns:1fr!important}
@@ -2727,7 +2732,10 @@ body::before,body::after{animation:none!important}
 .warmupVisual.warmupTextCard strong{font-size:13px!important;line-height:1.2!important;color:#f4fbff!important}
 .warmupVisual.warmupTextCard small{font-size:11px!important;line-height:1.25!important;color:#a9d7e5!important}
 .warmupStep .warmupCopy{width:100%!important}
-@media(max-width:430px){.warmupStep.cardio .warmupTextStrip,.warmupStep.mobility .warmupMotionPair{grid-template-columns:1fr!important}}
+@media(max-width:430px){.warmupStep.cardio .warmupTextStrip,.warmupStep.mobility .warmupMotionPair{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+.techSteps{grid-template-columns:1fr!important}
+.techStep{display:grid!important;grid-template-columns:minmax(0,1fr)!important;align-items:start!important;gap:4px!important}
+.techStepTitle,.techStepText{grid-column:1!important;min-width:0!important;overflow-wrap:anywhere!important}
 .equipmentRefBox{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:7px!important;padding:16px!important;text-align:center!important}
 .equipmentRefBox .refTag{position:static!important}
 .equipmentRefBox strong{font-size:15px!important;color:#f4fbff!important}
