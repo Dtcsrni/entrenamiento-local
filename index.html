@@ -110,8 +110,10 @@
     .reset-button:hover { background:rgba(145,53,70,.28); border-color:rgba(255,157,162,.68); }
     .profile-panel { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr); gap:16px; padding:20px; border:1px solid rgba(115,230,207,.2); border-radius:21px; background:linear-gradient(145deg,rgba(31,52,61,.86),rgba(24,33,45,.82)); }
     .profile-form,.profile-history { min-width:0; }
-    .profile-identity { display:flex; align-items:center; margin-bottom:18px; padding-bottom:18px; border-bottom:1px solid var(--line); }
+    .profile-identity { display:flex; align-items:center; gap:14px; margin-bottom:18px; padding-bottom:18px; border-bottom:1px solid var(--line); }
     .profile-avatar { width:118px; height:118px; flex:0 0 118px; object-fit:contain; border:1px solid rgba(115,230,207,.28); border-radius:22px; background:rgba(9,16,24,.44); }
+    .profile-avatar-copy { max-width:38ch; color:var(--muted); font-size:.9rem; }
+    .profile-avatar-copy p { margin:0; }
     .profile-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; }
     .profile-field { display:grid; gap:6px; min-width:0; }
     .profile-field label { color:var(--muted); font-size:.76rem; font-weight:850; }
@@ -240,10 +242,10 @@
         <div class="progress-actions"><p id="progressNote" class="progress-note" role="status">Aún no hay series registradas en este dispositivo.</p><button id="persistButton" class="button secondary" type="button">Proteger avance</button></div>
       </section>
       <section id="profile" aria-labelledby="profileTitle">
-        <div class="section-head"><div><p class="eyebrow">Datos personales locales</p><h2 id="profileTitle">Mi perfil</h2></div><p>Estos datos permanecen en este dispositivo y ayudan a contextualizar tus rutinas.</p></div>
+        <div class="section-head"><div><p class="eyebrow">Datos personales locales</p><h2 id="profileTitle">Mi perfil</h2></div></div>
         <div class="profile-panel">
           <form id="profileForm" class="profile-form" novalidate>
-            <div class="profile-identity"><img id="profileAvatar" class="profile-avatar" src="./icon.png" alt="Pareja de mascotas de entrenamiento de Gymratik"></div>
+            <div class="profile-identity"><img id="profileAvatar" class="profile-avatar" src="./icon.png" alt="Pareja de mascotas de entrenamiento de Gymratik"><div class="profile-avatar-copy"><p>Estos datos permanecen en este dispositivo y ayudan a contextualizar tus rutinas.</p></div></div>
             <div class="profile-grid">
               <div class="profile-field"><label for="profileDisplayName">Nombre visible</label><input id="profileDisplayName" name="displayName" type="text" maxlength="80" autocomplete="name" placeholder="Cómo quieres que te llamemos"></div>
               <div class="profile-field"><label for="profileBirthDate">Fecha de nacimiento</label><input id="profileBirthDate" name="birthDate" type="date" autocomplete="bday"></div>
