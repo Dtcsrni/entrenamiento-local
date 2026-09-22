@@ -1,10 +1,11 @@
-const CACHE_NAME = 'entrenamiento-pwa-289e13ca8e3e';
+const CACHE_NAME = 'entrenamiento-pwa-dea0466ebaa4';
 const PRECACHE = [
   './',
   './index.html',
   './manifest.webmanifest',
   './icon.png',
   './install-gate.js',
+  './data/profile/mascot-install-phone.png',
   './progress-store.js',
   './routine-liquid-glass-v13.css',
   './data/profile/mouse-female-effort.png',
