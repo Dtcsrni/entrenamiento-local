@@ -21,6 +21,7 @@ class HomepageContractTests(unittest.TestCase):
         self.assertEqual(self.manifest["short_name"], "Gymratik")
         self.assertIn("Gymratik: Rutinas y progreso", self.html)
         self.assertIn('aria-label="Gymratik, inicio"', self.html)
+        self.assertIn('<span class="brand-mark" aria-hidden="true"><img src="./icon.png" alt=""></span>', self.html)
         self.assertIn("background:rgba(11,16,23,.72) url('./icon.png')", self.html)
         self.assertIn(".hero-mascot-bg", self.html)
         self.assertIn('class="hero-mascot-bg" src="./icon.png"', self.html)
