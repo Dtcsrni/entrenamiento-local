@@ -613,7 +613,7 @@
     function commonTrainingDays(history) {
       const cutoff = Date.now() - 56 * MILLISECONDS_PER_DAY;
       const counts = Array(7).fill(0);
-      history.filter(session => Number(session.startedAt) >= cutoff).forEach(session => { counts[new Date(Number(session.startedAt)).getDay()] += 1; });
+      history.filter(session => session.warmupCompleted === true && Number(session.completedSeries) > 0 && Number(session.startedAt) >= cutoff).forEach(session => { counts[new Date(Number(session.startedAt)).getDay()] += 1; });
       return counts.map((count, day) => ({ day, count })).filter(item => item.count).sort((a, b) => b.count - a.count || a.day - b.day);
     }
 
@@ -633,7 +633,7 @@
       const dateKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
       let suppressed = false;
       try { suppressed = localStorage.getItem('gymratik-reminder-dismissed-v1') === dateKey; } catch (_) {}
-      const trainedToday = recentSessions.some(session => { const t = Number(session.startedAt); return t > 0 && new Date(t).toDateString() === now.toDateString(); });
+      const trainedToday = recentSessions.some(session => { const t = Number(session.startedAt); return session.warmupCompleted === true && Number(session.completedSeries) > 0 && t > 0 && new Date(t).toDateString() === now.toDateString(); });
       const due = activeProfile.reminderDays?.includes(now.getDay());
       routineReminder.hidden = !due || trainedToday || suppressed;
       routineReminderText.textContent = 'Hoy suele ser uno de tus días de entrenamiento. Si te viene bien, elige cualquier sesión.';

@@ -161,6 +161,7 @@ class HomepageContractTests(unittest.TestCase):
             'id="routineReminder"',
             'El aviso aparece al abrir o volver a la portada',
             'commonTrainingDays(history)',
+            'session.warmupCompleted === true && Number(session.completedSeries) > 0',
             '56 * MILLISECONDS_PER_DAY',
             'updateHomeMotivation(activeProfile?.displayName',
             'id="exportDataButton"',
