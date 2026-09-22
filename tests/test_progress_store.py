@@ -17,13 +17,18 @@ class ProgressStoreContractTests(unittest.TestCase):
         self.assertIn("sessions", self.source)
         self.assertIn("ACTIVITY_STORE", self.source)
         self.assertIn("DB_VERSION = 3", self.source)
+        self.assertIn("PROFILE_SCHEMA_VERSION = 3", self.source)
+        self.assertIn("payload.schemaVersion !== 3", self.source)
+        self.assertIn("event.oldVersion < DB_VERSION", self.source)
         self.assertIn("PROFILE_STORE", self.source)
         self.assertIn("META_STORE", self.source)
 
-    def test_progress_store_has_fallback_and_migration_contract(self):
-        self.assertIn("entrenamiento-progress-fallback-v1", self.source)
-        self.assertIn("LEGACY_KEYS", self.source)
-        self.assertIn("migrateLegacyProgress", self.source)
+    def test_progress_store_uses_only_v3_and_discards_pre_v3_local_fallbacks(self):
+        self.assertIn("entrenamiento-progress-fallback-v3", self.source)
+        self.assertIn("PRE_V3_STORAGE_KEYS", self.source)
+        self.assertIn("deleteObjectStore", self.source)
+        self.assertNotIn("migrateLegacyProgress", self.source)
+        self.assertNotIn("UNSUPPORTED_DATABASE_VERSION", self.source)
 
     def test_progress_store_exposes_dashboard_and_persistence_request(self):
         self.assertIn("getDashboard", self.source)

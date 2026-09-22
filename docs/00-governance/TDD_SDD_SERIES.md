@@ -84,6 +84,7 @@ observabilidad, seguridad, migración/compatibilidad y pruebas asociadas.
 | [SDD-003](../03-architecture/SDD-003-medios-fallback-procedencia-tecnica.md) | **Medios, fallback y procedencia técnica.** Contrato único de manifiesto, relación ejercicio–recurso, `sourceUrl`, fuente, versión, SHA-256, alt, miniatura y `prefers-reduced-motion`. | `*_media_manifest.json`, `data/rutinas_autocontenidas/README.md` | In progress |
 | SDD-004 | **Generación, validación y publicación PWA.** Builders deterministas, idempotencia, detección de drift, inventario local, service worker y límites de publicación personal. | `build_day2_canonical.py`, `build_day3_canonical.py`, `build_day4_canonical.py`, `validate_repository.py`, `PWA_ANDROID.md` | Partial |
 | SDD-005 | **Gymratik local-first.** `WorkoutSession`, fases, `PerformedSet`, revisiones, temporizador, Room como fuente operativa y recuperación tras process death. | `SRS` FUN-TRN-001..009, `DATA_MODEL`, ADR-003 | Planned |
+| SDD-010 | **Progresión y avisos de la PWA.** Carga/repeticiones por serie, recomendación no automática, días frecuentes configurables y aviso al primer plano. | `ADR-014`, `SRS` FUN-PRO-008..010, `progress-store.js`, builders canónicos | In progress |
 | SDD-006 | **Sincronización, contratos y recuperación.** Outbox transaccional, estados, claves de idempotencia, reordenamiento, duplicación, tombstones, exportación y restauración. | `SYNC_AND_AI`, ADR-004, ADR-011, JSON Schema | Planned |
 | SDD-007 | **Captura nutricional e IA como borrador.** Routing, calidad de entrada, catálogo, procedencia por componente, jobs, validación de esquema, incertidumbre y confirmación humana. | `SRS` FUN-NUT/FUN-AI, `AI_MLOPS`, ADR-006/007/009 | Planned |
 | SDD-008 | **Integraciones externas condicionadas.** Tezkatli privado, Health Connect, Zepp/Amazfit y sus adaptadores anticorrupción; ningún dispositivo externo es fuente definitiva sin PoC. | `ARCHITECTURE`, `USE_CASES`, ADR-008/010/012 | Planned |
@@ -129,6 +130,9 @@ los `TST-*` existentes:
 - **TST-MED-001:** cruzar HTML, manifest y archivos locales. Cada recurso existe, tiene hash verificable y estado de procedencia explícito.
 - **TST-MED-002:** activar error de carga y `prefers-reduced-motion`. Se muestra fallback estático sin pérdida de significado ni doble anuncio.
 - **TST-BLD-001:** ejecutar cada builder dos veces y comparar inventario. Salida determinista, sin drift ni referencias remotas inesperadas.
+- **TST-PRO-008:** capturar series hechas/no hechas, carga/repeticiones válidas, histórico y recomendación sin modificar la rutina.
+- **TST-PRO-009:** derivar días de sesiones recientes, permitir selección libre, descartar por fecha y comprobar que el aviso se limita a la portada activa.
+- **TST-PRO-010:** comprobar que el nombre solo se combina con texto local y que se inserta mediante `textContent`.
 
 Los casos futuros conservan la nomenclatura existente: `TST-TRN-*`,
 `TST-SYN-*`, `TST-NUT-*`, `TST-AI-*`, `TST-WEA-*`, `TST-SEC-*` y `TST-REC-*`.

@@ -1,6 +1,6 @@
 # ADR-013 — Perfil local, historial y respaldo de la PWA
 
-**Estado:** Accepted
+**Estado:** Superseded por ADR-015
 **Fecha:** 2026-09-21
 
 ## Contexto
@@ -10,7 +10,7 @@ La PWA estática necesita conservar un perfil básico y permitir administrar el 
 ## Decisión
 
 1. El perfil local será el propietario lógico de los registros y usará el identificador estable `local-default`.
-2. IndexedDB continuará siendo la fuente operativa. La migración v2→v3 añadirá los almacenes `profiles` y `meta`, además del índice `profileId` en los almacenes existentes.
+2. La decisión histórica permitía migrar IndexedDB v2 a v3 añadiendo los almacenes `profiles` y `meta`, además del índice `profileId` en los almacenes existentes. Esta política fue reemplazada por ADR-015.
 3. Los registros antiguos se asociarán al perfil local durante la migración; no se eliminarán ni se cambiarán las claves legacy de compatibilidad.
 4. La portada permitirá editar fecha de nacimiento, sexo, altura, objetivo y unidades; estos datos no se enviarán a ningún servicio.
 5. El historial conservará las sesiones resumidas existentes y sus estados (`active`, `completed`, `abandoned` o `edited`).

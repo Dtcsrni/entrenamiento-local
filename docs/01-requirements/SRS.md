@@ -102,18 +102,26 @@ Definir requisitos verificables para Gymratik: Rutinas y progreso. Este document
 
 - **FUN-PRO-001 · P0:** el usuario deberá poder crear y editar un perfil local con nombre visible, fecha de nacimiento, sexo, altura, objetivo y unidades.
   - Aceptación: los campos se validan, se conservan tras recargar y no requieren conectividad.
-- **FUN-PRO-002 · P0:** el sistema deberá asociar el progreso y las sesiones al perfil local activo.
-  - Aceptación: la migración de datos existentes conserva las series y las sesiones con `profileId=local-default`.
+- **FUN-PRO-002 · P0:** el sistema deberá asociar el progreso y las sesiones al perfil local activo en IndexedDB v3.
+  - Aceptación: una base nueva usa v3; al abrir una base anterior a v3, se eliminan sus almacenes y se crea el esquema v3 vacío. La interfaz informa que el historial anterior se reinició.
 - **FUN-PRO-003 · P0:** el usuario deberá consultar sesiones recientes con estado, fecha, rutina y series completadas.
   - Aceptación: una sesión activa o completada aparece sin duplicarse después de recargar.
-- **FUN-PRO-004 · P0:** el usuario deberá exportar e importar un respaldo versionado del perfil y sus registros.
-  - Aceptación: un respaldo válido se restaura después de validación y confirmación; un archivo inválido no modifica los datos.
-- **FUN-PRO-005 · P1:** la portada deberá mostrar automáticamente una mascota de perfil derivada del sexo seleccionado, con una variante de ratón para `male`, una de ratona para `female` y una mascota neutral para valores no binarios o no indicados.
+- **FUN-PRO-004 · P0:** el usuario deberá exportar e importar un respaldo v3 del perfil y sus registros.
+  - Aceptación: solo se acepta el esquema 3; un archivo de otro esquema se rechaza antes de modificar los datos.
+- **FUN-PRO-005 · P1:** la portada deberá actualizar la ilustración de perfil según el dato seleccionado y mostrar una ilustración general cuando no se especifique una variante.
   - Aceptación: al cambiar el selector sin recargar, las imágenes y textos alternativos se actualizan; ambas variantes se sirven offline y no se persiste una imagen separada del sexo.
 - **FUN-PRO-006 · P1:** en la primera apertura de la portada, si no hay datos de usuario definidos en el perfil local, el sistema deberá llevar al usuario a la sección de perfil.
   - Aceptación: un perfil sin nombre, fecha de nacimiento, sexo, altura ni preferencias distintas de los valores predeterminados abre la portada en `#profile`; un perfil con algún dato definido conserva la navegación normal y el progreso existente.
 - **FUN-PRO-007 · P1:** la primera sección de la portada deberá mostrar una frase breve, amable y personalizada a partir del historial local reciente de entrenamiento.
   - Aceptación: reconoce las series registradas hoy; si no hay actividad hoy, usa la fecha de la última actividad solo dentro de una ventana de siete días; sin actividad reciente ofrece un mensaje neutral. El texto se deriva localmente, no usa datos corporales ni promete resultados.
+- **FUN-PRO-008 · P1:** el usuario podrá registrar repeticiones y carga por serie, consultar esos datos en el historial y recibir una indicación de progresión para el ejercicio.
+  - Aceptación: solo se conservan datos asociados a una serie completada; alcanzar el límite superior de repeticiones en todas las series con carga comparable permite sugerir considerar el menor incremento disponible, mientras los demás resultados sugieren mantener la carga e intentar sumar repeticiones. No se cambia la rutina ni la carga automáticamente; el usuario puede omitir la carga.
+- **FUN-PRO-009 · P1:** el usuario podrá consultar sus días de entrenamiento más frecuentes y elegir días flexibles para avisos dentro de la PWA.
+  - Aceptación: el resumen cuenta sesiones iniciadas en las últimas ocho semanas; los días sugeridos pueden editarse; el aviso aparece al abrir o volver a la portada, se puede descartar por el día, se suprime si ya se entrenó ese día y no se promete entrega con la PWA cerrada.
+- **FUN-PRO-010 · P1:** el nombre visible podrá contextualizar la frase de la portada.
+  - Aceptación: el texto se construye localmente y se representa como texto, sin interpolación HTML ni envío remoto.
+
+**Estabilidad de rutina:** el objetivo guardado en el perfil es informativo y no altera ejercicios, volumen ni frecuencia del plan. La rutina permanece estable mientras resulte tolerable y permita progresar; su revisión responde a estancamiento persistente, recuperación/adherencia insuficientes, dolor o cambios contextuales, no a una rotación automática por calendario.
 
 ## 5. Requisitos no funcionales
 
@@ -142,7 +150,7 @@ Definir requisitos verificables para Gymratik: Rutinas y progreso. Este document
 
 ### Usabilidad, mantenibilidad y compatibilidad
 
-- **NFR-USA-001 · P0:** completar una serie normal requerirá como máximo dos acciones deliberadas.
+- **NFR-USA-001 · P0:** marcar una serie normal como completada requerirá como máximo dos acciones deliberadas; registrar repeticiones y carga antes de confirmarla requerirá entradas adicionales.
 - **NFR-USA-002 · P0:** la UI deberá distinguir pendiente, estimado y confirmado sin depender solo del color.
 - **NFR-MAI-001 · P0:** no se permitirán ciclos entre módulos Gradle.
 - **NFR-MAI-002 · P0:** cambios arquitectónicos deberán documentarse mediante ADR.

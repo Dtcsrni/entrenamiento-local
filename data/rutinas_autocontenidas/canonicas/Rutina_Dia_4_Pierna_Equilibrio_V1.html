@@ -3220,6 +3220,9 @@ body::before,body::after{animation:none!important}
     soundEnabled = localStorage.getItem(soundKey) !== 'off';
   } catch (_) {}
   const routineId = storageKey.match(/day\d+/)?.[0] || 'day1';
+  const performanceStyle = document.createElement('style');
+  performanceStyle.textContent = '.performanceEntry{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;padding:.7rem;border:1px solid rgba(101,242,221,.2);border-radius:.7rem;background:rgba(10,30,42,.56)}.performanceEntry label{display:grid;gap:.25rem;font-size:.72rem;font-weight:800;color:#c9dbe2}.performanceEntry input{width:100%;min-height:40px;padding:.4rem .55rem;border:1px solid rgba(164,223,231,.3);border-radius:.5rem;background:#081923;color:#f1ffff;font:inherit}.progressionCue{grid-column:1/-1;margin:0;color:#b8cbd4;font-size:.72rem;line-height:1.4}@media(max-width:520px){.performanceEntry{grid-template-columns:1fr}}';
+  document.head.append(performanceStyle);
   const plannedSeries = trackers.reduce((sum, tracker) => sum + (tracker.dataset.seriesKeys || '').trim().split(/\s+/).filter(Boolean).length, 0);
   const publishProgress = () => {
     window.TrainingProgressStore?.capture({
@@ -3332,6 +3335,46 @@ body::before,body::after{animation:none!important}
     item.undoSeriesButton = undoSeriesButton;
     item.undoExerciseButton = undoExerciseButton;
     item.tracker.after(undoActions);
+    const metricRange = item.tracker.closest('article.card')?.querySelector('.metric.reps .metricVal')?.textContent || '';
+    const rangeMatch = metricRange.match(/(\d+)\s*[–-]\s*(\d+)/);
+    item.repMinimum = rangeMatch ? Number(rangeMatch[1]) : 1;
+    item.repMaximum = rangeMatch ? Number(rangeMatch[2]) : 100;
+    const performancePanel = document.createElement('div');
+    performancePanel.className = 'performanceEntry';
+    const repsLabel = document.createElement('label'); repsLabel.append(document.createTextNode('Reps de esta serie '));
+    const repsInput = document.createElement('input'); repsInput.className = 'performanceReps'; repsInput.type = 'number'; repsInput.min = '1'; repsInput.max = '100'; repsInput.inputMode = 'numeric'; repsInput.setAttribute('aria-label', `Repeticiones realizadas en ${item.title}`); repsLabel.append(repsInput);
+    const loadLabel = document.createElement('label'); loadLabel.append(document.createTextNode('Carga (kg, opcional) '));
+    const loadInput = document.createElement('input'); loadInput.className = 'performanceLoad'; loadInput.type = 'number'; loadInput.min = '0'; loadInput.max = '2000'; loadInput.step = '0.1'; loadInput.inputMode = 'decimal'; loadInput.setAttribute('aria-label', `Carga utilizada en ${item.title}`); loadLabel.append(loadInput);
+    const progressionCue = document.createElement('p'); progressionCue.className = 'progressionCue'; progressionCue.setAttribute('role', 'status'); progressionCue.textContent = 'Registra reps y carga para ver tu evolución. Ajusta solo si mantienes técnica y esfuerzo objetivo.';
+    performancePanel.append(repsLabel, loadLabel, progressionCue);
+    item.performancePanel = performancePanel;
+    item.performanceReps = repsInput;
+    item.performanceLoad = loadInput;
+    item.progressionCue = progressionCue;
+    item.tracker.after(performancePanel);
+    const savedDraft = state.__performanceDraft?.[String(item.index + 1)];
+    if (savedDraft) { item.performanceReps.value = savedDraft.reps || ''; item.performanceLoad.value = savedDraft.load ?? ''; }
+    [item.performanceReps, item.performanceLoad].forEach(input => input.addEventListener('input', () => {
+      if (!state.__performanceDraft) state.__performanceDraft = {};
+      state.__performanceDraft[String(item.index + 1)] = { reps: item.performanceReps.value, load: item.performanceLoad.value };
+      save();
+    }));
+    if (window.TrainingProgressStore?.getHistory) Promise.all([window.TrainingProgressStore.getHistory(100), window.TrainingProgressStore.getProfile?.() || Promise.resolve({})]).then(([history, profile]) => {
+      item.performanceLoadUnit = profile.units === 'imperial' ? 'lb' : 'kg';
+      item.performanceLoad.closest('label').firstChild.textContent = `Carga (${item.performanceLoadUnit}, opcional) `;
+      const currentSessionId = state.__timing?.sessionStartedAt ? `${routineId}:${state.__timing.sessionStartedAt}` : '';
+      const previous = history.find(session => session.routineId === routineId && session.sessionId !== currentSessionId && (session.performance || []).some(record => record.exerciseId === String(item.index + 1)));
+      const records = (previous?.performance || []).filter(record => record.exerciseId === String(item.index + 1)).sort((a, b) => a.setNumber - b.setNumber);
+      if (!records.length) return;
+      const summary = records.map(record => `${record.reps} reps${record.load == null ? '' : ` · ${record.load} ${record.loadUnit || 'kg'}`}`).join(' / ');
+      const allAtTop = records.length === item.seriesKeys.length && records.every(record => record.reps >= item.repMaximum);
+      const comparableLoad = records.every(record => record.load !== null && record.load !== undefined && record.loadUnit === records[0].loadUnit && Number(record.load) === Number(records[0].load));
+      item.progressionCue.textContent = allAtTop && comparableLoad
+        ? `Última sesión: ${summary}. Alcanzaste el tope en todas las series; si técnica y esfuerzo fueron adecuados, considera el incremento mínimo disponible.`
+        : allAtTop
+          ? `Última sesión: ${summary}. Alcanzaste el tope; procura repetir con una carga comparable y registrada antes de valorar un incremento.`
+          : `Última sesión: ${summary}. Conserva la carga e intenta sumar reps dentro del rango, con técnica estable.`;
+    }).catch(() => {});
     const warmupButton = item.tracker.querySelector('.warmupSet');
     const setButtons = item.tracker.querySelector('.exerciseSetButtons');
     if (warmupButton) warmupButton.after(button, startSeriesButton);
@@ -3699,6 +3742,15 @@ body::before,body::after{animation:none!important}
       if (!activeTiming.seriesStartedAt || activeTiming.restStartedAt) return;
       const seriesIndex = item.seriesKeys.indexOf(nextKey);
       const completedAt = Date.now();
+      const reps = Number(item.performanceReps?.value);
+      const loadValue = item.performanceLoad?.value;
+      if (Number.isInteger(reps) && reps >= 1 && reps <= 100) {
+        if (!state.__performance) state.__performance = {};
+        if (!state.__performance[String(item.index + 1)]) state.__performance[String(item.index + 1)] = {};
+        state.__performance[String(item.index + 1)][nextKey] = { title: item.title, reps, load: loadValue === '' ? null : Number(loadValue), loadUnit: item.performanceLoadUnit || 'kg', updatedAt: completedAt };
+      }
+      item.performanceReps.value = '';
+      if (state.__performanceDraft?.[String(item.index + 1)]) state.__performanceDraft[String(item.index + 1)].reps = '';
       state[nextKey] = true;
       recordSeriesTime(item, seriesIndex, completedAt);
       const button = tracker.querySelector('.completeSetButton');
@@ -4121,6 +4173,7 @@ body{height:auto!important;min-height:100%!important;overflow-x:hidden!important
 @media(min-width:641px){.muscleDayGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(min-width:981px){.muscleDayGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
 </style>
+<link rel="stylesheet" href="../../../routine-liquid-glass-v13.css">
 <script data-fix="day4-local-gif-fallback">
 (function(){
   const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -4153,6 +4206,5 @@ body{height:auto!important;min-height:100%!important;overflow-x:hidden!important
 </script>
 </div>
 <!-- canonical media contract references: 1350-7I6LNUG.jpg · 1350-7I6LNUG-final.png -->
-<link rel="stylesheet" href="../../../routine-liquid-glass-v13.css">
 </body>
 </html>

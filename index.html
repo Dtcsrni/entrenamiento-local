@@ -123,11 +123,20 @@
     .data-actions { padding-top:15px; border-top:1px solid var(--line); }
     .profile-actions .button,.data-actions .button { min-height:42px; }
     .profile-history h3 { margin:0 0 11px; font-size:1.05rem; }
+    .routine-days { margin:16px 0 0; padding:14px; border:1px solid var(--line); border-radius:14px; color:var(--text); }
+    .routine-days legend { padding:0 6px; color:var(--text); font-weight:850; }
+    .routine-day-options { display:flex; flex-wrap:wrap; gap:8px; }
+    .routine-day-options label,.reminder-enable { display:flex; align-items:center; gap:7px; min-height:38px; padding:5px 9px; border:1px solid var(--line); border-radius:10px; color:var(--text); }
+    .routine-days input { accent-color:var(--accent); }
+    .reminder-enable { width:fit-content; margin-top:10px; }
+    .routine-reminder { display:flex; align-items:center; justify-content:space-between; gap:12px; max-width:52ch; margin:0 0 20px; padding:11px 14px; border:1px solid rgba(115,230,207,.4); border-radius:12px; background:rgba(16,35,49,.85); color:var(--text); }
+    .routine-reminder[hidden] { display:none; }
     .session-history { display:grid; gap:8px; }
     .session-history-empty { margin:0; color:var(--muted); font-size:.82rem; }
     .history-item { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 12px; padding:11px 12px; border:1px solid var(--line); border-radius:13px; background:rgba(9,16,24,.3); }
     .history-item strong { min-width:0; overflow:hidden; color:var(--text); font-size:.8rem; text-overflow:ellipsis; white-space:nowrap; }
     .history-item span { color:var(--muted); font-size:.72rem; }
+    .history-performance { grid-column:1/-1; overflow-wrap:anywhere; line-height:1.4; }
     .history-item .history-status { color:var(--accent); font-weight:850; text-align:right; }
     .profile-status { min-height:1.35em; margin:12px 0 0; color:var(--muted); font-size:.8rem; }
     .file-input { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; clip-path:inset(50%); }
@@ -217,6 +226,7 @@
           <h1 id="pageTitle">Entrena con un plan claro.</h1>
           <p class="hero-copy">Cuatro sesiones visuales para llegar al gimnasio, calentar, ejecutar con buena técnica y registrar cada serie sin perder el ritmo.</p>
           <p id="motivationMessage" class="hero-motivation" role="status" aria-live="polite">Cuando quieras empezar, sigue el calentamiento y avanza a tu ritmo.</p>
+          <div id="routineReminder" class="routine-reminder" role="status" hidden><span id="routineReminderText"></span><button id="dismissRoutineReminder" class="button secondary" type="button">Hoy no</button></div>
           <div class="hero-actions"><a id="nextSessionCta" class="button" href="./data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html">Empezar Día 1</a><a class="button secondary" href="#routines">Ver plan completo</a><a class="button secondary" href="#profile">Mi perfil</a><button id="installButton" class="button secondary" type="button" hidden>Instalar aplicación</button></div>
           <p class="hero-trust"><span class="status-dot" aria-hidden="true"></span>Tu avance se guarda en este dispositivo.</p>
         </div>
@@ -254,6 +264,7 @@
               <div class="profile-field"><label for="profileGoal">Objetivo principal</label><select id="profileGoal" name="goal"><option value="general-fitness">Condición general</option><option value="strength">Fuerza</option><option value="hypertrophy">Hipertrofia</option><option value="mobility">Movilidad</option><option value="health">Salud y bienestar</option></select></div>
               <div class="profile-field"><label for="profileUnits">Unidades</label><select id="profileUnits" name="units"><option value="metric">Métricas (cm, kg)</option><option value="imperial">Imperiales (in, lb)</option></select></div>
             </div>
+            <fieldset class="routine-days"><legend>Días habituales y avisos al abrir la PWA</legend><p id="routineDaySuggestion" class="profile-status">Al guardar sesiones, aquí aparecerán los días más frecuentes. Puedes elegir otros días.</p><div class="routine-day-options"><label><input type="checkbox" name="reminderDay" value="1"> Lun</label><label><input type="checkbox" name="reminderDay" value="2"> Mar</label><label><input type="checkbox" name="reminderDay" value="3"> Mié</label><label><input type="checkbox" name="reminderDay" value="4"> Jue</label><label><input type="checkbox" name="reminderDay" value="5"> Vie</label><label><input type="checkbox" name="reminderDay" value="6"> Sáb</label><label><input type="checkbox" name="reminderDay" value="0"> Dom</label></div><label class="reminder-enable"><input id="remindersEnabled" type="checkbox"> Mostrar un aviso dentro de la PWA en esos días</label><p class="profile-status">El aviso aparece al abrir o volver a la portada; no se ejecuta con la app cerrada. Puedes cambiar de día o descartarlo cada fecha.</p></fieldset>
             <div class="profile-actions"><button class="button" type="submit">Guardar perfil</button><p id="profileStatus" class="profile-status" role="status" aria-live="polite"></p></div>
             <div class="data-actions"><button id="exportDataButton" class="button secondary" type="button">Exportar datos</button><label class="button secondary" for="importDataInput">Importar respaldo</label><input id="importDataInput" class="file-input" type="file" accept="application/json,.json"></div>
           </form>
@@ -300,6 +311,12 @@
     const profileHeightCm = document.querySelector('#profileHeightCm');
     const profileGoal = document.querySelector('#profileGoal');
     const profileUnits = document.querySelector('#profileUnits');
+    const reminderDaysInputs = [...document.querySelectorAll('input[name="reminderDay"]')];
+    const remindersEnabled = document.querySelector('#remindersEnabled');
+    const routineDaySuggestion = document.querySelector('#routineDaySuggestion');
+    const routineReminder = document.querySelector('#routineReminder');
+    const routineReminderText = document.querySelector('#routineReminderText');
+    const dismissRoutineReminder = document.querySelector('#dismissRoutineReminder');
     const profileStatus = document.querySelector('#profileStatus');
     const profileAvatar = document.querySelector('#profileAvatar');
     const profileAvatarCompact = document.querySelector('#profileAvatarCompact');
@@ -317,6 +334,11 @@
     ];
     const fallbackRoutineProgress = routineCatalog.map(({ routineId, day, title, totalExercises, totalSeries }) => ({ routineId, label: `${day} · ${title}`, totalExercises, totalSeries }));
     let deferredInstallPrompt;
+    let activeProfile = null;
+    let latestDashboard = null;
+    let recentSessions = [];
+    let databaseResetNotice = false;
+    const WEEKDAY_NAMES = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
 
     function numberOr(value, fallback = 0) {
       const numeric = Number(value);
@@ -377,7 +399,7 @@
     const profileAvatars = {
       female: { src: './data/profile/mouse-female-effort.png', alt: 'Ratona haciendo press con mancuerna, con expresión de esfuerzo' },
       male: { src: './data/profile/mouse-male-effort.png', alt: 'Ratón haciendo press con mancuerna, con expresión de esfuerzo' },
-      neutral: { src: './icon.png', alt: 'Pareja de mascotas de entrenamiento de Gymratik' },
+      neutral: { src: './icon.png', alt: 'Ilustración de perfil para entrenamiento' },
     };
 
     function profileAvatarForSex(sex) {
@@ -394,13 +416,20 @@
     }
 
     function renderProfile(profile) {
+      activeProfile = profile || {};
       profileDisplayName.value = profile?.displayName || '';
       profileBirthDate.value = profile?.birthDate || '';
       profileSex.value = profile?.sex || '';
       profileHeightCm.value = profile?.heightCm ?? '';
       profileGoal.value = profile?.goal || 'general-fitness';
       profileUnits.value = profile?.units || 'metric';
+      reminderDaysInputs.forEach(input => { input.checked = (profile?.reminderDays || []).includes(Number(input.value)); });
+      remindersEnabled.checked = profile?.remindersEnabled === true;
       renderProfileAvatar(profileSex.value);
+      if (latestDashboard) {
+        const motivation = motivationFor(latestDashboard);
+        motivationMessage.textContent = activeProfile?.displayName ? `${activeProfile.displayName}, ${motivation.charAt(0).toLowerCase()}${motivation.slice(1)}` : motivation;
+      }
     }
 
     let redirectedToIncompleteProfile = false;
@@ -454,17 +483,53 @@
         detail.textContent = `${formatLastActivity(session.startedAt || session.updatedAt)} · ${numberOr(session.completedSeries)}/${numberOr(session.totalSeries)} series`;
         const updated = document.createElement('span');
         updated.textContent = session.endedAt ? 'Finalizada' : 'Guardada';
-        item.append(title, status, detail, updated);
+        const performance = document.createElement('span');
+        performance.className = 'history-performance';
+        const records = Array.isArray(session.performance) ? session.performance : [];
+        performance.textContent = records.length ? `${records.length} series con datos: ${records.slice(0, 6).map(record => `${record.exerciseName || `Ejercicio ${record.exerciseId}`} ${record.reps} reps${record.load == null ? '' : ` · ${record.load} ${record.loadUnit || 'kg'}`}`).join(' · ')}${records.length > 6 ? ' · …' : ''}` : '';
+        item.append(title, status, detail, performance, updated);
         sessionHistory.append(item);
       });
     }
 
     async function refreshProfile() {
       if (!window.TrainingProgressStore) return;
-      const [profile, history] = await Promise.all([window.TrainingProgressStore.getProfile(), window.TrainingProgressStore.getHistory(8)]);
+      const [profile, history] = await Promise.all([window.TrainingProgressStore.getProfile(), window.TrainingProgressStore.getHistory(100)]);
       renderProfile(profile);
-      renderHistory(history);
+      recentSessions = history;
+      renderHistory(history.slice(0, 8));
+      renderRoutineDaySuggestions(history, profile);
+      updateRoutineReminder();
       routeToProfileWhenMissingData(profile);
+    }
+
+    function commonTrainingDays(history) {
+      const cutoff = Date.now() - 56 * MILLISECONDS_PER_DAY;
+      const counts = Array(7).fill(0);
+      history.filter(session => Number(session.startedAt) >= cutoff).forEach(session => { counts[new Date(Number(session.startedAt)).getDay()] += 1; });
+      return counts.map((count, day) => ({ day, count })).filter(item => item.count).sort((a, b) => b.count - a.count || a.day - b.day);
+    }
+
+    function renderRoutineDaySuggestions(history, profile) {
+      const frequent = commonTrainingDays(history);
+      if (!frequent.length) { routineDaySuggestion.textContent = 'Al guardar sesiones, aquí aparecerán los días más frecuentes. Puedes elegir otros días.'; return; }
+      routineDaySuggestion.textContent = `En las últimas 8 semanas registraste más sesiones ${frequent.slice(0, 3).map(item => WEEKDAY_NAMES[item.day]).join(', ')}. Es una referencia; puedes elegir días distintos.`;
+      if (!(profile?.reminderDays || []).length && !profile?.remindersEnabled) {
+        const suggestions = frequent.slice(0, Math.min(4, frequent.length)).map(item => item.day);
+        reminderDaysInputs.forEach(input => { input.checked = suggestions.includes(Number(input.value)); });
+      }
+    }
+
+    function updateRoutineReminder() {
+      if (!routineReminder || !activeProfile?.remindersEnabled) { if (routineReminder) routineReminder.hidden = true; return; }
+      const now = new Date();
+      const dateKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      let suppressed = false;
+      try { suppressed = localStorage.getItem('gymratik-reminder-dismissed-v1') === dateKey; } catch (_) {}
+      const trainedToday = recentSessions.some(session => { const t = Number(session.startedAt); return t > 0 && new Date(t).toDateString() === now.toDateString(); });
+      const due = activeProfile.reminderDays?.includes(now.getDay());
+      routineReminder.hidden = !due || trainedToday || suppressed;
+      routineReminderText.textContent = 'Hoy suele ser uno de tus días de entrenamiento. Si te viene bien, elige cualquier sesión.';
     }
 
     function renderNextSession(dashboard) {
@@ -485,11 +550,13 @@
     }
 
     function renderProgress(rawDashboard) {
+      latestDashboard = rawDashboard;
       const dashboard = normalizeDashboard(rawDashboard);
       const temporal = dashboard.temporal;
       const activityDays = dashboard.activityDays || (dashboard.lastActivity ? 1 : 0);
       renderNextSession(dashboard);
-      motivationMessage.textContent = motivationFor(dashboard);
+      const motivation = motivationFor(dashboard);
+      motivationMessage.textContent = activeProfile?.displayName ? `${activeProfile.displayName}, ${motivation.charAt(0).toLowerCase()}${motivation.slice(1)}` : motivation;
       progressRecordedSeries.textContent = String(dashboard.recordedSeries);
       progressTodaySeries.textContent = String(dashboard.todaySeries);
       progressCompletedSessions.textContent = String(dashboard.sessionsCompleted);
@@ -530,7 +597,8 @@
       event.preventDefault();
       profileStatus.textContent = 'Guardando perfil…';
       try {
-        await window.TrainingProgressStore.saveProfile({ displayName: profileDisplayName.value, birthDate: profileBirthDate.value, sex: profileSex.value, heightCm: profileHeightCm.value, goal: profileGoal.value, units: profileUnits.value });
+        const selectedReminderDays = reminderDaysInputs.filter(input => input.checked).map(input => Number(input.value));
+        await window.TrainingProgressStore.saveProfile({ displayName: profileDisplayName.value, birthDate: profileBirthDate.value, sex: profileSex.value, heightCm: profileHeightCm.value, goal: profileGoal.value, units: profileUnits.value, reminderDays: selectedReminderDays, remindersEnabled: remindersEnabled.checked });
         renderProfileAvatar(profileSex.value);
         profileStatus.textContent = 'Perfil guardado en este dispositivo.';
       } catch (error) {
@@ -539,6 +607,12 @@
       }
     });
     profileSex.addEventListener('change', () => renderProfileAvatar(profileSex.value));
+    dismissRoutineReminder?.addEventListener('click', () => {
+      const now = new Date();
+      const dateKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      try { localStorage.setItem('gymratik-reminder-dismissed-v1', dateKey); } catch (_) {}
+      routineReminder.hidden = true;
+    });
     exportDataButton.addEventListener('click', async () => {
       exportDataButton.disabled = true;
       profileStatus.textContent = 'Preparando respaldo…';
@@ -589,11 +663,21 @@
     });
     window.addEventListener('training-progress-updated', () => { refreshProgress(); refreshProfile(); });
     window.addEventListener('training-profile-updated', refreshProfile);
-    window.addEventListener('training-storage-error', () => { progressNote.textContent = 'No se pudo guardar el avance en este momento.'; });
+    window.addEventListener('training-database-reset', () => { databaseResetNotice = true; });
+    window.addEventListener('training-storage-error', event => {
+      progressNote.textContent = 'No se pudo guardar el avance en este momento.';
+    });
     window.addEventListener('beforeinstallprompt', (event) => { event.preventDefault(); deferredInstallPrompt = event; updateInstallVisibility(); });
     installButton.addEventListener('click', async () => { if (!deferredInstallPrompt) return; deferredInstallPrompt.prompt(); await deferredInstallPrompt.userChoice; deferredInstallPrompt = undefined; updateInstallVisibility(); });
     updateInstallVisibility();
-    Promise.all([refreshProgress(), refreshProfile()]).catch((error) => { progressNote.textContent = 'No se pudo leer el avance guardado.'; console.error('Progress dashboard failed', error); });
+    window.addEventListener('pageshow', event => { if (event.persisted) { refreshProfile(); refreshProgress(); } });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) { refreshProfile(); refreshProgress(); } });
+    Promise.all([refreshProgress(), refreshProfile()]).then(() => {
+      if (databaseResetNotice) progressNote.textContent = 'La base anterior se reinició en v3; el historial previo se eliminó.';
+    }).catch((error) => {
+      progressNote.textContent = 'No se pudo leer el avance guardado.';
+      console.error('Progress dashboard failed', error);
+    });
     if ('serviceWorker' in navigator) {
       let reloadingForServiceWorker = false;
       navigator.serviceWorker.addEventListener('controllerchange', () => { if (reloadingForServiceWorker) return; reloadingForServiceWorker = true; window.location.reload(); });

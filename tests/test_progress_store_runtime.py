@@ -127,12 +127,18 @@ const window = {
 };
 const context = { window, CustomEvent: window.CustomEvent, localStorage: window.localStorage, navigator: {}, console, Date, setTimeout, clearTimeout };
 vm.runInNewContext(source, context);
-window.TrainingProgressStore.saveProfile({ displayName: 'Eva', birthDate: '1990-05-12', sex: 'female', heightCm: '171.5', goal: 'hypertrophy', units: 'metric' }).then(() => window.TrainingProgressStore.getProfile()).then((profile) => {
+window.TrainingProgressStore.saveProfile({ displayName: 'Eva', birthDate: '1990-05-12', sex: 'female', heightCm: '171.5', goal: 'hypertrophy', units: 'metric' }).then(() => window.TrainingProgressStore.getProfile()).then(async (profile) => {
   assert.strictEqual(profile.profileId, 'local-default');
   assert.strictEqual(profile.displayName, 'Eva');
   assert.strictEqual(profile.birthDate, '1990-05-12');
   assert.strictEqual(profile.heightCm, 171.5);
   assert.strictEqual(profile.goal, 'hypertrophy');
+  await window.TrainingProgressStore.saveProfile({ displayName: 'Eva', reminderDays: [1, 1, 8, 5], remindersEnabled: true });
+  const reminderProfile = await window.TrainingProgressStore.getProfile();
+  assert.deepStrictEqual(Array.from(reminderProfile.reminderDays), [1, 5]);
+  assert.strictEqual(reminderProfile.remindersEnabled, true);
+  await window.TrainingProgressStore.saveProfile({ reminderDays: [], remindersEnabled: true });
+  assert.strictEqual((await window.TrainingProgressStore.getProfile()).remindersEnabled, false);
   console.log(JSON.stringify({ ok: true }));
 }).catch((error) => { console.error(error); process.exit(1); });
 """
@@ -161,20 +167,24 @@ const window = {
 const context = { window, CustomEvent: window.CustomEvent, localStorage: window.localStorage, navigator: {}, console, Date, setTimeout, clearTimeout };
 vm.runInNewContext(source, context);
 const payload = {
-  format: 'gymratik-backup', schemaVersion: 1,
-  profile: { displayName: 'Respaldo', birthDate: '1988-01-02', sex: 'male', heightCm: 180, goal: 'strength', units: 'metric' },
+  format: 'gymratik-backup', schemaVersion: 3,
+  profile: { schemaVersion: 3, displayName: 'Respaldo', birthDate: '1988-01-02', sex: 'male', heightCm: 180, goal: 'strength', units: 'metric' },
   data: {
     progress: [{ routineId: 'day1', doneSeries: 3, totalSeries: 20, updatedAt: 10 }],
-    sessions: [{ sessionId: 'day1:10', routineId: 'day1', label: 'Día 1', status: 'completed', completedSeries: 3, totalSeries: 20, updatedAt: 10 }],
+    sessions: [{ sessionId: 'day1:10', routineId: 'day1', label: 'Día 1', status: 'completed', completedSeries: 3, totalSeries: 20, updatedAt: 10, performance: [{ exerciseId: '1', exerciseName: 'Jalón', setNumber: 1, reps: 12, load: 40, loadUnit: 'kg' }] }],
     activity: [{ activityKey: 'day1:day1:10:2026-09-21T10:00', routineId: 'day1', completedSeries: 3, dayKey: '2026-09-21', updatedAt: 10 }]
   }
 };
 window.TrainingProgressStore.importData(payload).then(() => Promise.all([window.TrainingProgressStore.getProfile(), window.TrainingProgressStore.getHistory(), window.TrainingProgressStore.exportData()])).then(([profile, history, backup]) => {
   assert.strictEqual(profile.displayName, 'Respaldo');
+  assert.strictEqual(profile.schemaVersion, 3);
   assert.strictEqual(history.length, 1);
   assert.strictEqual(history[0].completedSeries, 3);
+  assert.strictEqual(history[0].performance[0].reps, 12);
+  assert.strictEqual(history[0].performance[0].load, 40);
   assert.strictEqual(backup.data.progress.length, 1);
   assert.strictEqual(backup.data.activity.length, 1);
+  assert.strictEqual(backup.schemaVersion, 3);
   console.log(JSON.stringify({ ok: true }));
 }).catch((error) => { console.error(error); process.exit(1); });
 """
@@ -184,6 +194,133 @@ window.TrainingProgressStore.importData(payload).then(() => Promise.all([window.
             check=False,
             capture_output=True,
             text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout), {"ok": True})
+
+    def test_backup_import_rejects_older_schemas(self):
+        script = r"""
+const fs = require('fs');
+const vm = require('vm');
+const assert = require('assert');
+const source = fs.readFileSync(process.argv[1], 'utf8');
+const window = {
+  CustomEvent: class CustomEvent { constructor(name, init) { this.name = name; this.detail = init?.detail; } },
+  dispatchEvent() {},
+  localStorage: { getItem() { return null; }, setItem() {}, removeItem() {} }
+};
+vm.runInNewContext(source, { window, CustomEvent: window.CustomEvent, localStorage: window.localStorage, navigator: {}, console, Date, setTimeout, clearTimeout });
+const payload = { format: 'gymratik-backup', schemaVersion: 2, profile: {}, data: { progress: [], sessions: [], activity: [] } };
+window.TrainingProgressStore.importData(payload).then(() => { throw new Error('Se aceptó un respaldo anterior a v3'); }).catch(error => {
+  assert.match(error.message, /esquema 3/);
+  console.log(JSON.stringify({ ok: true }));
+}).catch(error => { console.error(error); process.exit(1); });
+"""
+        result = subprocess.run(
+            ["node", "-e", script, str(STORE)], cwd=ROOT, check=False, capture_output=True, text=True
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout), {"ok": True})
+
+    def test_existing_indexeddb_v1_or_v2_is_reset_to_empty_v3(self):
+        script = r"""
+const fs = require('fs');
+const vm = require('vm');
+const assert = require('assert');
+const source = fs.readFileSync(process.argv[1], 'utf8');
+async function verify(oldVersion) {
+  let request;
+  const storage = new Map([
+    ['entrenamiento-progress-fallback-v1', JSON.stringify({ progress: { day1: { doneSeries: 9 } } })],
+    ['fitlovers-day1-series-v1', '{"e1s1":true}']
+  ]);
+  const deletedStores = [];
+  const events = [];
+  const stores = new Map();
+  function makeStore(name) {
+    return {
+      indexNames: { contains() { return false; } },
+      createIndex() {},
+      openCursor() { const cursor = { result: null }; setTimeout(() => cursor.onsuccess?.(), 0); return cursor; },
+      get() { const getRequest = { result: undefined }; setTimeout(() => getRequest.onsuccess?.(), 0); return getRequest; },
+      getAll() { return { result: [] }; },
+      put() {}, clear() {}, delete() {}, index() { return { openCursor() { return { result: null }; } }; }
+    };
+  }
+  const db = {
+    get objectStoreNames() { return { contains: name => stores.has(name), [Symbol.iterator]: function* () { yield* stores.keys(); } }; },
+    deleteObjectStore(name) { deletedStores.push(name); stores.delete(name); },
+    createObjectStore(name) { stores.set(name, makeStore(name)); return stores.get(name); },
+    transaction() {
+      const tx = { objectStore(name) { if (!stores.has(name)) throw new Error(`Store inexistente: ${name}`); return stores.get(name); } };
+      setTimeout(() => tx.oncomplete?.(), 0);
+      return tx;
+    }, close() {}
+  };
+  const window = {
+    CustomEvent: class CustomEvent { constructor(name, init) { this.name = name; this.detail = init?.detail; } },
+    dispatchEvent(event) { events.push(event); },
+    localStorage: { getItem(key) { return storage.get(key) || null; }, setItem(key, value) { storage.set(key, value); }, removeItem(key) { storage.delete(key); } },
+    indexedDB: { open() {
+      for (const name of ['oldProgress', 'oldProfile']) stores.set(name, makeStore(name));
+      request = { result: db, transaction: { objectStore(name) { return stores.get(name); } } };
+      setTimeout(() => {
+        request.onupgradeneeded({ oldVersion });
+        setTimeout(() => request.onsuccess(), 0);
+      }, 0);
+      return request;
+    } }
+  };
+  vm.runInNewContext(source, { window, CustomEvent: window.CustomEvent, localStorage: window.localStorage, navigator: {}, console, Date, setTimeout, clearTimeout });
+  const dashboard = await window.TrainingProgressStore.getDashboard();
+  assert.strictEqual(dashboard.routines.every(routine => routine.doneSeries === 0), true);
+  assert.deepStrictEqual([...deletedStores].sort(), ['oldProfile', 'oldProgress']);
+  assert.deepStrictEqual([...stores.keys()].sort(), ['activity', 'meta', 'profiles', 'routineProgress', 'sessions']);
+  assert.strictEqual(storage.has('entrenamiento-progress-fallback-v1'), false);
+  assert.strictEqual(storage.has('fitlovers-day1-series-v1'), false);
+  assert.strictEqual(events.some(event => event.name === 'training-database-reset' && event.detail.previousVersion === oldVersion), true);
+}
+(async () => { await verify(1); await verify(2); console.log(JSON.stringify({ ok: true })); })().catch(error => { console.error(error); process.exit(1); });
+"""
+        result = subprocess.run(
+            ["node", "-e", script, str(STORE)], cwd=ROOT, check=False, capture_output=True, text=True
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout), {"ok": True})
+
+    def test_capture_persists_only_completed_sets_with_valid_repetitions(self):
+        script = r"""
+const fs = require('fs');
+const vm = require('vm');
+const assert = require('assert');
+const source = fs.readFileSync(process.argv[1], 'utf8');
+let persisted = null;
+const window = {
+  CustomEvent: class CustomEvent { constructor(name, init) { this.name = name; this.detail = init?.detail; } },
+  dispatchEvent() {},
+  localStorage: { getItem() { return persisted; }, setItem(_key, value) { persisted = value; }, removeItem() {} }
+};
+const context = { window, CustomEvent: window.CustomEvent, localStorage: window.localStorage, navigator: {}, console, Date, setTimeout, clearTimeout };
+vm.runInNewContext(source, context);
+const state = {
+  e1s1: true, e1s2: false,
+  __timing: { sessionStartedAt: 123, sessionEndedAt: 0 },
+  __performance: { '1': {
+    e1s1: { title: 'Jalón al pecho', reps: 12, load: '40', loadUnit: 'kg', updatedAt: 124 },
+    e1s2: { title: 'Jalón al pecho', reps: 9, load: 'NaN', loadUnit: 'kg', updatedAt: 125 }
+  } }
+};
+window.TrainingProgressStore.capture({ routineId: 'day1', state }).then(() => window.TrainingProgressStore.getHistory()).then(history => {
+  assert.strictEqual(history.length, 1);
+  assert.strictEqual(history[0].performance.length, 1);
+  assert.strictEqual(history[0].performance[0].exerciseName, 'Jalón al pecho');
+  assert.strictEqual(history[0].performance[0].reps, 12);
+  assert.strictEqual(history[0].performance[0].load, 40);
+  console.log(JSON.stringify({ ok: true }));
+}).catch(error => { console.error(error); process.exit(1); });
+"""
+        result = subprocess.run(
+            ["node", "-e", script, str(STORE)], cwd=ROOT, check=False, capture_output=True, text=True
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(result.stdout), {"ok": True})

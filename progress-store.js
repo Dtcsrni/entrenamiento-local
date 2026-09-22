@@ -9,21 +9,21 @@
   const PROFILE_STORE = 'profiles';
   const META_STORE = 'meta';
   const DEFAULT_PROFILE_ID = 'local-default';
-  const PROFILE_SCHEMA_VERSION = 1;
-  const FALLBACK_KEY = 'entrenamiento-progress-fallback-v1';
+  const PROFILE_SCHEMA_VERSION = 3;
+  const FALLBACK_KEY = 'entrenamiento-progress-fallback-v3';
+  const PRE_V3_STORAGE_KEYS = [
+    'entrenamiento-progress-fallback-v1',
+    'fitlovers-day1-series-v1',
+    'fitlovers-day2-series-v1',
+    'fitlovers-day3-series-v1',
+    'fitlovers-day4-series-v1',
+  ];
   const ROUTINES = {
     day1: { label: 'Día 1 · Espalda + Bíceps', totalExercises: 6, totalSeries: 20 },
     day2: { label: 'Día 2 · Pierna + Glúteo', totalExercises: 6, totalSeries: 20 },
     day3: { label: 'Día 3 · Pecho + Hombro + Tríceps', totalExercises: 7, totalSeries: 22 },
     day4: { label: 'Día 4 · Pierna equilibrada', totalExercises: 7, totalSeries: 20 },
   };
-  const LEGACY_KEYS = {
-    day1: 'fitlovers-day1-series-v1',
-    day2: 'fitlovers-day2-series-v1',
-    day3: 'fitlovers-day3-series-v1',
-    day4: 'fitlovers-day4-series-v1',
-  };
-
   const pad = value => String(value).padStart(2, '0');
   const numberOrZero = value => {
     const numeric = Number(value);
@@ -40,6 +40,8 @@
       heightCm: null,
       goal: 'general-fitness',
       units: 'metric',
+      reminderDays: [],
+      remindersEnabled: false,
       createdAt: timestamp,
       updatedAt: timestamp,
       schemaVersion: PROFILE_SCHEMA_VERSION,
@@ -61,6 +63,8 @@
     if (height !== null && (!Number.isFinite(height) || height < 100 || height > 250)) throw new Error('La altura debe estar entre 100 y 250 cm');
     const goal = ['strength', 'hypertrophy', 'general-fitness', 'mobility', 'health'].includes(value.goal) ? value.goal : base.goal;
     const units = value.units === 'imperial' ? 'imperial' : 'metric';
+    const reminderDays = [...new Set((Array.isArray(value.reminderDays) ? value.reminderDays : [])
+      .map(Number).filter(day => Number.isInteger(day) && day >= 0 && day <= 6))].sort();
     return {
       ...base,
       profileId: DEFAULT_PROFILE_ID,
@@ -70,6 +74,8 @@
       heightCm: height === null ? null : Math.round(height * 10) / 10,
       goal,
       units,
+      reminderDays,
+      remindersEnabled: value.remindersEnabled === true && reminderDays.length > 0,
       createdAt: Number(value.createdAt) || base.createdAt,
       updatedAt: Number(value.updatedAt) || Date.now(),
       schemaVersion: PROFILE_SCHEMA_VERSION,
@@ -105,9 +111,14 @@
     if (databasePromise) return databasePromise;
     if (!('indexedDB' in window)) return Promise.reject(new Error('IndexedDB no está disponible'));
     databasePromise = new Promise((resolve, reject) => {
+      let previousDatabaseVersion;
       const request = window.indexedDB.open(DB_NAME, DB_VERSION);
-      request.onupgradeneeded = () => {
+      request.onupgradeneeded = (event) => {
+        previousDatabaseVersion = event.oldVersion;
         const db = request.result;
+        if (event.oldVersion < DB_VERSION) {
+          Array.from(db.objectStoreNames).forEach((storeName) => db.deleteObjectStore(storeName));
+        }
         if (!db.objectStoreNames.contains(PROGRESS_STORE)) {
           const store = db.createObjectStore(PROGRESS_STORE, { keyPath: 'routineId' });
           store.createIndex('updatedAt', 'updatedAt');
@@ -158,6 +169,14 @@
       request.onsuccess = () => {
         const db = request.result;
         db.onversionchange = () => db.close();
+        try {
+          PRE_V3_STORAGE_KEYS.forEach((key) => window.localStorage.removeItem(key));
+        } catch (error) {
+          emit('training-storage-error', { error, source: 'previous-data-cleanup' });
+        }
+        if (previousDatabaseVersion > 0 && previousDatabaseVersion < DB_VERSION) {
+          emit('training-database-reset', { version: DB_VERSION, previousVersion: previousDatabaseVersion, clearedPreviousData: true });
+        }
         resolve(db);
       };
       request.onerror = () => {
@@ -285,6 +304,10 @@
       sessionStartedAt: metrics.sessionStartedAt,
       sessionEndedAt: metrics.sessionEndedAt,
       sessionId,
+      performance: Object.entries(state?.__performance || {}).flatMap(([exerciseId, sets]) =>
+        Object.entries(sets || {}).filter(([setKey, value]) => /^e\d+s\d+$/.test(setKey) && state[setKey] === true && value && Number.isFinite(Number(value.reps)) && Number(value.reps) >= 1)
+          .map(([setKey, value]) => ({ exerciseId: String(exerciseId).slice(0, 80), exerciseName: String(value.title || '').slice(0, 100), setKey, setNumber: Number(setKey.match(/s(\d+)$/)?.[1]) || 0, reps: Math.min(100, Math.round(Number(value.reps))), load: value.load === '' || value.load == null || !Number.isFinite(Number(value.load)) ? null : Math.min(2000, Math.max(0, Number(value.load))), loadUnit: value.loadUnit === 'lb' ? 'lb' : 'kg', updatedAt: Number(value.updatedAt) || capturedAt }))
+      ),
       capturedAt,
       ...temporal,
       activityKey: `${routineId}:${sessionId || 'unscheduled'}:${temporal.minuteKey}`,
@@ -305,6 +328,7 @@
       completedExercises: nonNegativeNumber(record.completedExercises),
       totalSeries: nonNegativeNumber(record.totalSeries),
       updatedAt: record.updatedAt,
+      performance: Array.isArray(record.performance) ? record.performance : [],
     };
   }
 
@@ -328,6 +352,7 @@
       startedAt: record.sessionStartedAt || 0,
       endedAt: record.sessionEndedAt || 0,
       updatedAt: record.updatedAt,
+      performance: Array.isArray(record.performance) ? record.performance : [],
     };
   }
 
@@ -413,7 +438,7 @@
     const data = await readDatabase();
     return {
       format: 'gymratik-backup',
-      schemaVersion: 1,
+      schemaVersion: 3,
       exportedAt: Date.now(),
       profile,
       data,
@@ -421,12 +446,22 @@
   }
 
   function normalizeImport(payload) {
-    if (!payload || payload.format !== 'gymratik-backup' || payload.schemaVersion !== 1) throw new Error('El archivo no es un respaldo Gymratik compatible');
+    if (!payload || payload.format !== 'gymratik-backup' || payload.schemaVersion !== 3 || payload.profile?.schemaVersion !== 3) throw new Error('El archivo no es un respaldo Gymratik compatible con el esquema 3');
     const data = payload.data && typeof payload.data === 'object' ? payload.data : {};
     const arrays = ['progress', 'sessions', 'activity'];
     arrays.forEach((name) => { if (!Array.isArray(data[name]) || data[name].length > 10000) throw new Error(`El respaldo tiene una colección inválida: ${name}`); });
     const progress = data.progress.filter((record) => record && ROUTINES[record.routineId]).map((record) => ({ ...record, profileId: DEFAULT_PROFILE_ID }));
-    const sessions = data.sessions.filter((session) => session && typeof session.sessionId === 'string' && ROUTINES[session.routineId]).map((session) => ({ ...session, profileId: DEFAULT_PROFILE_ID }));
+    const sessions = data.sessions.filter((session) => session && typeof session.sessionId === 'string' && ROUTINES[session.routineId]).map((session) => {
+      const performance = session.performance === undefined ? [] : session.performance;
+      if (!Array.isArray(performance) || performance.length > 100) throw new Error('El respaldo contiene un registro de series inválido');
+      const cleanPerformance = performance.filter(record => record && typeof record === 'object').map(record => {
+        const reps = Number(record.reps);
+        const load = record.load === null || record.load === '' || record.load === undefined ? null : Number(record.load);
+        if (!Number.isInteger(reps) || reps < 1 || reps > 100 || (load !== null && (!Number.isFinite(load) || load < 0 || load > 2000))) throw new Error('El respaldo contiene reps o carga fuera de rango');
+        return { exerciseId: String(record.exerciseId || '').slice(0, 80), exerciseName: String(record.exerciseName || '').slice(0, 100), setKey: String(record.setKey || '').slice(0, 16), setNumber: Math.max(0, Math.min(100, Math.round(Number(record.setNumber) || 0))), reps, load, loadUnit: record.loadUnit === 'lb' ? 'lb' : 'kg', updatedAt: Number(record.updatedAt) || Number(session.updatedAt) || Date.now() };
+      });
+      return { ...session, performance: cleanPerformance, profileId: DEFAULT_PROFILE_ID };
+    });
     const activity = data.activity.filter((item) => item && typeof item.activityKey === 'string' && ROUTINES[item.routineId]).map((item) => ({ ...item, profileId: DEFAULT_PROFILE_ID }));
     return { profile: normalizeProfile(payload.profile), data: { progress, sessions, activity } };
   }
@@ -479,7 +514,6 @@
     }
     try {
       window.localStorage.removeItem(FALLBACK_KEY);
-      Object.values(LEGACY_KEYS).forEach((key) => window.localStorage.removeItem(key));
     } catch (error) {
       emit('training-storage-error', { error });
       throw error;
@@ -518,7 +552,6 @@
       }
     }
     try {
-      window.localStorage.removeItem(LEGACY_KEYS[routineId]);
       const fallback = readFallback();
       delete fallback.progress[routineId];
       Object.keys(fallback.sessions).forEach((key) => { if (fallback.sessions[key]?.routineId === routineId) delete fallback.sessions[key]; });
@@ -531,17 +564,6 @@
     if (databaseError) throw databaseError;
     emit('training-progress-updated', { routineId, cleared: true });
     return { routineId, cleared: true };
-  }
-
-  function legacySnapshots() {
-    return Object.entries(LEGACY_KEYS).flatMap(([routineId, key]) => {
-      try {
-        const state = JSON.parse(window.localStorage.getItem(key) || 'null');
-        return state && typeof state === 'object' ? [{ routineId, state }] : [];
-      } catch (_) {
-        return [];
-      }
-    });
   }
 
   async function readDatabase() {
@@ -579,19 +601,6 @@
     }
   }
 
-  async function migrateLegacyProgress(data) {
-    const known = new Set(data.progress.map((record) => record.routineId));
-    const missing = legacySnapshots().filter(({ routineId }) => !known.has(routineId));
-    if (!missing.length) return data;
-    const migrated = await Promise.all(missing.map(({ routineId, state }) => capture({ routineId, state })));
-    migrated.forEach(({ record }) => data.progress.push(record));
-    migrated.forEach(({ record }) => {
-      if (record.sessionId) data.sessions.push(toSession(record));
-      if (record.doneSeries > 0 || record.sessionStartedAt) data.activity.push(toActivity(record));
-    });
-    return data;
-  }
-
   async function backfillActivity(data) {
     const known = new Set(data.activity.map((item) => item.activityKey));
     const missing = data.progress
@@ -604,7 +613,7 @@
       await transaction(db, [ACTIVITY_STORE], 'readwrite', (tx) => {
         missing.forEach((item) => tx.objectStore(ACTIVITY_STORE).put(item));
       });
-    } catch (_) {
+    } catch (error) {
       missing.forEach((item) => {
         const fallback = readFallback();
         fallback.activity[item.activityKey] = item;
@@ -669,7 +678,7 @@
   }
 
   async function getDashboard() {
-    const data = await backfillActivity(await migrateLegacyProgress(await readDatabase()));
+    const data = await backfillActivity(await readDatabase());
     return dashboardFrom(data);
   }
 
