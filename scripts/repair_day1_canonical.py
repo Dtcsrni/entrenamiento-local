@@ -254,6 +254,7 @@ def main() -> None:
             count=1,
             flags=re.S,
         )
+    source = source.replace(' rep.</div>', ' repeticiones</div>')
     source = standardize_muscle_visuals(source)
     source = sanitize_canonical_metadata(source)
     with HTML.open("w", encoding="utf-8", newline="") as handle:

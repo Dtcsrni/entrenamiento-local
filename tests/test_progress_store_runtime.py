@@ -171,7 +171,7 @@ const payload = {
   profile: { schemaVersion: 3, displayName: 'Respaldo', birthDate: '1988-01-02', sex: 'male', heightCm: 180, goal: 'strength', units: 'metric' },
   data: {
     progress: [{ routineId: 'day1', doneSeries: 3, totalSeries: 20, updatedAt: 10 }],
-    sessions: [{ sessionId: 'day1:10', routineId: 'day1', label: 'Día 1', status: 'completed', completedSeries: 3, totalSeries: 20, updatedAt: 10, performance: [{ exerciseId: '1', exerciseName: 'Jalón', setNumber: 1, reps: 12, load: 40, loadUnit: 'kg' }] }],
+    sessions: [{ sessionId: 'day1:10', routineId: 'day1', label: 'Día 1', status: 'completed', completedSeries: 3, totalSeries: 20, updatedAt: 10, performance: [{ exerciseId: '1', exerciseName: 'Jalón', setNumber: 1, reps: 12, load: 100, loadUnit: 'lb' }] }],
     activity: [{ activityKey: 'day1:day1:10:2026-09-21T10:00', routineId: 'day1', completedSeries: 3, dayKey: '2026-09-21', updatedAt: 10 }]
   }
 };
@@ -181,7 +181,9 @@ window.TrainingProgressStore.importData(payload).then(() => Promise.all([window.
   assert.strictEqual(history.length, 1);
   assert.strictEqual(history[0].completedSeries, 3);
   assert.strictEqual(history[0].performance[0].reps, 12);
-  assert.strictEqual(history[0].performance[0].load, 40);
+  assert.strictEqual(history[0].performance[0].load, 100);
+  assert.strictEqual(history[0].performance[0].loadUnit, 'lb');
+  assert.ok(Math.abs(history[0].performance[0].loadKg - 45.359237) < 1e-9);
   assert.strictEqual(backup.data.progress.length, 1);
   assert.strictEqual(backup.data.activity.length, 1);
   assert.strictEqual(backup.schemaVersion, 3);
@@ -306,7 +308,7 @@ const state = {
   e1s1: true, e1s2: false,
   __timing: { sessionStartedAt: 123, sessionEndedAt: 0 },
   __performance: { '1': {
-    e1s1: { title: 'Jalón al pecho', reps: 12, load: '40', loadUnit: 'kg', updatedAt: 124 },
+    e1s1: { title: 'Jalón al pecho', reps: 12, load: '88.1849049', loadUnit: 'lb', updatedAt: 124 },
     e1s2: { title: 'Jalón al pecho', reps: 9, load: 'NaN', loadUnit: 'kg', updatedAt: 125 }
   } }
 };
@@ -315,7 +317,9 @@ window.TrainingProgressStore.capture({ routineId: 'day1', state }).then(() => wi
   assert.strictEqual(history[0].performance.length, 1);
   assert.strictEqual(history[0].performance[0].exerciseName, 'Jalón al pecho');
   assert.strictEqual(history[0].performance[0].reps, 12);
-  assert.strictEqual(history[0].performance[0].load, 40);
+  assert.strictEqual(history[0].performance[0].load, 88.1849049);
+  assert.strictEqual(history[0].performance[0].loadUnit, 'lb');
+  assert.ok(Math.abs(history[0].performance[0].loadKg - 40) < 1e-7);
   console.log(JSON.stringify({ ok: true }));
 }).catch(error => { console.error(error); process.exit(1); });
 """

@@ -419,6 +419,7 @@ def main() -> None:
     day1_note = between(template, '<section class="note notePanel"', "</section>")
 
     source_cards = between(source, '<main class="cards">', "</main>")
+    source_cards = re.sub(r'(\d+[–-]\d+) rep\.', r'\1 repeticiones', source_cards)
     card_matches = list(re.finditer(r'<article class="card">.*?</article>', source_cards, re.S))
     if len(card_matches) != 6:
         raise ValueError(f"Se esperaban 6 tarjetas y se encontraron {len(card_matches)}")

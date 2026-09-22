@@ -312,7 +312,11 @@
       sessionId,
       performance: Object.entries(state?.__performance || {}).flatMap(([exerciseId, sets]) =>
         Object.entries(sets || {}).filter(([setKey, value]) => /^e\d+s\d+$/.test(setKey) && state[setKey] === true && value && Number.isFinite(Number(value.reps)) && Number(value.reps) >= 1)
-          .map(([setKey, value]) => ({ exerciseId: String(exerciseId).slice(0, 80), exerciseName: String(value.title || '').slice(0, 100), setKey, setNumber: Number(setKey.match(/s(\d+)$/)?.[1]) || 0, reps: Math.min(100, Math.round(Number(value.reps))), load: value.load === '' || value.load == null || !Number.isFinite(Number(value.load)) ? null : Math.min(2000, Math.max(0, Number(value.load))), loadUnit: value.loadUnit === 'lb' ? 'lb' : 'kg', updatedAt: Number(value.updatedAt) || capturedAt }))
+          .map(([setKey, value]) => {
+            const load = value.load === '' || value.load == null || !Number.isFinite(Number(value.load)) ? null : Math.min(2000, Math.max(0, Number(value.load)));
+            const loadUnit = value.loadUnit === 'lb' ? 'lb' : 'kg';
+            return { exerciseId: String(exerciseId).slice(0, 80), exerciseName: String(value.title || '').slice(0, 100), setKey, setNumber: Number(setKey.match(/s(\d+)$/)?.[1]) || 0, reps: Math.min(100, Math.round(Number(value.reps))), load, loadUnit, loadKg: load === null ? null : loadUnit === 'lb' ? load * 0.45359237 : load, updatedAt: Number(value.updatedAt) || capturedAt };
+          })
       ),
       capturedAt,
       ...temporal,
@@ -468,8 +472,9 @@
       const cleanPerformance = performance.filter(record => record && typeof record === 'object').map(record => {
         const reps = Number(record.reps);
         const load = record.load === null || record.load === '' || record.load === undefined ? null : Number(record.load);
-        if (!Number.isInteger(reps) || reps < 1 || reps > 100 || (load !== null && (!Number.isFinite(load) || load < 0 || load > 2000))) throw new Error('El respaldo contiene reps o carga fuera de rango');
-        return { exerciseId: String(record.exerciseId || '').slice(0, 80), exerciseName: String(record.exerciseName || '').slice(0, 100), setKey: String(record.setKey || '').slice(0, 16), setNumber: Math.max(0, Math.min(100, Math.round(Number(record.setNumber) || 0))), reps, load, loadUnit: record.loadUnit === 'lb' ? 'lb' : 'kg', updatedAt: Number(record.updatedAt) || Number(session.updatedAt) || Date.now() };
+        if (!Number.isInteger(reps) || reps < 1 || reps > 100 || (load !== null && (!Number.isFinite(load) || load < 0 || load > 2000))) throw new Error('El respaldo contiene repeticiones o carga fuera de rango');
+        const loadUnit = record.loadUnit === 'lb' ? 'lb' : 'kg';
+        return { exerciseId: String(record.exerciseId || '').slice(0, 80), exerciseName: String(record.exerciseName || '').slice(0, 100), setKey: String(record.setKey || '').slice(0, 16), setNumber: Math.max(0, Math.min(100, Math.round(Number(record.setNumber) || 0))), reps, load, loadUnit, loadKg: load === null ? null : loadUnit === 'lb' ? load * 0.45359237 : load, updatedAt: Number(record.updatedAt) || Number(session.updatedAt) || Date.now() };
       });
       return { ...session, performance: cleanPerformance, profileId: DEFAULT_PROFILE_ID };
     });

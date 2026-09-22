@@ -24,7 +24,7 @@ class HomepageContractTests(unittest.TestCase):
         self.assertIn('<span class="brand-mark" aria-hidden="true"><img src="./icon.png" alt=""></span>', self.html)
         self.assertIn("background:rgba(11,16,23,.72) url('./icon.png')", self.html)
         self.assertIn(".hero-mascot-bg", self.html)
-        self.assertIn('class="hero-mascot-bg" src="./icon.png"', self.html)
+        self.assertIn('class="hero-mascot-bg" src="./data/profile/mascot-install-phone.png"', self.html)
         self.assertNotIn("Gymratic", self.html)
         self.assertNotIn("<title>Entrenamiento", self.html)
 
@@ -39,7 +39,7 @@ class HomepageContractTests(unittest.TestCase):
             self.assertIn(path, self.html)
 
     def test_homepage_summary_matches_all_four_routines(self):
-        self.assertIn("Cuatro sesiones visuales", self.html)
+        self.assertIn("Calienta, entrena con técnica y registra cada serie.", self.html)
         self.assertIn('<span class="plan-pill">4 días · 82 series</span>', self.html)
         self.assertIn('<div class="quick-stat"><strong>4</strong><span>sesiones para rotar</span></div>', self.html)
         self.assertIn('<div class="quick-stat"><strong>82</strong><span>series efectivas programadas</span></div>', self.html)
@@ -70,6 +70,7 @@ class HomepageContractTests(unittest.TestCase):
     def test_homepage_checks_for_service_worker_updates_on_open(self):
         self.assertIn("updateViaCache: 'none'", self.html)
         self.assertIn("registration.update()", self.html)
+        self.assertNotIn("updateInstallVisibility", self.html)
         self.assertNotIn("SYNC_APP", self.html)
         self.assertIn("event.data?.type === 'APP_UPDATED'", self.html)
         self.assertIn("navigator.serviceWorker.addEventListener('message'", self.html)
@@ -107,7 +108,18 @@ class HomepageContractTests(unittest.TestCase):
         self.assertIn('grid-template-columns:96px minmax(0,1fr)', self.html)
         self.assertIn('h1 { max-width:100%; font-size:clamp(2.8rem,14vw,5.2rem); }', self.html)
 
+    def test_homepage_shows_a_brief_splash_until_local_data_initialization_settles(self):
+        self.assertIn("document.documentElement.classList.add('gymratik-loading')", self.html)
+        self.assertIn('id="appSplash" class="app-splash" role="status"', self.html)
+        self.assertIn('class="splash-mascot" src="./data/profile/mascot-install-phone.png"', self.html)
+        self.assertIn('html.gymratik-loading .app-splash', self.html)
+        self.assertIn("document.documentElement.classList.remove('gymratik-loading')", self.html)
+        self.assertIn(".finally(() => {", self.html)
+        self.assertIn("setAttribute('aria-hidden', 'true')", self.html)
+        self.assertIn("@media (prefers-reduced-motion:reduce)", self.html)
+
     def test_homepage_prioritizes_next_session_and_gym_flow(self):
+        self.assertIn("Una serie a la vez.", self.html)
         self.assertIn('id="nextSessionCta"', self.html)
         self.assertIn('id="nextSessionLink"', self.html)
         self.assertIn('function renderNextSession', self.html)
@@ -141,7 +153,7 @@ class HomepageContractTests(unittest.TestCase):
             'El aviso aparece al abrir o volver a la portada',
             'commonTrainingDays(history)',
             '56 * MILLISECONDS_PER_DAY',
-            'motivationMessage.textContent = activeProfile?.displayName',
+            'updateHomeMotivation(activeProfile?.displayName',
             'id="exportDataButton"',
             'id="importDataInput"',
             'id="sessionHistory"',
@@ -249,6 +261,47 @@ class HomepageContractTests(unittest.TestCase):
             self.assertIn("if (!window.GymratikInstallGate?.isInstalled()) return;", source)
             self.assertIn("const saved = window.GymratikInstallGate?.isInstalled() ?", source)
             self.assertIn("if (window.GymratikInstallGate?.isInstalled() && window.TrainingProgressStore?.getHistory)", source)
+
+    def test_routine_performance_uses_clear_sliders_and_preserves_pound_reference(self):
+        for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
+            source = path.read_text(encoding="utf-8")
+            with self.subTest(routine=path.name):
+                self.assertIn("repsInput.type = 'range'", source)
+                self.assertIn("loadInput.type = 'range'", source)
+                self.assertIn("Repeticiones realizadas", source)
+                self.assertIn("lb · libras", source)
+                self.assertIn("loadKg", source)
+                self.assertIn("'repeticiones'", source)
+                self.assertNotIn(" rep.", source)
+                self.assertNotIn("reps de esta serie", source.lower())
+                self.assertNotIn("performanceReps'; repsInput.type = 'number'", source)
+                self.assertNotIn("performanceLoad'; loadInput.type = 'number'", source)
+
+    def test_homepage_animates_motivation_and_entrance_with_reduced_motion_support(self):
+        for marker in (
+            "@keyframes homeArrive",
+            "@keyframes motivationArrive",
+            "@keyframes motivationRefresh",
+            "@keyframes mascotDrift",
+            "@keyframes cardArrive",
+            "function updateHomeMotivation(message)",
+            "prefers-reduced-motion:reduce",
+        ):
+            with self.subTest(marker=marker):
+                self.assertIn(marker, self.html)
+
+    def test_routine_celebrations_and_motivation_are_event_based_and_motion_safe(self):
+        for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
+            source = path.read_text(encoding="utf-8")
+            with self.subTest(routine=path.name):
+                self.assertIn('data-enhancement="motivational-celebrations-v1"', source)
+                self.assertIn('id = \'gymratikEncouragement\'', source)
+                self.assertIn("role', 'status'", source)
+                self.assertIn("Ejercicio terminado. Un paso más", source)
+                self.assertIn("¡Sesión completada! Buen trabajo", source)
+                self.assertIn("Calentamiento listo.", source)
+                self.assertIn("celebrate(completionPanel, 38)", source)
+                self.assertIn("prefers-reduced-motion:reduce", source)
 
     def test_profile_and_progress_reads_are_gated_by_installation(self):
         self.assertIn("if (!window.GymratikInstallGate?.isInstalled()) return;", self.html.split("async function refreshProfile()", 1)[1])

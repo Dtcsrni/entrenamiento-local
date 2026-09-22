@@ -117,7 +117,7 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
         card = source[source.index("<!-- 3 -->") : source.index("<!-- 4 -->")]
         self.assertIn("▶ VIDEO TÉCNICO · Remo horizontal", card)
         self.assertIn("Jl0r78dnqGU", card)
-        self.assertIn("8–12 rep.", card)
+        self.assertIn("8–12 repeticiones", card)
         self.assertIn("2–2.5 min", card)
         self.assertIn("7–9 min", card)
 
