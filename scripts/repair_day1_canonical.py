@@ -34,7 +34,7 @@ CARDS_4_5 = r'''<!-- 4 -->
 <div class="zone">BRAZO · BÍCEPS</div><div class="chipRow"><span class="infoChip chipExercise">Ejercicio 5</span><span class="infoChip">BRAZO</span><span class="infoChip">BÍCEPS</span></div>
 <div class="machinePill"><span class="pillText">curl tipo preacher · brazo apoyado</span></div>
 </div>
-<div class="visual"><div class="referenceRow"><div class="machineRefBox"><img alt="Máquina de curl de bíceps con apoyo, sin persona" class="realphoto" loading="lazy" src="../medios_publicados/ejercicios-compartido/images/0592-b6hQYMb-machine-only.webp"/><span class="refTag">VISTA AISLADA · REFERENCIA DE MÁQUINA</span></div></div><div class="phaseRow">
+<div class="visual"><div class="referenceRow"><div class="machineRefBox"><img alt="Máquina de curl de bíceps con apoyo, sin persona" class="realphoto" loading="lazy" src="../medios_publicados/ejercicios-compartido/images/0592-b6hQYMb-machine-only.jpg"/><span class="refTag">VISTA AISLADA · REFERENCIA DE MÁQUINA</span></div></div><div class="phaseRow">
 <div class="phaseCol"><div class="phaseLabel">Inicio</div><div class="photo techZoom"><img alt="Curl de bíceps en máquina, posición inicial" class="realphoto" loading="lazy" src="../medios_publicados/ejercicios-compartido/images/0592-b6hQYMb-start.jpg"/></div></div>
 <div class="swap" aria-hidden="true">→</div>
 <div class="phaseCol"><div class="phaseLabel">Final</div><div class="photo techZoom"><img alt="Curl de bíceps en máquina, posición final" class="realphoto" loading="lazy" src="../medios_publicados/ejercicios-compartido/images/0592-b6hQYMb-final.png"/></div></div>
@@ -62,7 +62,7 @@ DAY1_CARD6 = r'''<!-- 6 -->
 </div></article>'''
 
 
-MUSCLE_PECTORAL = r'''<div class="muscleDayItem" data-muscle-focus="pectoralis-major" data-muscle-view="anterior" data-muscle-visual="upper-anterior" aria-label="Pectoral mayor; foco visual en tórax anterior"><span class="muscleDayVisual anterior" title="Foco visual: tórax anterior"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/upper_anterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa anterior del músculo Pectoral mayor; foco visual aproximado en tórax anterior" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#ff9da2">PECHO</span><span class="muscleName">Pectoral mayor</span></span></div>'''
+MUSCLE_PECTORAL = r'''<div class="muscleDayItem" data-muscle-focus="pectoralis-major" data-muscle-view="anterior" data-muscle-visual="upper-anterior" aria-label="Pectoral mayor; foco visual en tórax anterior"><span class="muscleDayVisual anterior" title="Foco visual: tórax anterior"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/upper_anterior_anatomy_v1.webp" alt="Referencia anatómica ilustrativa anterior del músculo Pectoral mayor; foco visual aproximado en tórax anterior" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#ff9da2">PECHO</span><span class="muscleName">Pectoral mayor</span></span></div>'''
 
 
 def main() -> None:
@@ -159,7 +159,7 @@ def main() -> None:
         ),
         (
             '<!-- 5 -->',
-            '<div class="referenceRow"><div class="machineRefBox"><img alt="Máquina de curl de bíceps con apoyo, sin persona" class="realphoto" loading="lazy" src="../medios_publicados/ejercicios-compartido/images/0592-b6hQYMb-machine-only.webp"/><span class="refTag">VISTA AISLADA · REFERENCIA DE MÁQUINA</span></div></div>',
+            '<div class="referenceRow"><div class="machineRefBox"><img alt="Máquina de curl de bíceps con apoyo, sin persona" class="realphoto" loading="lazy" src="../medios_publicados/ejercicios-compartido/images/0592-b6hQYMb-machine-only.jpg"/><span class="refTag">VISTA AISLADA · REFERENCIA DE MÁQUINA</span></div></div>',
         ),
     ):
         start = source.index(marker)

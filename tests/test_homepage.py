@@ -73,7 +73,12 @@ class HomepageContractTests(unittest.TestCase):
         self.assertNotIn("updateInstallVisibility", self.html)
         self.assertNotIn("SYNC_APP", self.html)
         self.assertIn("event.data?.type === 'APP_UPDATED'", self.html)
-        self.assertIn("navigator.serviceWorker.addEventListener('message'", self.html)
+        self.assertIn("navigator.serviceWorker?.addEventListener('message'", self.html)
+        self.assertIn("registration.waiting.postMessage({ type: 'ACTIVATE_UPDATE' })", self.html)
+        self.assertIn("SYNC_TIMEOUT_MS = 20000", self.html)
+        self.assertIn('name="gymratik-resource-estimate"', self.html)
+        self.assertIn("applicationBytes", self.html)
+        self.assertIn("imageBytes", self.html)
 
     def test_browser_context_invites_installation_and_hides_profile_and_history(self):
         self.assertTrue((ROOT / "install-gate.js").is_file())
@@ -81,7 +86,7 @@ class HomepageContractTests(unittest.TestCase):
         self.assertIn("data-gymratik-installed=\"false\"", self.html)
         gate = (ROOT / "install-gate.js").read_text(encoding="utf-8")
         self.assertIn("Lleva Gymratik contigo", gate)
-        self.assertIn("mascot-install-phone.png", gate)
+        self.assertIn("mascot-install-phone.webp", gate)
         self.assertIn("invite.showModal()", gate)
         self.assertIn("#gymratikInstallInvite:not([open]){display:none!important}", gate)
         self.assertIn("font-size:clamp(31px,8vw,40px)", gate)
@@ -111,12 +116,27 @@ class HomepageContractTests(unittest.TestCase):
     def test_homepage_shows_a_brief_splash_until_local_data_initialization_settles(self):
         self.assertIn("document.documentElement.classList.add('gymratik-loading')", self.html)
         self.assertIn('id="appSplash" class="app-splash" role="status"', self.html)
-        self.assertIn('class="splash-mascot" src="./icon.png"', self.html)
+        self.assertIn('class="splash-mascots" role="img"', self.html)
+        self.assertIn("Leyendo el avance guardado", self.html)
         self.assertIn('html.gymratik-loading .app-splash', self.html)
         self.assertIn("document.documentElement.classList.remove('gymratik-loading')", self.html)
-        self.assertIn(".finally(() => {", self.html)
+        self.assertIn("await networkDecisionPhase", self.html)
+        self.assertIn("if (!navigator.serviceWorker?.controller) await syncTask", self.html)
+        self.assertNotIn("await Promise.all([localInitialization, syncTask])", self.html)
+        self.assertIn("1000 - (performance.now() - start)", self.html)
+        self.assertIn('id="splashRetry"', self.html)
+        self.assertIn("Tus datos permanecen en este dispositivo", self.html)
         self.assertIn("setAttribute('aria-hidden', 'true')", self.html)
         self.assertIn("@media (prefers-reduced-motion:reduce)", self.html)
+
+    def test_network_permission_is_explained_and_chosen_inside_the_splash(self):
+        self.assertIn('id="splashNetworkActions"', self.html)
+        self.assertIn('id="splashAllowNetwork"', self.html)
+        self.assertIn('id="splashSkipNetwork"', self.html)
+        self.assertIn("function requestNetworkPermission(message, sizeNote)", self.html)
+        self.assertIn("No se descargará nada hasta que elijas una opción.", self.html)
+        self.assertIn("allowed = await requestNetworkPermission(", self.html)
+        self.assertIn("if (!firstInstall || preference === 'ask') { syncFinished = true; return; }", self.html)
 
     def test_homepage_prioritizes_next_session_and_gym_flow(self):
         self.assertIn("Una serie a la vez.", self.html)
@@ -131,12 +151,16 @@ class HomepageContractTests(unittest.TestCase):
 
     def test_homepage_uses_animated_original_pair_outside_install_invitation(self):
         self.assertIn('<img class="hero-mascot-bg" src="./icon.png"', self.html)
-        self.assertIn('<img class="splash-mascot" src="./icon.png"', self.html)
+        self.assertIn("background-image:url('./data/profile/gymratik-machine-sprite.webp')", self.html)
+        self.assertTrue((ROOT / "data/profile/gymratik-machine-sprite.webp").is_file())
+        self.assertIn("legPressCycle", self.html)
+        self.assertIn("chestPressCycle", self.html)
+        self.assertIn("prefers-reduced-motion:reduce", self.html)
         self.assertIn('animation:mascotDrift 9s ease-in-out infinite alternate', self.html)
         self.assertIn('width:62px; height:62px; flex:0 0 62px', self.html)
         self.assertIn('font-size:1.25rem', self.html)
         self.assertIn('font-size:1.15rem', self.html)
-        self.assertNotIn('class="hero-mascot-bg" src="./data/profile/mascot-install-phone.png"', self.html)
+        self.assertNotIn('class="hero-mascot-bg" src="./data/profile/mascot-install-phone.webp"', self.html)
 
     def test_homepage_exposes_persistent_progress_dashboard(self):
         self.assertIn('src="./progress-store.js"', self.html)
@@ -200,12 +224,14 @@ class HomepageContractTests(unittest.TestCase):
                 self.assertNotIn(phrase, self.html)
 
     def test_homepage_derives_effort_mascot_from_profile_sex(self):
-        for asset in ("data/profile/mouse-female-effort.png", "data/profile/mouse-male-effort.png"):
+        for asset in ("data/profile/mouse-female-effort.webp", "data/profile/mouse-male-effort.webp"):
             with self.subTest(asset=asset):
                 self.assertTrue((ROOT / asset).is_file())
-                self.assertEqual((ROOT / asset).read_bytes()[:8], b"\x89PNG\r\n\x1a\n")
-        self.assertIn("female: { src: './data/profile/mouse-female-effort.png'", self.html)
-        self.assertIn("male: { src: './data/profile/mouse-male-effort.png'", self.html)
+                image = (ROOT / asset).read_bytes()
+                self.assertEqual(image[:4], b"RIFF")
+                self.assertEqual(image[8:12], b"WEBP")
+        self.assertIn("female: { src: './data/profile/mouse-female-effort.webp'", self.html)
+        self.assertIn("male: { src: './data/profile/mouse-male-effort.webp'", self.html)
         self.assertIn("return profileAvatars[sex] || profileAvatars.neutral;", self.html)
         self.assertIn("profileSex.addEventListener('change', () => renderProfileAvatar(profileSex.value));", self.html)
         self.assertIn("alt: 'Ratona haciendo press con mancuerna, con expresión de esfuerzo'", self.html)

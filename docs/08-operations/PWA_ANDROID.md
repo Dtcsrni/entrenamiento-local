@@ -12,7 +12,9 @@ La raíz del repositorio contiene una PWA estática (`index.html`, `manifest.web
 
 En una pestaña del navegador se puede consultar el plan y sus rutinas. La página muestra una invitación descartable para instalar Gymratik; el perfil, el historial y el registro de series solo se habilitan cuando la aplicación se abre en modo instalado.
 
-La instalación del service worker precachea la portada, las cuatro rutinas y los medios locales referenciados por ellas. No existe una preparación manual: la PWA prioriza la copia local y sincroniza cambios en segundo plano cuando hay conexión.
+La primera preparación del service worker guarda la portada, las cuatro rutinas canónicas y sus imágenes estáticas esenciales; los videos/GIF son opcionales. El splash mantiene separados el estado local y la preparación de recursos y muestra conteos de descargas. No hay sincronización de perfil, series o historial: esos datos permanecen en el almacenamiento local del dispositivo.
+
+En `Mi perfil` → `Datos móviles para actualizaciones` el usuario puede elegir `Preguntar cada vez` (predeterminado), `Permitir siempre` o `Solo Wi‑Fi`. La autorización de una pregunta dura solo la apertura actual y aparece como controles accesibles dentro del splash, sin bloquearlo con un diálogo nativo del navegador. Se muestra el tamaño local estimado del paquete con desglose de aplicación e imágenes, expresado en KiB/MiB; la transferencia real puede variar. El usuario también puede continuar sin descargar; la versión disponible se abre y el estado de actualización queda pendiente. El navegador no siempre informa si la conexión es celular o Wi‑Fi; si no puede identificar Wi‑Fi, la opción `Solo Wi‑Fi` pospone la actualización. Durante la descarga se reportan recursos completados, no bytes de red.
 
 ## Persistencia del avance
 
@@ -26,9 +28,11 @@ Si `IndexedDB` no está disponible o una transacción falla por un error operati
 
 ## Actualización desde el repositorio
 
-Cada vez que se abre la portada, `index.html` solicita una comprobación de actualización de `sw.js` sin usar la caché HTTP. El generador cambia la versión del service worker cuando cambia cualquier recurso precacheado; si hay una versión nueva y conexión, el navegador instala el worker y precarga sus recursos antes de activarlo. La activación elimina la caché anterior, toma el control de las pestañas y solicita una sola recarga controlada. Si no hay red o la comprobación falla, la última versión disponible sigue funcionando desde la caché local. No se ejecuta una sincronización paralela de todos los recursos en cada apertura.
+Al abrir la portada, la inicialización local y la comprobación/preparación estática ocurren en paralelo. La comprobación de versión y la descarga tienen presupuestos independientes de 20 s; el inicio local no tiene un timeout fijo. Al vencer uno, la última versión completa sigue disponible y el estado pendiente queda visible en la portada. Una actualización descargada después de abrir se mantiene en espera y se activa en una apertura posterior, sin reemplazar un worker que pueda servir una sesión abierta. Si la primera instalación no consigue una versión offline completa, el splash permanece visible y reintenta al recuperar conexión y cada 30 s.
 
-Por tanto, el flujo de actualización es: publicar cambios en el repositorio y abrir la PWA cuando haya conexión para recibir la actualización; después puede seguir funcionando sin conexión. No es necesario borrar datos ni reinstalarla.
+Cada versión nueva se descarga a una caché separada y recibe una marca solo al completar el inventario. Solo una instalación completa puede tomar control (primera instalación) o quedar esperando activación; si una descarga falla, se elimina su caché parcial y la versión previa se conserva. La instalación exitosa limpia las cachés anteriores al activar. Ante error de cuota se intenta una vez más después de eliminar cachés obsoletas/incompletas propias de Gymratik; se conserva la versión anterior completa y nunca se alteran otras cachés.
+
+Por tanto, el flujo de actualización es: publicar cambios y abrir la PWA con red y permiso según la preferencia elegida; el nuevo worker queda preparado y se aplica al volver a abrir la portada. Después la app puede funcionar sin conexión. No es necesario borrar datos ni reinstalarla.
 
 Antes de publicar cambios en una rutina canónica o en `medios_publicados/`, regenerar el inventario con `python scripts/build_pwa_service_worker.py`. El workflow de validación compara el resultado generado con `sw.js` y rechaza publicaciones desactualizadas.
 

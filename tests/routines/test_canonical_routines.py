@@ -108,7 +108,7 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
         self.assertEqual(source.count('<div class="phaseLabel">Inicio'), 6)
         self.assertEqual(source.count('<div class="phaseLabel">Final'), 6)
         self.assertIn("3025-butterfly-reverse-front.jpg", source)
-        self.assertIn("0592-b6hQYMb-machine-only.webp", source)
+        self.assertIn("0592-b6hQYMb-machine-only.jpg", source)
 
     def test_day1_row_has_matching_media_and_metrics(self) -> None:
         source = (CANONICAL / "Rutina_Dia_1_Espalda_Biceps_V1.html").read_text(
@@ -241,10 +241,10 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
                     self.assertTrue(alt.startswith("Referencia anatómica ilustrativa"))
                     self.assertTrue((path.parent / reference).is_file(), reference)
                 self.assertTrue(all((asset_root / name).is_file() for name in (
-                    "rutinas_autocontenidas/musculos_generados/upper_posterior_anatomy_v1.png",
-                    "rutinas_autocontenidas/musculos_generados/lower_posterior_anatomy_v1.png",
-                    "rutinas_autocontenidas/musculos_generados/lower_anterior_anatomy_v1.png",
-                    "rutinas_autocontenidas/musculos_generados/upper_anterior_anatomy_v1.png",
+                    "rutinas_autocontenidas/musculos_generados/upper_posterior_anatomy_v1.webp",
+                    "rutinas_autocontenidas/musculos_generados/lower_posterior_anatomy_v1.webp",
+                    "rutinas_autocontenidas/musculos_generados/lower_anterior_anatomy_v1.webp",
+                    "rutinas_autocontenidas/musculos_generados/upper_anterior_anatomy_v1.webp",
                 )))
 
     def test_all_routines_keep_specific_muscle_focus_and_valid_document_structure(self) -> None:

@@ -98,6 +98,21 @@ Definir requisitos verificables para Gymratik: Rutinas y progreso. Este document
 - **FUN-EXP-001 · P0:** deberá exportar datos y metadatos en un formato documentado.
 - **FUN-EXP-002 · P0:** deberá restaurar un respaldo compatible sin pérdida silenciosa.
 
+### 4.8 PWA: inicio, actualización y recursos offline
+
+- **FUN-PWA-001 · P0:** el splash deberá identificar la fase de inicio local y, por separado, el estado de comprobación/descarga de la aplicación y recursos offline; el avance porcentual solo se mostrará cuando sea medible.
+  - Aceptación: una descarga muestra recursos completados/total; el inicio local no tiene un timeout fijo; el splash permanece al menos 1 s y no desaparece antes de completar la lectura local; si falla, explica el error y ofrece `Reintentar` sin borrar datos.
+- **FUN-PWA-002 · P0:** las comprobaciones de versión y la preparación de recursos deberán ejecutarse en paralelo con la inicialización local y tener límites independientes de 20 s cada una.
+  - Aceptación: al vencer un límite, una versión completa previa permanece utilizable y la actualización pendiente se informa dentro de la portada; una actualización nueva no fuerza la recarga de una sesión de entrenamiento abierta.
+- **FUN-PWA-003 · P0:** la preparación offline deberá incluir la portada, las cuatro rutinas canónicas y todas sus imágenes estáticas esenciales; videos/GIF son opcionales.
+  - Aceptación: la nueva versión solo se considera instalada cuando todo el inventario esencial termina de guardarse en caché; se informa el progreso por recursos y, si está disponible, por tamaño estimado.
+- **FUN-PWA-004 · P1:** el usuario podrá elegir `Preguntar cada vez` (predeterminado), `Permitir siempre` o `Solo Wi‑Fi` para actualizaciones y descargas estáticas.
+  - Aceptación: el permiso concedido o denegado dura únicamente la apertura actual; la preferencia se guarda localmente; `Solo Wi‑Fi` difiere la descarga si el navegador no identifica Wi‑Fi; la pregunta aparece dentro del splash con tamaño estimado y permite continuar sin descargar.
+- **FUN-PWA-005 · P0:** ante falta de espacio o una descarga interrumpida, la versión completa anterior y los datos de entrenamiento deberán conservarse.
+  - Aceptación: en error de cuota se eliminan cachés Gymratik obsoletas/incompletas y se reintenta una vez, preservando una caché previa completa; una instalación incompleta no activa ni elimina la versión anterior; sin versión offline completa, el splash reintenta al recuperar conectividad y cada 30 s.
+- **FUN-PWA-006 · P1:** el splash deberá animar a los personajes Gymratik en prensa de piernas y press de pecho sentado y respetar `prefers-reduced-motion`.
+  - Aceptación: hay fases visibles distintas del movimiento; con movimiento reducido se presenta una pose estática accesible y el estado textual continúa visible.
+
 ### 4.8 Perfil local y administración de datos
 
 - **FUN-PRO-001 · P0:** el usuario deberá poder crear y editar un perfil local con nombre visible, fecha de nacimiento, sexo, altura, objetivo y unidades.
