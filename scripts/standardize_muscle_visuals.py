@@ -623,7 +623,7 @@ def _build_muscle_item(name: str) -> str:
     focus = MUSCLE_FOCUS[name]
     color = MUSCLE_COLOR.get(name, "#72dcff")
     source = "../medios_publicados/rutinas_autocontenidas/musculos_generados/"
-    image = f"{source}{'upper' if name in UPPER_MUSCLES else 'lower'}_{focus['view']}_anatomy_v1.png"
+    image = f"{source}{'upper' if name in UPPER_MUSCLES else 'lower'}_{focus['view']}_anatomy_v1.webp"
     return (
         f'<div class="muscleDayItem" data-muscle-focus="{focus["key"]}" '
         f'data-muscle-view="{focus["view"]}" data-muscle-visual="{("upper" if name in UPPER_MUSCLES else "lower")}-{focus["view"]}" '
@@ -650,7 +650,7 @@ def _image_markup(markup: str, name: str, focus: dict[str, str]) -> str:
     image_prefix = "upper" if name in UPPER_MUSCLES else "lower"
     markup = re.sub(
         r'src="[^"]+"',
-        f'src="../medios_publicados/rutinas_autocontenidas/musculos_generados/{image_prefix}_{focus["view"]}_anatomy_v1.png"',
+        f'src="../medios_publicados/rutinas_autocontenidas/musculos_generados/{image_prefix}_{focus["view"]}_anatomy_v1.webp"',
         markup,
         count=1,
     )

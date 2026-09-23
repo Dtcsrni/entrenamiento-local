@@ -9,28 +9,28 @@
   ],
   "assets": [
     {
-      "file": "../medios_publicados/rutinas_autocontenidas/musculos_generados/upper_posterior_anatomy_v1.png",
+      "file": "../medios_publicados/rutinas_autocontenidas/musculos_generados/upper_posterior_anatomy_v1.webp",
       "used_by": ["Día 1"],
       "view": "posterior_upper_body",
       "generation_method": "OpenAI built-in image generation",
       "prompt_scope": "Realistic educational 3D posterior upper-body musculature; no labels, logos or watermark"
     },
     {
-      "file": "../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_posterior_anatomy_v1.png",
+      "file": "../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_posterior_anatomy_v1.webp",
       "used_by": ["Día 2"],
       "view": "posterior_lower_body",
       "generation_method": "OpenAI built-in image generation",
       "prompt_scope": "Clinical educational 3D posterior lower-limb musculature; no labels, logos or watermark"
     },
     {
-      "file": "../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_anterior_anatomy_v1.png",
+      "file": "../medios_publicados/rutinas_autocontenidas/musculos_generados/lower_anterior_anatomy_v1.webp",
       "used_by": ["Día 2"],
       "view": "anterior_lower_body",
       "generation_method": "OpenAI built-in image generation",
       "prompt_scope": "Clinical educational 3D anterior lower-limb musculature; no labels, logos or watermark"
     },
     {
-      "file": "../medios_publicados/rutinas_autocontenidas/musculos_generados/upper_anterior_anatomy_v1.png",
+      "file": "../medios_publicados/rutinas_autocontenidas/musculos_generados/upper_anterior_anatomy_v1.webp",
       "used_by": ["Día 1", "Día 3"],
       "view": "anterior_upper_body",
       "generation_method": "OpenAI built-in image generation",

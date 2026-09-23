@@ -163,9 +163,9 @@ def build_header(template: str) -> str:
     if not grid:
         raise ValueError("No se encontró la cuadrícula muscular de la cabecera")
     new_grid = """<div class="muscleDayGrid">
-<div class="muscleDayItem" data-muscle-visual="upper-anterior"><span class="muscleDayVisual anterior"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/upper_anterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa anterior del tórax" decoding="async" fetchpriority="high"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#ff9da2">PECHO</span><span class="muscleName">Pectoral mayor</span></span></div>
-<div class="muscleDayItem" data-muscle-visual="upper-anterior"><span class="muscleDayVisual anterior"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/upper_anterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa anterior del hombro" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#7ff0cc">HOMBRO</span><span class="muscleName">Deltoides</span></span></div>
-<div class="muscleDayItem" data-muscle-visual="upper-anterior"><span class="muscleDayVisual anterior"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/upper_anterior_anatomy_v1.png" alt="Referencia anatómica ilustrativa anterior del brazo" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#ffd277">TRÍCEP</span><span class="muscleName">Tríceps</span></span></div>
+<div class="muscleDayItem" data-muscle-visual="upper-anterior"><span class="muscleDayVisual anterior"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/upper_anterior_anatomy_v1.webp" alt="Referencia anatómica ilustrativa anterior del tórax" decoding="async" fetchpriority="high"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#ff9da2">PECHO</span><span class="muscleName">Pectoral mayor</span></span></div>
+<div class="muscleDayItem" data-muscle-visual="upper-anterior"><span class="muscleDayVisual anterior"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/upper_anterior_anatomy_v1.webp" alt="Referencia anatómica ilustrativa anterior del hombro" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#7ff0cc">HOMBRO</span><span class="muscleName">Deltoides</span></span></div>
+<div class="muscleDayItem" data-muscle-visual="upper-anterior"><span class="muscleDayVisual anterior"><img class="muscleDayImage" src="../medios_publicados/rutinas_autocontenidas/musculos_generados/upper_anterior_anatomy_v1.webp" alt="Referencia anatómica ilustrativa anterior del brazo" decoding="async"><span class="muscleDayFallback" hidden>ANATOMÍA</span></span><span class="muscleDayCopy"><span class="muscleCode" style="color:#ffd277">TRÍCEP</span><span class="muscleName">Tríceps</span></span></div>
 </div>
 </div></div>"""
     header = header[: grid.start()] + new_grid + header[grid.end() :]
@@ -231,7 +231,7 @@ def build_card(item: dict[str, object], index: int) -> str:
  </div>
 <div class="visual">
 <div class="referenceRow">
-<div class="machineRefBox"><img alt="Vista aislada de la máquina asociada al patrón {title.lower()}" src="../medios_publicados/ejercicios-compartido/images/{repo}-machine-only.png" loading="lazy"/><span class="refTag">VISTA AISLADA · ILUSTRACIÓN DE APOYO</span></div>
+<div class="machineRefBox"><img alt="Vista aislada de la máquina asociada al patrón {title.lower()}" src="../medios_publicados/ejercicios-compartido/images/{repo}-machine-only.webp" loading="lazy"/><span class="refTag">VISTA AISLADA · ILUSTRACIÓN DE APOYO</span></div>
 <div class="muscleRefBox"><div class="muscleInfo"><span class="primary"><span class="muscleTag">ENFOQUE</span> {str(item["focus"])}</span><span class="secondary">La vista aislada editada es apoyo visual; no confirma la identidad del equipo instalado en el gimnasio.</span></div></div>
 </div>
 <div class="photoTitleRow"><b>POSICIÓN Y RECORRIDO</b></div>
@@ -322,7 +322,7 @@ def validate_static_assets() -> None:
     missing = []
     for item in EXERCISES:
         repo = str(item["repo"])
-        for suffix in ("-start.jpg", "-final.jpg", "-machine-only.png"):
+        for suffix in ("-start.jpg", "-final.jpg", "-machine-only.webp"):
             path = IMAGE_ASSETS / f"{repo}{suffix}"
             if not path.exists():
                 missing.append(str(path.relative_to(ROOT)))
@@ -446,7 +446,7 @@ def main() -> None:
         raise ValueError("Cada tarjeta debe conservar una pareja Inicio/Final estática")
     if body.count('realphoto day3ExerciseGif') != 7:
         raise ValueError("Cada tarjeta debe conservar un GIF local de recorrido")
-    if body.count('-machine-only.png') != 7:
+    if body.count('-machine-only.webp') != 7:
         raise ValueError("Cada tarjeta debe mostrar una vista aislada de máquina")
     if "0/22 series" not in body or "22 series efectivas" not in body:
         raise ValueError("El volumen de 22 series no quedó sincronizado")

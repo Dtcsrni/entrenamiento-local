@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
@@ -19,6 +20,8 @@ ROUTINE_FILES = (
 )
 HTML_ATTR_PATTERN = re.compile(r"(?:src|data-static-src|gif|thumbnail)\s*[:=]\s*[\"']([^\"']+)")
 TEXT_RESOURCE_SUFFIXES = {".css", ".html", ".js", ".json", ".svg", ".txt", ".webmanifest", ".xml"}
+IMAGE_SUFFIXES = {".avif", ".jpeg", ".jpg", ".png", ".svg", ".webp"}
+ESTIMATE_META = re.compile(r"<meta name=\"gymratik-resource-estimate\" content='[^']*'>")
 
 
 class ResourceParser(HTMLParser):
@@ -74,16 +77,20 @@ def build_precache() -> list[str]:
         "./manifest.webmanifest",
         "./icon.png",
         "./install-gate.js",
-        "./data/profile/mascot-install-phone.png",
+        "./data/profile/mascot-install-phone.webp",
         "./progress-store.js",
         "./routine-liquid-glass-v13.css",
-        "./data/profile/mouse-female-effort.png",
-        "./data/profile/mouse-male-effort.png",
+        "./data/profile/mouse-female-effort.webp",
+        "./data/profile/mouse-male-effort.webp",
+        "./data/profile/gymratik-machine-sprite.webp",
     ]
     routines = [f"./data/rutinas_autocontenidas/canonicas/{name}" for name in ROUTINE_FILES]
     resources = set(base + routines)
     for name in ROUTINE_FILES:
         resources.update(routine_resources(CANONICAL_DIR / name))
+    # Videos son opcionales durante la preparación offline; imágenes y demás
+    # recursos referenciados siguen siendo parte de la versión completa.
+    resources = {resource for resource in resources if "/videos/" not in resource.lower() and not resource.lower().endswith(".gif")}
     return base + routines + sorted(resources - set(base + routines))
 
 
@@ -94,6 +101,31 @@ def fingerprint_content(target: Path) -> bytes:
     return content
 
 
+def update_resource_estimate(resources: list[str]) -> None:
+    sizes = {
+        resource: (ROOT / Path(resource.removeprefix("./"))).stat().st_size
+        for resource in resources
+    }
+    if OUTPUT.is_file():
+        sizes["./sw.js"] = OUTPUT.stat().st_size
+    image_bytes = sum(size for resource, size in sizes.items() if Path(resource).suffix.lower() in IMAGE_SUFFIXES)
+    total_bytes = sum(sizes.values())
+    estimate = {
+        "applicationBytes": f"{total_bytes - image_bytes:015d}",
+        "imageBytes": f"{image_bytes:015d}",
+        "totalBytes": f"{total_bytes:015d}",
+    }
+    html_path = ROOT / "index.html"
+    html = html_path.read_text(encoding="utf-8")
+    updated, count = ESTIMATE_META.subn(
+        f"<meta name=\"gymratik-resource-estimate\" content='{json.dumps(estimate, separators=(',', ':'))}'>",
+        html,
+    )
+    if count != 1:
+        raise SystemExit("Se esperaba exactamente un meta de estimación de recursos en index.html")
+    html_path.write_text(updated, encoding="utf-8", newline="\n")
+
+
 def render(resources: list[str]) -> str:
     material = []
     for resource in resources:
@@ -102,16 +134,59 @@ def render(resources: list[str]) -> str:
         if target.is_file():
             material.append(fingerprint_content(target))
     fingerprint = hashlib.sha256(b"\n".join(material)).hexdigest()[:12]
+    previous_source = OUTPUT.read_text(encoding="utf-8") if OUTPUT.is_file() else ""
+    previous_match = re.search(r"const CACHE_NAME = '([^']+)';", previous_source)
+    stored_previous_match = re.search(r"const PREVIOUS_CACHE_NAME = '([^']*)';", previous_source)
+    previous_cache = previous_match.group(1) if previous_match else ""
+    if previous_cache == f"entrenamiento-pwa-{fingerprint}" and stored_previous_match:
+        previous_cache = stored_previous_match.group(1)
     precache = ",\n  ".join(f"{resource!r}" for resource in resources)
+    sizes = {
+        resource: (ROOT / Path(resource.removeprefix("./"))).stat().st_size
+        for resource in resources
+    }
+    size_map = ",\n  ".join(f"{resource!r}: {size}" for resource, size in sizes.items())
     return rf"""const CACHE_NAME = 'entrenamiento-pwa-{fingerprint}';
+const PREVIOUS_CACHE_NAME = '{previous_cache}';
 const PRECACHE = [
   {precache}
 ];
+const RESOURCE_BYTES = {{
+  {size_map}
+}};
+const CACHE_COMPLETE_KEY = new URL('./__gymratik_complete__', self.registration.scope).href;
+
+async function reportProgress(completed, bytesCompleted, current = '') {{
+  const clients = await self.clients.matchAll({{ type: 'window', includeUncontrolled: true }});
+  const totalBytes = Object.values(RESOURCE_BYTES).reduce((sum, size) => sum + size, 0);
+  clients.forEach((client) => client.postMessage({{
+    type: 'PRECACHE_PROGRESS', cacheName: CACHE_NAME, completed,
+    total: PRECACHE.length, bytesCompleted, totalBytes, current
+  }}));
+}}
 
 async function refresh(request, cache) {{
   const response = await fetch(request, {{ cache: 'no-store' }});
   if (response.ok) await cache.put(request, response.clone());
   return response;
+}}
+
+async function preserveOneCompleteCache() {{
+  const keys = (await caches.keys()).filter((key) => key.startsWith('entrenamiento-pwa-') && key !== CACHE_NAME);
+  const core = PRECACHE.filter((path) => path === './index.html' || path.includes('/canonicas/'));
+  const candidates = [];
+  for (const key of keys) {{
+    const cache = await caches.open(key);
+    if (await cache.match(CACHE_COMPLETE_KEY)) {{
+      candidates.push({{ key, size: (await cache.keys()).length, markedComplete: true }});
+      continue;
+    }}
+    const hasCore = await Promise.all(core.map((path) => cache.match(new URL(path, self.registration.scope))));
+    if (hasCore.every(Boolean)) candidates.push({{ key, size: (await cache.keys()).length, markedComplete: key === PREVIOUS_CACHE_NAME }});
+  }}
+  candidates.sort((left, right) => Number(right.markedComplete) - Number(left.markedComplete) || right.size - left.size);
+  const keep = candidates[0]?.key;
+  await Promise.all(keys.filter((key) => key !== keep).map((key) => caches.delete(key)));
 }}
 
 async function notifyClientsAppUpdated() {{
@@ -121,17 +196,47 @@ async function notifyClientsAppUpdated() {{
 }}
 
 self.addEventListener('install', (event) => {{
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(PRECACHE))
-      .then(() => self.skipWaiting())
-  );
+  event.waitUntil((async () => {{
+    for (let attempt = 0; attempt < 2; attempt += 1) {{
+      const cache = await caches.open(CACHE_NAME);
+      let completed = 0;
+      let bytesCompleted = 0;
+      try {{
+        await reportProgress(completed, bytesCompleted);
+        for (const path of PRECACHE) {{
+          const request = new Request(path, {{ cache: 'reload' }});
+          const response = await fetch(request);
+          if (!response.ok) throw new Error(`No se pudo descargar ${{path}} (${{response.status}})`);
+          await cache.put(request, response);
+          completed += 1;
+          bytesCompleted += RESOURCE_BYTES[path] || 0;
+          await reportProgress(completed, bytesCompleted, path);
+        }}
+        await cache.put(CACHE_COMPLETE_KEY, new Response(JSON.stringify({{ cacheName: CACHE_NAME, completedAt: Date.now() }}), {{ headers: {{ 'content-type': 'application/json' }} }}));
+        break;
+      }} catch (error) {{
+        await caches.delete(CACHE_NAME);
+        if (attempt !== 0 || error?.name !== 'QuotaExceededError') throw error;
+        await preserveOneCompleteCache();
+      }}
+    }}
+    // Solo la primera instalación toma control automáticamente. Las versiones
+    // posteriores esperan una confirmación explícita desde la portada.
+    if (!self.registration.active) await self.skipWaiting();
+  }})());
+}});
+
+self.addEventListener('message', (event) => {{
+  if (event.data?.type === 'ACTIVATE_UPDATE' && self.registration.waiting === self) self.skipWaiting();
+  if (event.data?.type === 'GET_VERSION_STATUS') {{
+    event.source?.postMessage({{ type: 'VERSION_STATUS', cacheName: CACHE_NAME, total: PRECACHE.length }});
+  }}
 }});
 
 self.addEventListener('activate', (event) => {{
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))))
+      .then((keys) => Promise.all(keys.filter((key) => key.startsWith('entrenamiento-pwa-') && key !== CACHE_NAME).map((key) => caches.delete(key))))
       .then(() => self.clients.claim())
       .then(() => notifyClientsAppUpdated())
   );
@@ -148,10 +253,7 @@ self.addEventListener('fetch', (event) => {{
     const isNavigation = request.mode === 'navigate' || request.headers.get('accept')?.includes('text/html');
     const bypassCache = ['no-cache', 'no-store', 'reload'].includes(request.cache);
 
-    if (cached && !bypassCache) {{
-      event.waitUntil(refresh(request, cache).catch(() => undefined));
-      return cached;
-    }}
+    if (cached && !bypassCache) return cached;
     try {{
       return await refresh(request, cache);
     }} catch (error) {{
@@ -166,7 +268,15 @@ self.addEventListener('fetch', (event) => {{
 
 def main() -> None:
     resources = build_precache()
-    OUTPUT.write_text(render(resources), encoding="utf-8", newline="\n")
+    for _ in range(5):
+        previous_size = OUTPUT.stat().st_size if OUTPUT.is_file() else -1
+        update_resource_estimate(resources)
+        generated = render(resources)
+        OUTPUT.write_text(generated, encoding="utf-8", newline="\n")
+        if len(generated.encode("utf-8")) == previous_size:
+            break
+    else:
+        raise SystemExit("No se estabilizó el tamaño estimado del paquete PWA en 5 iteraciones")
     print(f"PWA_SERVICE_WORKER_OK resources={len(resources)} cache={resources[0]}")
 
 

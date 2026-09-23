@@ -19,12 +19,11 @@ class ServiceWorkerContractTests(unittest.TestCase):
     def test_local_resources_are_cache_first_with_offline_fallback(self):
         for source in (self.service_worker, self.generator):
             self.assertIn("progress-store.js", source)
-            self.assertIn("if (cached && !bypassCache)", source)
-            self.assertIn("event.waitUntil(refresh(request, cache).catch(() => undefined))", source)
+            self.assertIn("if (cached && !bypassCache) return cached", source)
             self.assertIn("if (cached) return cached", source)
 
     def test_profile_mascots_are_part_of_the_offline_precache(self):
-        for asset in ("mouse-female-effort.png", "mouse-male-effort.png", "mascot-install-phone.png"):
+        for asset in ("mouse-female-effort.webp", "mouse-male-effort.webp", "mascot-install-phone.webp"):
             self.assertIn(f"data/profile/{asset}", self.service_worker)
             self.assertIn(f"data/profile/{asset}", self.generator)
 
@@ -42,15 +41,28 @@ class ServiceWorkerContractTests(unittest.TestCase):
         for source in (self.service_worker, self.generator):
             self.assertIn("routine-liquid-glass-v13.css", source)
 
-    def test_only_worker_activation_announces_an_update_to_the_page(self):
+    def test_worker_reports_incremental_download_and_defers_updates(self):
         for source in (self.service_worker, self.generator):
             with self.subTest(source=source[:40]):
-                self.assertIn("cache.addAll(PRECACHE)", source)
+                self.assertIn("PRECACHE_PROGRESS", source)
+                self.assertIn("for (const path of PRECACHE)", source)
                 self.assertIn("self.skipWaiting()", source)
+                self.assertIn("ACTIVATE_UPDATE", source)
                 self.assertIn("self.clients.claim()", source)
                 self.assertIn("notifyClientsAppUpdated()", source)
-                self.assertNotIn("refreshApplication", source)
-                self.assertNotIn("SYNC_APP", source)
+                self.assertIn("QuotaExceededError", source)
+                self.assertIn("key.startsWith('entrenamiento-pwa-')", source)
+                self.assertNotIn("cache.addAll(PRECACHE)", source)
+
+    def test_optional_animations_are_not_in_offline_precache(self):
+        self.assertNotIn("/videos/", self.service_worker)
+        self.assertNotIn(".gif'", self.service_worker)
+
+    def test_complete_cache_marker_is_written_after_download(self):
+        for source in (self.service_worker, self.generator):
+            with self.subTest(source=source[:40]):
+                self.assertIn("__gymratik_complete__", source)
+                self.assertIn("PREVIOUS_CACHE_NAME", source)
 
 
 if __name__ == "__main__":
