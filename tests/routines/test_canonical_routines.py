@@ -143,7 +143,13 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
                     source,
                 )
                 self.assertIn("Completar serie ${nextIndex + 1}", source)
+                self.assertIn("Iniciar serie ${nextIndex + 1}", source)
                 self.assertIn("Descanso · ${formatElapsed(restRemaining)}", source)
+                self.assertIn("mantén 5 s para continuar", source)
+                self.assertNotIn("startExerciseButton", source)
+                self.assertNotIn("item.startButton", source)
+                self.assertIn("beginSeries(item, Date.now())", source)
+                self.assertIn("}, 5000);", source)
                 self.assertIn(
                     "resting && restRemaining > 0",
                     source,
@@ -152,7 +158,6 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
                     "Date.now() - timing.restStartedAt < getRestRecommendation(item).minMs",
                     source,
                 )
-                self.assertIn("}, 4000);", source)
                 self.assertNotRegex(source, r"\bseriesPreparing\b")
 
     def test_all_routines_use_five_second_preparation_before_timing(self) -> None:
