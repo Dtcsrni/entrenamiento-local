@@ -10,6 +10,19 @@ from __future__ import annotations
 import re
 
 
+INTERACTION_FEEDBACK_STYLE = '''<style data-enhancement="interaction-feedback-v1">
+button:not(:disabled):active,[role="button"]:not([aria-disabled="true"]):active{transform:scale(.97);filter:brightness(.9)}
+.performanceRepsControl{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;align-items:center;gap:.55rem;width:100%}
+.performanceRepsValue{display:grid;min-height:48px;place-items:center;padding:.4rem .55rem;border:1px solid rgba(101,242,221,.36);border-radius:.7rem;background:rgba(15,45,65,.72);color:#eaffff;font-size:clamp(1rem,3vw,1.3rem);font-weight:900;text-align:center;font-variant-numeric:tabular-nums}
+.performanceRepsNudge{display:grid;min-width:48px;min-height:48px;place-items:center;border:1px solid rgba(114,220,255,.48);border-radius:.7rem;background:rgba(38,104,137,.38);color:#f1ffff;font:inherit;font-size:1.45rem;font-weight:850;cursor:pointer;touch-action:manipulation;transition:transform .12s ease,filter .12s ease,background-color .12s ease}
+.performanceRepsNudge:disabled{opacity:.42;cursor:default}
+.performanceField .performanceReps{width:100%;min-height:28px;touch-action:pan-x}
+button:not(:disabled):focus-visible{outline:2px solid #fff;outline-offset:3px}
+@media(max-width:640px){.performanceRepsControl{grid-template-columns:52px minmax(0,1fr) 52px;gap:.65rem}.performanceRepsValue{min-height:52px}.performanceRepsNudge{min-width:52px;min-height:52px}}
+@media(prefers-reduced-motion:reduce){.performanceRepsNudge{transition:none}button:not(:disabled):active,[role="button"]:not([aria-disabled="true"]):active{transform:none;filter:none}}
+</style>'''
+
+
 MUSCLE_FOCUS = {
     "Dorsal ancho": {
         "view": "posterior",
@@ -865,6 +878,8 @@ def standardize_muscle_visuals(source: str) -> str:
         source = re.sub(r'<style data-fix="muscle-specific-focus-v1">.*?</style>', MUSCLE_VISUAL_STYLE, source, count=1, flags=re.S)
     else:
         source = source.replace('</head>', MUSCLE_VISUAL_STYLE + '\n</head>', 1)
+    if 'data-enhancement="interaction-feedback-v1"' not in source:
+        source = source.replace('</head>', INTERACTION_FEEDBACK_STYLE + '\n</head>', 1)
     source = standardize_shared_session_contract(source)
     next_index = 1
 

@@ -163,12 +163,28 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
     def test_repetition_selector_uses_exercise_range_plus_four_without_defaulting(self) -> None:
         for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
             source = path.read_text(encoding="utf-8")
+            control = source[
+                source.index("const repsTitle"):source.index("const loadLabel")
+            ]
+            reps_logic = source[
+                source.index("const renderPerformanceReps"):source.index(
+                    "item.performanceLoad.addEventListener"
+                )
+            ]
             with self.subTest(path=path.name):
                 self.assertIn("repsInput.min = String(item.repMinimum)", source)
                 self.assertIn("repsInput.max = String(item.repMaximum + 4)", source)
                 self.assertIn("repsInput.dataset.selected = 'false'", source)
                 self.assertIn("item.performanceReps.dataset.selected === 'true'", source)
                 self.assertIn("reps <= item.repMaximum + 4", source)
+                self.assertIn("performanceRepsNudge", control)
+                self.assertIn("Elige entre ${item.repMinimum} y ${item.repMaximum + 4}", control)
+                self.assertIn("aria-live', 'polite", control)
+                self.assertIn("Math.min(item.repMaximum + 4", reps_logic)
+                self.assertIn("Math.max(item.repMinimum", reps_logic)
+                self.assertIn("savePerformanceDraft()", reps_logic)
+                self.assertIn("data-enhancement=\"interaction-feedback-v1\"", source)
+                self.assertIn("button:not(:disabled):active", source)
                 self.assertNotIn("Number(item.performanceReps.value) > 0 ?", source)
 
     def test_all_routines_use_five_second_preparation_before_timing(self) -> None:
