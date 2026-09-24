@@ -160,6 +160,17 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
                 )
                 self.assertNotRegex(source, r"\bseriesPreparing\b")
 
+    def test_repetition_selector_uses_exercise_range_plus_four_without_defaulting(self) -> None:
+        for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
+            source = path.read_text(encoding="utf-8")
+            with self.subTest(path=path.name):
+                self.assertIn("repsInput.min = String(item.repMinimum)", source)
+                self.assertIn("repsInput.max = String(item.repMaximum + 4)", source)
+                self.assertIn("repsInput.dataset.selected = 'false'", source)
+                self.assertIn("item.performanceReps.dataset.selected === 'true'", source)
+                self.assertIn("reps <= item.repMaximum + 4", source)
+                self.assertNotIn("Number(item.performanceReps.value) > 0 ?", source)
+
     def test_all_routines_use_five_second_preparation_before_timing(self) -> None:
         for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
             source = path.read_text(encoding="utf-8")

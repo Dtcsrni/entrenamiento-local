@@ -3694,7 +3694,7 @@ body::before,body::after{animation:none!important}
     repsLabel.className = 'performanceField';
     const repsTitle = document.createElement('span'); repsTitle.textContent = 'Repeticiones realizadas';
     const repsOutput = document.createElement('output'); repsOutput.className = 'performanceRepsValue'; repsOutput.textContent = 'Desliza para elegir';
-    const repsInput = document.createElement('input'); repsInput.className = 'performanceReps'; repsInput.type = 'range'; repsInput.min = '0'; repsInput.max = '40'; repsInput.step = '1'; repsInput.value = '0'; repsInput.setAttribute('aria-label', `Repeticiones realizadas en ${item.title}`); repsLabel.append(repsTitle, repsOutput, repsInput);
+    const repsInput = document.createElement('input'); repsInput.className = 'performanceReps'; repsInput.type = 'range'; repsInput.min = String(item.repMinimum); repsInput.max = String(item.repMaximum + 4); repsInput.step = '1'; repsInput.value = String(item.repMinimum); repsInput.dataset.selected = 'false'; repsInput.setAttribute('aria-label', `Repeticiones realizadas en ${item.title}`); repsLabel.append(repsTitle, repsOutput, repsInput);
     const loadLabel = document.createElement('label');
     loadLabel.className = 'performanceField';
     const loadHead = document.createElement('span'); loadHead.className = 'performanceLoadHead';
@@ -3726,13 +3726,13 @@ body::before,body::after{animation:none!important}
     };
     const savePerformanceDraft = () => {
       if (!state.__performanceDraft) state.__performanceDraft = {};
-      state.__performanceDraft[exerciseId] = { reps: item.performanceReps.value, load: item.performanceLoad.value, loadUnit: item.performanceLoadUnit };
+      state.__performanceDraft[exerciseId] = { reps: item.performanceReps.dataset.selected === 'true' ? item.performanceReps.value : '0', load: item.performanceLoad.value, loadUnit: item.performanceLoadUnit };
       save();
     };
-    if (savedDraft) { item.performanceReps.value = savedDraft.reps || '0'; item.performanceLoad.value = savedDraft.load ?? '0'; }
-    item.performanceRepsOutput.textContent = Number(item.performanceReps.value) > 0 ? `${item.performanceReps.value} ${Number(item.performanceReps.value) === 1 ? 'repetición' : 'repeticiones'}` : 'Desliza para elegir';
+    const savedReps = Number(savedDraft?.reps); const savedRepsValid = Number.isInteger(savedReps) && savedReps >= item.repMinimum && savedReps <= item.repMaximum + 4; item.performanceReps.value = String(savedRepsValid ? savedReps : item.repMinimum); item.performanceReps.dataset.selected = String(savedRepsValid); if (savedDraft) item.performanceLoad.value = savedDraft.load ?? '0';
+    item.performanceRepsOutput.textContent = item.performanceReps.dataset.selected === 'true' ? `${item.performanceReps.value} ${Number(item.performanceReps.value) === 1 ? 'repetición' : 'repeticiones'}` : 'Desliza para elegir';
     updateLoadControl();
-    item.performanceReps.addEventListener('input', () => { item.performanceRepsOutput.textContent = `${item.performanceReps.value} ${Number(item.performanceReps.value) === 1 ? 'repetición' : 'repeticiones'}`; savePerformanceDraft(); });
+    item.performanceReps.addEventListener('input', () => { item.performanceReps.dataset.selected = 'true'; item.performanceRepsOutput.textContent = `${item.performanceReps.value} ${Number(item.performanceReps.value) === 1 ? 'repetición' : 'repeticiones'}`; savePerformanceDraft(); });
     item.performanceLoad.addEventListener('input', () => { updateLoadControl(); savePerformanceDraft(); });
     loadUnitSelect.addEventListener('change', () => {
       const previousUnit = item.performanceLoadUnit;
@@ -4134,13 +4134,14 @@ body::before,body::after{animation:none!important}
       const loadUnit = item.performanceLoadUnit === 'lb' ? 'lb' : 'kg';
       const load = Number.isFinite(loadValue) && loadValue > 0 ? loadValue : null;
       const loadKg = load === null ? null : loadUnit === 'lb' ? load * 0.45359237 : load;
-      if (Number.isInteger(reps) && reps >= 1 && reps <= 40) {
+      if (item.performanceReps?.dataset.selected === 'true' && Number.isInteger(reps) && reps >= item.repMinimum && reps <= item.repMaximum + 4) {
         if (!state.__performance) state.__performance = {};
         if (!state.__performance[String(item.index + 1)]) state.__performance[String(item.index + 1)] = {};
         state.__performance[String(item.index + 1)][nextKey] = { title: item.title, reps, load, loadUnit, loadKg, updatedAt: completedAt };
       }
       if (load !== null) loadOutput.textContent = loadUnit === 'lb' ? `${load} lb (${loadKg.toFixed(1)} kg)` : `${load} kg`;
-      item.performanceReps.value = '0';
+      item.performanceReps.value = String(item.repMinimum);
+      item.performanceReps.dataset.selected = 'false';
       item.performanceRepsOutput.textContent = 'Desliza para elegir';
       if (state.__performanceDraft?.[String(item.index + 1)]) state.__performanceDraft[String(item.index + 1)].reps = '0';
       state[nextKey] = true;
