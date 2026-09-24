@@ -3447,11 +3447,12 @@ body::before,body::after{animation:none!important}
     button.textContent = 'Iniciar ejercicio';
     button.setAttribute('aria-label', `Iniciar ejercicio ${String(item.index + 1).padStart(2, '0')}: ${item.title}`);
     item.startButton = button;
-    const startSeriesButton = document.createElement('button');
-    startSeriesButton.type = 'button';
-    startSeriesButton.className = 'startSeriesButton';
-    startSeriesButton.hidden = true;
-    startSeriesButton.setAttribute('aria-label', `Iniciar siguiente serie de ${item.title}`);
+    const startSeriesButton = item.tracker.querySelector('.completeSetButton');
+    let longPressDetected = false;
+    let longPressTimer = 0;
+    startSeriesButton?.addEventListener('pointerdown', () => { longPressDetected = false; longPressTimer = window.setTimeout(() => { longPressDetected = true; }, 4000); });
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(type => startSeriesButton?.addEventListener(type, () => { if (longPressTimer) window.clearTimeout(longPressTimer); longPressTimer = 0; }));
+    startSeriesButton?.addEventListener('click', event => { if (!longPressDetected) return; event.preventDefault(); event.stopImmediatePropagation(); longPressDetected = false; }, true);
     item.startSeriesButton = startSeriesButton;
     const undoActions = document.createElement('div');
     undoActions.className = 'exerciseUndoActions';
@@ -3704,7 +3705,7 @@ body::before,body::after{animation:none!important}
     renderWarmupTiming();
   });
   renderWarmupTiming();
-  const timingInterval = window.setInterval(() => { renderTimingDisplays(); renderWarmupTiming(); }, 1000);
+  const timingInterval = window.setInterval(() => { renderTimingDisplays(); renderWarmupTiming(); exerciseItems.forEach(updateCompleteButton); }, 1000);
   document.addEventListener('visibilitychange', renderTimingDisplays); window.addEventListener('pagehide', () => { const timing = state.__timing; if (timing?.sessionStartedAt && !timing.sessionEndedAt) { timing.sessionAbandonedAt = Date.now(); save(); } }, { once: true });
   const updatePendingButton = item => {
     const button = item.tracker.querySelector('.machinePendingToggle');
@@ -3755,13 +3756,23 @@ body::before,body::after{animation:none!important}
     const complete = nextIndex === -1;
     const started = isExerciseStarted(item);
     const timing = state.__timing?.exercises?.[String(item.index + 1)];
-    const seriesActive = Boolean(timing?.seriesStartedAt && !timing?.restStartedAt);
-    const seriesPreparing = isSeriesPreparing(item);
     const globalWarmupComplete = getWarmupTiming().phase === 'done';
-    button.disabled = complete || !started || !globalWarmupComplete || !seriesActive || seriesPreparing;
-    button.textContent = complete ? '✓ Ejercicio completado' : !globalWarmupComplete ? 'Completa calentamiento' : !started ? 'Inicia el ejercicio' : !seriesActive ? 'Inicia la serie' : `Completar serie ${nextIndex + 1} de ${item.seriesKeys.length}`;
-    button.setAttribute('aria-label', complete ? 'Ejercicio completado' : !globalWarmupComplete ? 'Completa primero el calentamiento' : !started ? 'Inicia el ejercicio' : !seriesActive ? `Iniciar serie ${nextIndex + 1} de ${item.seriesKeys.length}` : `Completar serie ${nextIndex + 1} de ${item.seriesKeys.length}`);
-    if (item.startSeriesButton) { item.startSeriesButton.hidden = complete || !started || !globalWarmupComplete || seriesActive; item.startSeriesButton.disabled = complete || !started || !globalWarmupComplete || seriesActive || seriesPreparing; if (!item.startSeriesButton.hidden) item.startSeriesButton.textContent = seriesPreparing ? `⏳ Preparación · ${formatElapsed(Math.max(0, seriesPreparation.get(item.index).endsAt - Date.now()))}` : `▶ Iniciar serie ${nextIndex + 1} de ${item.seriesKeys.length}`; }
+    const preparing = isSeriesPreparing(item);
+    const resting = Boolean(!complete && timing?.restStartedAt);
+    const restRemaining = resting ? Math.max(0, getRestRecommendation(item).minMs - (Date.now() - timing.restStartedAt)) : 0;
+    const seriesActive = Boolean(timing?.seriesStartedAt && !timing?.restStartedAt);
+    const preparation = seriesPreparation.get(item.index);
+    const label = complete ? '✓ Ejercicio completado'
+      : !globalWarmupComplete ? 'Completa calentamiento'
+      : !started ? 'Inicia el ejercicio'
+      : preparing ? `⏳ Preparación · ${formatElapsed(preparation ? Math.max(0, preparation.endsAt - Date.now()) : 0)}`
+      : seriesActive ? `Completar serie ${nextIndex + 1} de ${item.seriesKeys.length}`
+      : resting && restRemaining > 0 ? `Descanso · ${formatElapsed(restRemaining)}`
+      : `Iniciar serie ${nextIndex + 1} de ${item.seriesKeys.length}`;
+    button.hidden = complete;
+    button.disabled = complete || !started || !globalWarmupComplete || preparing || (resting && restRemaining > 0);
+    button.textContent = label;
+    button.setAttribute('aria-label', label);
   };
   const updateSummary = () => {
     const rows = exerciseItems.map(snapshot);
@@ -3879,7 +3890,7 @@ body::before,body::after{animation:none!important}
     if (warmup) warmup.setAttribute('aria-pressed', String(exerciseWarmupComplete));
     const startButton = item.startButton;
     const timing = state.__timing?.exercises?.[String(item.index + 1)];
-    if (item.startSeriesButton) { const preparing = isSeriesPreparing(item); item.startSeriesButton.hidden = completed || !isExerciseStarted(item) || !globalWarmupComplete || Boolean(timing?.seriesStartedAt); item.startSeriesButton.disabled = item.startSeriesButton.hidden || preparing; if (!item.startSeriesButton.hidden) item.startSeriesButton.textContent = preparing ? `⏳ Preparación · ${formatElapsed(Math.max(0, seriesPreparation.get(item.index).endsAt - Date.now()))}` : `▶ Iniciar serie ${done + 1} de ${item.seriesKeys.length}`; }
+    if (item.startSeriesButton) item.startSeriesButton.hidden = completed;
     if (startButton) {
       const started = isExerciseStarted(item);
       const canStart = globalWarmupComplete && (exerciseWarmupComplete || started);
@@ -3903,7 +3914,8 @@ body::before,body::after{animation:none!important}
       updateTracker(tracker);
     });
     item.startSeriesButton?.addEventListener('click', () => {
-      if (!item || snapshot(item).complete || !isExerciseStarted(item) || getWarmupTiming().phase !== 'done') return;
+      const timing = getExerciseTiming(item);
+      if (!item || snapshot(item).complete || !isExerciseStarted(item) || getWarmupTiming().phase !== 'done' || timing.seriesStartedAt || (timing.restStartedAt && Date.now() - timing.restStartedAt < getRestRecommendation(item).minMs)) return;
       startSeriesPreparation(item);
       updateTracker(tracker, false);
     });

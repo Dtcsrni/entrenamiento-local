@@ -133,6 +133,28 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
             self.assertIn("navigator.vibrate", source)
             self.assertIn("timing.timingVersion = 5", source)
 
+    def test_series_flow_uses_one_button_and_enforces_minimum_rest(self) -> None:
+        for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
+            source = path.read_text(encoding="utf-8")
+            with self.subTest(path=path.name):
+                self.assertNotIn("className = 'startSeriesButton'", source)
+                self.assertIn(
+                    "const startSeriesButton = item.tracker.querySelector('.completeSetButton');",
+                    source,
+                )
+                self.assertIn("Completar serie ${nextIndex + 1}", source)
+                self.assertIn("Descanso · ${formatElapsed(restRemaining)}", source)
+                self.assertIn(
+                    "resting && restRemaining > 0",
+                    source,
+                )
+                self.assertIn(
+                    "Date.now() - timing.restStartedAt < getRestRecommendation(item).minMs",
+                    source,
+                )
+                self.assertIn("}, 4000);", source)
+                self.assertNotRegex(source, r"\bseriesPreparing\b")
+
     def test_all_routines_use_five_second_preparation_before_timing(self) -> None:
         for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
             source = path.read_text(encoding="utf-8")
