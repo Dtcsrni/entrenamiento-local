@@ -1,5 +1,5 @@
-const CACHE_NAME = 'entrenamiento-pwa-d9b17cdb1765';
-const PREVIOUS_CACHE_NAME = 'entrenamiento-pwa-46e6c2a43777';
+const CACHE_NAME = 'entrenamiento-pwa-8ae707f7048c';
+const PREVIOUS_CACHE_NAME = 'entrenamiento-pwa-d9b17cdb1765';
 const PRECACHE = [
   './',
   './index.html',
@@ -107,10 +107,10 @@ const RESOURCE_BYTES = {
   './data/profile/mouse-female-effort.webp': 1212010,
   './data/profile/mouse-male-effort.webp': 1072538,
   './data/profile/gymratik-machine-sprite.webp': 1001880,
-  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html': 759828,
-  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_2_Pierna_Gluteo_V1.html': 2359856,
-  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_3_Pecho_Hombro_Triceps_V1.html': 331086,
-  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_4_Pierna_Equilibrio_V1.html': 334336,
+  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html': 759817,
+  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_2_Pierna_Gluteo_V1.html': 2355020,
+  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_3_Pecho_Hombro_Triceps_V1.html': 326494,
+  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_4_Pierna_Equilibrio_V1.html': 329873,
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0194-2IxROQ1-final.jpg': 4361,
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0194-2IxROQ1-machine-only.webp': 504122,
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0194-2IxROQ1-start.jpg': 4746,
