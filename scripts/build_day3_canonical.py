@@ -9,7 +9,7 @@ from standardize_muscle_visuals import sanitize_canonical_metadata, standardize_
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = ROOT / "data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html"
 OUTPUT = ROOT / "data/rutinas_autocontenidas/canonicas/Rutina_Dia_3_Pecho_Hombro_Triceps_V1.html"
-IMAGE_ASSETS = ROOT / "artifacts/ejercicios-compartido/images"
+IMAGE_ASSETS = ROOT / "data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images"
 
 
 EXERCISES = [

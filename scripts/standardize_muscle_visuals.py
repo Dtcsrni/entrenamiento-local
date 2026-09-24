@@ -517,12 +517,12 @@ def standardize_shared_session_contract(source: str) -> str:
     )
     source = source.replace(
         "button.disabled = complete || !started || !globalWarmupComplete || !seriesActive;",
-        "button.disabled = complete || !started || !globalWarmupComplete || !seriesActive || seriesPreparing;",
+        "button.disabled = complete || !started || !globalWarmupComplete || !seriesActive || isSeriesPreparing(item);",
         1,
     )
     source = source.replace(
         "if (item.startSeriesButton) { item.startSeriesButton.hidden = complete || !started || !globalWarmupComplete || seriesActive; item.startSeriesButton.disabled = complete || !started || !globalWarmupComplete || seriesActive; if (!item.startSeriesButton.hidden) item.startSeriesButton.textContent = `▶ Iniciar serie ${nextIndex + 1} de ${item.seriesKeys.length}`; }",
-        "if (item.startSeriesButton) { item.startSeriesButton.hidden = complete || !started || !globalWarmupComplete || seriesActive; item.startSeriesButton.disabled = complete || !started || !globalWarmupComplete || seriesActive || seriesPreparing; if (!item.startSeriesButton.hidden) item.startSeriesButton.textContent = seriesPreparing ? `⏳ Preparación · ${formatElapsed(Math.max(0, seriesPreparation.get(item.index).endsAt - Date.now()))}` : `▶ Iniciar serie ${nextIndex + 1} de ${item.seriesKeys.length}`; }",
+        "if (item.startSeriesButton) { item.startSeriesButton.hidden = complete || !started || !globalWarmupComplete || seriesActive; item.startSeriesButton.disabled = complete || !started || !globalWarmupComplete || seriesActive || isSeriesPreparing(item); if (!item.startSeriesButton.hidden) item.startSeriesButton.textContent = isSeriesPreparing(item) ? `⏳ Preparación · ${formatElapsed(Math.max(0, seriesPreparation.get(item.index).endsAt - Date.now()))}` : `▶ Iniciar serie ${nextIndex + 1} de ${item.seriesKeys.length}`; }",
         1,
     )
     source = source.replace(
@@ -565,6 +565,79 @@ def standardize_shared_session_contract(source: str) -> str:
             "document.addEventListener('visibilitychange', renderTimingDisplays); window.addEventListener('pagehide', () => { const timing = state.__timing; if (timing?.sessionStartedAt && !timing.sessionEndedAt) { timing.sessionAbandonedAt = Date.now(); save(); } }, { once: true });",
             1,
         )
+    source = re.sub(
+        r"    const startSeriesButton = document\.createElement\('button'\);\r?\n"
+        r"    startSeriesButton\.type = 'button';\r?\n"
+        r"    startSeriesButton\.className = 'startSeriesButton';\r?\n"
+        r"    startSeriesButton\.hidden = true;\r?\n"
+        r"    startSeriesButton\.setAttribute\('aria-label', `Iniciar siguiente serie de \$\{item\.title\}`\);\r?\n"
+        r"    item\.startSeriesButton = startSeriesButton;",
+        "    const startSeriesButton = item.tracker.querySelector('.completeSetButton');\n"
+        "    let longPressDetected = false;\n"
+        "    let longPressTimer = 0;\n"
+        "    startSeriesButton?.addEventListener('pointerdown', () => { longPressDetected = false; longPressTimer = window.setTimeout(() => { longPressDetected = true; }, 4000); });\n"
+        "    ['pointerup', 'pointercancel', 'pointerleave'].forEach(type => startSeriesButton?.addEventListener(type, () => { if (longPressTimer) window.clearTimeout(longPressTimer); longPressTimer = 0; }));\n"
+        "    startSeriesButton?.addEventListener('click', event => { if (!longPressDetected) return; event.preventDefault(); event.stopImmediatePropagation(); longPressDetected = false; }, true);\n"
+        "    item.startSeriesButton = startSeriesButton;",
+        source,
+        count=1,
+    )
+    source = re.sub(
+        r"  const updateCompleteButton = item => \{.*?\n  \};",
+        """  const updateCompleteButton = item => {
+    const button = item.tracker.querySelector('.completeSetButton');
+    if (!button) return;
+    const nextIndex = item.seriesKeys.findIndex(key => state[key] !== true);
+    const complete = nextIndex === -1;
+    const started = isExerciseStarted(item);
+    const timing = state.__timing?.exercises?.[String(item.index + 1)];
+    const globalWarmupComplete = getWarmupTiming().phase === 'done';
+    const preparing = isSeriesPreparing(item);
+    const resting = Boolean(!complete && timing?.restStartedAt);
+    const restRemaining = resting ? Math.max(0, getRestRecommendation(item).minMs - (Date.now() - timing.restStartedAt)) : 0;
+    const seriesActive = Boolean(timing?.seriesStartedAt && !timing?.restStartedAt);
+    const preparation = seriesPreparation.get(item.index);
+    const label = complete ? '✓ Ejercicio completado'
+      : !globalWarmupComplete ? 'Completa calentamiento'
+      : !started ? 'Inicia el ejercicio'
+      : preparing ? `⏳ Preparación · ${formatElapsed(preparation ? Math.max(0, preparation.endsAt - Date.now()) : 0)}`
+      : seriesActive ? `Completar serie ${nextIndex + 1} de ${item.seriesKeys.length}`
+      : resting && restRemaining > 0 ? `Descanso · ${formatElapsed(restRemaining)}`
+      : `Iniciar serie ${nextIndex + 1} de ${item.seriesKeys.length}`;
+    button.hidden = complete;
+    button.disabled = complete || !started || !globalWarmupComplete || preparing || (resting && restRemaining > 0);
+    button.textContent = label;
+    button.setAttribute('aria-label', label);
+  };""",
+        source,
+        count=1,
+        flags=re.S,
+    )
+    source = re.sub(
+        r"(?m)^(\s*)if \(item\.startSeriesButton\) \{ const preparing = isSeriesPreparing\(item\);.*; \}\s*$",
+        r"\1if (item.startSeriesButton) item.startSeriesButton.hidden = completed;",
+        source,
+        count=1,
+    )
+    source = re.sub(
+        r"item\.startSeriesButton\?\.addEventListener\('click', \(\) => \{\s*"
+        r"if \(!item \|\| snapshot\(item\)\.complete \|\| !isExerciseStarted\(item\) \|\| getWarmupTiming\(\)\.phase !== 'done'\) return;\s*"
+        r"startSeriesPreparation\(item\);\s*updateTracker\(tracker, false\);\s*\}\);",
+        """item.startSeriesButton?.addEventListener('click', () => {
+      const timing = getExerciseTiming(item);
+      if (!item || snapshot(item).complete || !isExerciseStarted(item) || getWarmupTiming().phase !== 'done' || timing.seriesStartedAt || (timing.restStartedAt && Date.now() - timing.restStartedAt < getRestRecommendation(item).minMs)) return;
+      startSeriesPreparation(item);
+      updateTracker(tracker, false);
+    });""",
+        source,
+        count=1,
+        flags=re.S,
+    )
+    source = source.replace(
+        "const timingInterval = window.setInterval(() => { renderTimingDisplays(); renderWarmupTiming(); }, 1000);",
+        "const timingInterval = window.setInterval(() => { renderTimingDisplays(); renderWarmupTiming(); exerciseItems.forEach(updateCompleteButton); }, 1000);",
+        1,
+    )
     return source
 
 
