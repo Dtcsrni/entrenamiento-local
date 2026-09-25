@@ -2754,7 +2754,28 @@ body::before,body::after{animation:none!important}
 .page .card .visual .gifProof[data-media-kind="video"] .gifFrame{width:360px!important;height:180px!important;aspect-ratio:2/1!important;margin:0 auto!important}
 @media(max-width:700px){.page .card .visual .gifProof[data-media-kind="video"] .gifMotion,.page .card .visual .gifProof[data-media-kind="video"] .gifFrame{width:min(360px,100%)!important;height:auto!important;aspect-ratio:2/1!important}}
 .cards>.card:nth-of-type(4) .gifProof{--accent:#f0bf70}
-</style></head><body>
+</style></style>
+<style data-enhancement="segmented-progress-bars-v1">
+.warmupProgressSegments,.seriesProgressSegments{display:grid;gap:5px;width:100%;margin:.45rem 0 .6rem;}
+.warmupProgressSegments{grid-template-columns:repeat(2,minmax(0,1fr));}
+.seriesProgressSegments{grid-template-columns:repeat(4,minmax(0,1fr));}
+.warmupProgressSegments,.seriesProgressSegments{isolation:isolate;position:relative;}
+.warmupProgressSegment,.seriesProgressSegment{position:relative;display:block;min-width:0;height:9px;overflow:hidden;border:1px solid rgba(153,190,205,.26);border-radius:999px;background:rgba(6,28,43,.9);transition:border-color .28s ease,background-color .28s ease,box-shadow .28s ease,transform .28s ease;}
+.warmupProgressSegment::after,.seriesProgressSegment::after{position:absolute;inset:0;content:"";border-radius:inherit;background:linear-gradient(100deg,#159bb3 0%,#35d6a4 55%,#a0d95c 100%);background-size:220% 100%;transform:scaleX(0);transform-origin:left center;transition:transform .62s cubic-bezier(.2,.8,.2,1);}
+.warmupProgressSegment.is-complete,.seriesProgressSegment.is-complete{border-color:#28bfae;box-shadow:0 0 9px rgba(39,190,174,.2);}
+.warmupProgressSegment.is-complete::after,.seriesProgressSegment.is-complete::after{transform:scaleX(1);animation:progressSweep .85s ease-out both;}
+.seriesProgressSegment:nth-child(4n+2).is-complete::after{background:linear-gradient(100deg,#26b995,#53df91);}
+.seriesProgressSegment:nth-child(4n+3).is-complete::after{background:linear-gradient(100deg,#54c978,#a0d95c);}
+.seriesProgressSegment:nth-child(4n+4).is-complete::after{background:linear-gradient(100deg,#b6d85c,#f1c75c);}
+.warmupProgressSegment.is-current,.warmupProgressSegment.is-next,.seriesProgressSegment.is-current,.seriesProgressSegment.is-next{border-color:#72dcff;animation:progressPulse 1.15s ease-in-out infinite;}
+.warmupProgressSegments[data-state="empty"] .warmupProgressSegment,.seriesProgressSegments[data-state="empty"] .seriesProgressSegment{box-shadow:inset 0 1px 2px rgba(0,0,0,.24);}
+.warmupProgressSegments[data-state="full"],.seriesProgressSegments[data-state="full"]{animation:progressFinish .72s cubic-bezier(.2,.8,.2,1) both;}
+@keyframes progressSweep{0%{background-position:100% 0;filter:brightness(1.25)}100%{background-position:0 0;filter:brightness(1)}}
+@keyframes progressPulse{0%,100%{box-shadow:0 0 0 0 rgba(114,220,255,.08)}50%{box-shadow:0 0 0 2px rgba(114,220,255,.26),0 0 10px rgba(114,220,255,.16)}}
+@keyframes progressFinish{0%{transform:scaleY(1);filter:brightness(1)}45%{transform:scaleY(1.45);filter:brightness(1.22)}100%{transform:scaleY(1);filter:brightness(1)}}
+@media(prefers-reduced-motion:reduce){.warmupProgressSegment,.seriesProgressSegment,.warmupProgressSegment::after,.seriesProgressSegment::after{transition:none;animation:none!important;}.warmupProgressSegments[data-state="full"],.seriesProgressSegments[data-state="full"]{animation:none;}}
+</style>
+</head><body>
 <div class="page">
 <header class="hero">
 <a class="routine-home-link" href="../../../index.html" aria-label="Volver a la portada">← Portada</a>
@@ -3828,6 +3849,27 @@ body::before,body::after{animation:none!important}
   const renderWarmupTiming = () => {
     if (!warmupTracker) return;
     const warmup = getWarmupTiming();
+    let warmupProgress = warmupTracker.querySelector('.warmupProgressSegments');
+    if (!warmupProgress) {
+      warmupProgress = document.createElement('div');
+      warmupProgress.className = 'warmupProgressSegments';
+      warmupProgress.setAttribute('role', 'progressbar');
+      warmupProgress.setAttribute('aria-label', 'Progreso del calentamiento');
+      warmupProgress.setAttribute('aria-valuemin', '0');
+      warmupProgress.setAttribute('aria-valuemax', '2');
+      warmupProgress.innerHTML = '<span class="warmupProgressSegment" data-phase="cardio" aria-label="Cardio"></span><span class="warmupProgressSegment" data-phase="mobility" aria-label="Movilidad"></span>';
+      warmupTracker.querySelector('.warmupTrackerHead')?.after(warmupProgress);
+    }
+    const warmupDone = warmup.phase === 'done' ? 2 : warmup.phase === 'mobility' ? 1 : 0;
+    const warmupState = warmupDone === 2 ? 'full' : warmupDone > 0 || ['cardio', 'mobility'].includes(warmup.phase) ? 'filling' : 'empty';
+    warmupProgress.dataset.state = warmupState;
+    warmupProgress.classList.toggle('is-full', warmupState === 'full');
+    warmupProgress.setAttribute('aria-valuenow', String(warmupDone));
+    warmupProgress.querySelectorAll('.warmupProgressSegment').forEach((segment, index) => {
+      segment.classList.toggle('is-complete', index < warmupDone);
+      segment.classList.toggle('is-current', (warmup.phase === 'cardio' && index === 0) || (warmup.phase === 'mobility' && index === 1));
+      segment.classList.toggle('is-next', warmupState === 'filling' && warmupDone < 2 && index === warmupDone);
+    });
     const preparing = warmup.phase === 'preparing';
     const now = Date.now();
     const segment = (start, end) => start ? formatElapsed((end || now) - start) : '—';
@@ -4079,6 +4121,29 @@ body::before,body::after{animation:none!important}
     if (!item) return;
     const warmup = tracker.querySelector('.warmupSet');
     const done = item.seriesKeys.filter(key => state[key] === true).length;
+    const exerciseTiming = state.__timing?.exercises?.[String(item.index + 1)];
+    const activeSet = isSeriesPreparing(item) || Boolean(exerciseTiming?.seriesStartedAt && !exerciseTiming?.restStartedAt);
+    let seriesProgress = tracker.querySelector('.seriesProgressSegments');
+    if (!seriesProgress) {
+      seriesProgress = document.createElement('div');
+      seriesProgress.className = 'seriesProgressSegments';
+      seriesProgress.setAttribute('role', 'progressbar');
+      seriesProgress.setAttribute('aria-label', 'Series completadas');
+      seriesProgress.setAttribute('aria-valuemin', '0');
+      seriesProgress.setAttribute('aria-valuemax', String(item.seriesKeys.length));
+      seriesProgress.style.gridTemplateColumns = `repeat(${item.seriesKeys.length}, minmax(0, 1fr))`;
+      seriesProgress.innerHTML = item.seriesKeys.map((_, index) => `<span class="seriesProgressSegment" aria-label="Serie ${index + 1}"></span>`).join('');
+      tracker.querySelector('.exerciseTrackerHead')?.after(seriesProgress);
+    }
+    const seriesState = done === item.seriesKeys.length ? 'full' : done > 0 || activeSet ? 'filling' : 'empty';
+    seriesProgress.dataset.state = seriesState;
+    seriesProgress.classList.toggle('is-full', seriesState === 'full');
+    seriesProgress.setAttribute('aria-valuenow', String(done));
+    seriesProgress.querySelectorAll('.seriesProgressSegment').forEach((segment, index) => {
+      segment.classList.toggle('is-complete', state[item.seriesKeys[index]] === true);
+      segment.classList.toggle('is-current', activeSet && index === done && seriesState !== 'full');
+      segment.classList.toggle('is-next', seriesState === 'filling' && index === done && !activeSet);
+    });
     const wasDone = tracker.classList.contains('exerciseDone');
     const completed = done === item.seriesKeys.length;
     tracker.querySelector('.exerciseProgress').textContent = `${done}/${item.seriesKeys.length}`;
@@ -4778,7 +4843,6 @@ body{height:auto!important;min-height:100%!important;overflow-x:hidden!important
   });
 })();
 </script>
-
 <!-- canonical media contract references: 1350-7I6LNUG.jpg · 1350-7I6LNUG-final.png -->
 </body>
 </html>

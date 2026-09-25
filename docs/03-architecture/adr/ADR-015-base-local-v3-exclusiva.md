@@ -10,7 +10,7 @@ La aplicación usa IndexedDB con versión 3, pero el código todavía aceptaba r
 ## Decisión
 
 1. La versión operativa de IndexedDB es 3. Una base nueva se crea directamente con los almacenes e índices actuales.
-2. Si IndexedDB ya existe con una versión menor que 3, la transacción de actualización elimina sus almacenes y crea el esquema v3 vacío. Al completar la apertura, se eliminan también las claves de fallback y progreso local anteriores.
+2. Si IndexedDB ya existe con una versión menor que 3, la transacción de actualización elimina sus almacenes y crea el esquema v3 vacío. Al completar la apertura, se elimina la clave de fallback v1. Se conservan las claves `fitlovers-day1-series-v1` a `fitlovers-day4-series-v1`: las rutinas canónicas aún las usan para guardar y restaurar el progreso individual de series.
 3. Los perfiles y respaldos usan `schemaVersion=3`. La importación exige versión 3 tanto en el respaldo como en su perfil; versiones anteriores se rechazan antes de escribir.
 4. El fallback operativo de `localStorage` usa una clave v3. Si IndexedDB no está disponible o falla por una razón operativa, se usa ese fallback; no se lee ni migra información de claves previas.
 5. La importación solo acepta respaldos con versión 3 y perfil con `schemaVersion=3`.
@@ -18,7 +18,7 @@ La aplicación usa IndexedDB con versión 3, pero el código todavía aceptaba r
 ## Consecuencias
 
 - La base v3 existente y los respaldos v3 se conservan y operan con el esquema actual.
-- El primer inicio con una base anterior elimina los datos locales anteriores y empieza un historial vacío en v3; la portada lo comunica.
+- El primer inicio con una base anterior elimina los datos del historial y el fallback v1, y empieza un historial vacío en v3; la portada lo comunica. El progreso individual de las cuatro rutinas permanece disponible para su restauración local.
 - No hay conversión automática desde respaldos v1/v2. El usuario necesita una copia exportada con esquema 3 para restaurar datos en esta versión.
 - Si falla la transacción de actualización, IndexedDB debe conservar su estado anterior según la atomicidad de la transacción; la PWA reporta el error y no trata una apertura fallida como una migración completada.
 

@@ -195,6 +195,28 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
                 card_indexes = [int(value) for value in re.findall(r'<article class="card" data-exercise-index="(\d+)">', source)]
                 self.assertEqual(card_indexes, list(range(1, expected_cards[path.name] + 1)))
 
+    def test_all_routines_expose_accessible_segmented_warmup_and_series_progress(self) -> None:
+        for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
+            source = path.read_text(encoding="utf-8")
+            with self.subTest(path=path.name):
+                self.assertEqual(source.count('data-enhancement="segmented-progress-bars-v1"'), 1)
+                self.assertIn("warmupProgressSegments", source)
+                self.assertIn("Progreso del calentamiento", source)
+                self.assertIn("aria-valuemax', '2'", source)
+                self.assertIn("seriesProgressSegments", source)
+                self.assertIn("Series completadas", source)
+                self.assertIn("seriesProgress.setAttribute('aria-valuenow', String(done))", source)
+                self.assertIn("segment.classList.toggle('is-complete'", source)
+                self.assertIn("warmupProgress.dataset.state = warmupState", source)
+                self.assertIn("seriesProgress.dataset.state = seriesState", source)
+                self.assertIn("'empty'", source)
+                self.assertIn("'filling'", source)
+                self.assertIn("'full'", source)
+                self.assertIn("@keyframes progressSweep", source)
+                self.assertIn("@keyframes progressPulse", source)
+                self.assertIn("@keyframes progressFinish", source)
+                self.assertIn("prefers-reduced-motion:reduce", source)
+
     def test_all_routines_expose_access_to_homepage(self) -> None:
         for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
             source = path.read_text(encoding="utf-8")

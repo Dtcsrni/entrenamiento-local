@@ -25,7 +25,7 @@ class ProgressStoreContractTests(unittest.TestCase):
 
     def test_progress_store_uses_only_v3_and_discards_pre_v3_local_fallbacks(self):
         self.assertIn("entrenamiento-progress-fallback-v3", self.source)
-        self.assertIn("PRE_V3_STORAGE_KEYS", self.source)
+        self.assertIn("PRE_V3_FALLBACK_KEYS", self.source)
         self.assertIn("deleteObjectStore", self.source)
         self.assertNotIn("migrateLegacyProgress", self.source)
         self.assertNotIn("UNSUPPORTED_DATABASE_VERSION", self.source)

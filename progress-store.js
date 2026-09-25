@@ -11,12 +11,8 @@
   const DEFAULT_PROFILE_ID = 'local-default';
   const PROFILE_SCHEMA_VERSION = 3;
   const FALLBACK_KEY = 'entrenamiento-progress-fallback-v3';
-  const PRE_V3_STORAGE_KEYS = [
+  const PRE_V3_FALLBACK_KEYS = [
     'entrenamiento-progress-fallback-v1',
-    'fitlovers-day1-series-v1',
-    'fitlovers-day2-series-v1',
-    'fitlovers-day3-series-v1',
-    'fitlovers-day4-series-v1',
   ];
   const ROUTINES = {
     day1: { label: 'Día 1 · Espalda + Bíceps', totalExercises: 6, totalSeries: 20 },
@@ -176,7 +172,7 @@
         const db = request.result;
         db.onversionchange = () => db.close();
         try {
-          PRE_V3_STORAGE_KEYS.forEach((key) => window.localStorage.removeItem(key));
+          PRE_V3_FALLBACK_KEYS.forEach((key) => window.localStorage.removeItem(key));
         } catch (error) {
           emit('training-storage-error', { error, source: 'previous-data-cleanup' });
         }

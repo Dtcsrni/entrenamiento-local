@@ -272,7 +272,10 @@ async function verify(oldVersion) {
   let request;
   const storage = new Map([
     ['entrenamiento-progress-fallback-v1', JSON.stringify({ progress: { day1: { doneSeries: 9 } } })],
-    ['fitlovers-day1-series-v1', '{"e1s1":true}']
+    ['fitlovers-day1-series-v1', '{"e1s1":true}'],
+    ['fitlovers-day2-series-v1', '{"e2s1":true}'],
+    ['fitlovers-day3-series-v1', '{"e3s1":true}'],
+    ['fitlovers-day4-series-v1', '{"e4s1":true}']
   ]);
   const deletedStores = [];
   const events = [];
@@ -317,7 +320,9 @@ async function verify(oldVersion) {
   assert.deepStrictEqual([...deletedStores].sort(), ['oldProfile', 'oldProgress']);
   assert.deepStrictEqual([...stores.keys()].sort(), ['activity', 'meta', 'profiles', 'routineProgress', 'sessions']);
   assert.strictEqual(storage.has('entrenamiento-progress-fallback-v1'), false);
-  assert.strictEqual(storage.has('fitlovers-day1-series-v1'), false);
+  for (let day = 1; day <= 4; day += 1) {
+    assert.strictEqual(storage.get(`fitlovers-day${day}-series-v1`), `{"e${day}s1":true}`);
+  }
   assert.strictEqual(events.some(event => event.name === 'training-database-reset' && event.detail.previousVersion === oldVersion), true);
 }
 (async () => { await verify(1); await verify(2); console.log(JSON.stringify({ ok: true })); })().catch(error => { console.error(error); process.exit(1); });
