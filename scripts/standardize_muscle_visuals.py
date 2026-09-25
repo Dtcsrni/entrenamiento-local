@@ -27,6 +27,13 @@ REST_COUNTDOWN_STYLE = '''<style data-fix="rest-countdown-activity-v1">
 .summaryExercise.isResting .summaryExerciseState{animation:restSlowPulse 2.4s ease-in-out infinite}
 .summaryExercise.isSeriesActive .summaryExerciseState{color:#65f2dd;animation:activityFastPulse .68s ease-in-out infinite}
 .summaryExercise.isPreparing .summaryExerciseState{color:#72dcff}
+.summaryActivity{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.3rem;margin:0 .3rem;padding:.34rem .42rem;border:1px solid rgba(114,220,255,.3);border-radius:.4rem;background:rgba(15,45,65,.76);color:#dff5fc;font-size:.58rem;font-weight:900;line-height:1.15}
+.summaryActivity[hidden]{display:none!important}
+.summaryActivity>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.summaryActivity>strong{color:inherit;font-size:.58rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.summaryActivity.isResting{border-color:rgba(255,210,119,.78);background:rgba(83,61,29,.5);color:#ffe4a4;animation:restSlowPulse 2.4s ease-in-out infinite}
+.summaryActivity.isActive{border-color:rgba(101,242,221,.78);background:rgba(19,73,72,.56);color:#b9fff1;animation:activityFastPulse .68s ease-in-out infinite}
+.summaryActivity.isPreparing{border-color:rgba(114,220,255,.65);background:rgba(24,75,101,.48);color:#bfeeff}
 button.completeSetButton.is-resting{border-color:#ffd277;background:linear-gradient(135deg,#9a6b17,#725019);color:#fff0bd;box-shadow:0 0 0 1px rgba(255,210,119,.2)}
 button.completeSetButton.is-series-active{border-color:#65f2dd;background:linear-gradient(135deg,#159d83,#146d5e);color:#eafff8;box-shadow:0 0 0 1px rgba(101,242,221,.2)}
 .exerciseTracker:has(.completeSetButton.is-resting){border-color:rgba(255,210,119,.82);box-shadow:0 0 18px rgba(255,210,119,.14)}
@@ -37,12 +44,15 @@ button.completeSetButton.is-series-active{border-color:#65f2dd;background:linear
 .summaryExercise.isSeriesActive{border-color:rgba(101,242,221,.78);background:rgba(19,73,72,.56)}
 @keyframes restSlowPulse{50%{opacity:.72;filter:brightness(1.2);box-shadow:0 0 12px rgba(255,210,119,.32)}}
 @keyframes activityFastPulse{50%{opacity:.7;filter:brightness(1.35);box-shadow:0 0 12px rgba(101,242,221,.38)}}
-@media(prefers-reduced-motion:reduce){.summaryExercise.isResting,.summaryExercise.isSeriesActive,.summaryExercise.isResting .summaryExerciseState,.summaryExercise.isSeriesActive .summaryExerciseState,button.completeSetButton.is-resting,button.completeSetButton.is-series-active,.exerciseTracker:has(.completeSetButton.is-resting) .exerciseRest,.exerciseTracker:has(.completeSetButton.is-series-active) .seriesProgressSegment.is-current{animation:none}}
+@media(prefers-reduced-motion:reduce){.summaryActivity.isResting,.summaryActivity.isActive,.summaryExercise.isResting,.summaryExercise.isSeriesActive,.summaryExercise.isResting .summaryExerciseState,.summaryExercise.isSeriesActive .summaryExerciseState,button.completeSetButton.is-resting,button.completeSetButton.is-series-active,.exerciseTracker:has(.completeSetButton.is-resting) .exerciseRest,.exerciseTracker:has(.completeSetButton.is-series-active) .seriesProgressSegment.is-current{animation:none}}
 </style>'''
+
+FLOATING_ACTIVITY_MARKUP = '''<div class="summaryActivity" id="summaryActivity" role="status" aria-live="polite" hidden><span id="summaryActivityLabel"></span><strong id="summaryActivityClock" aria-hidden="true"></strong></div>'''
 
 REST_TIMING_DISPLAY_CONTRACT = '''  const renderTimingDisplays = () => {
     const root = state.__timing;
     const now = Date.now();
+    let currentActivity = null;
     const total = document.getElementById('summaryElapsed');
     if (total) {
       const elapsed = root?.sessionStartedAt ? (root.sessionEndedAt || now) - root.sessionStartedAt : NaN;
@@ -68,6 +78,15 @@ REST_TIMING_DISPLAY_CONTRACT = '''  const renderTimingDisplays = () => {
       const restRemaining = Math.max(0, recommendation.minMs - restElapsed);
       const restActive = Boolean(!row.complete && timing?.restStartedAt && restRemaining > 0);
       const seriesActive = Boolean(!row.complete && timing?.seriesStartedAt && !timing?.restStartedAt);
+      const restPending = Boolean(!row.complete && timing?.restStartedAt && !seriesActive);
+      const activity = restPending
+        ? { kind: 'rest', label: restActive ? `Descanso · ${item.title}` : `Descanso listo · ${item.title}`, clock: restActive ? `${formatCountdown(restRemaining)} restantes` : 'Lista', startedAt: Number(timing.restStartedAt) || 0 }
+        : preparing
+          ? { kind: 'preparing', label: `Preparación · ${item.title}`, clock: formatCountdown((preparation?.endsAt || timing?.preparationEndsAt || now) - now), startedAt: Number(timing?.preparationEndsAt) || now }
+          : seriesActive
+            ? { kind: 'active', label: `Serie ${row.done + 1} activa · ${item.title}`, clock: formatElapsed(now - timing.seriesStartedAt), startedAt: Number(timing.seriesStartedAt) || 0 }
+            : null;
+      if (activity && (!currentActivity || activity.startedAt >= currentActivity.startedAt)) currentActivity = activity;
       if (!row.complete && timing?.restStartedAt) notifyRestReady(item, timing, restElapsed);
       const summaryButton = summaryList.querySelector(`[data-exercise="${item.index + 1}"]`);
       const summaryState = summaryButton?.querySelector('.summaryExerciseState');
@@ -103,6 +122,17 @@ REST_TIMING_DISPLAY_CONTRACT = '''  const renderTimingDisplays = () => {
       display.textContent = '⏱ ' + (labels.length ? labels.join(' · ') : progressLabel) + ' · Ejercicio ' + exerciseElapsed;
       if (item.restDisplay) item.restDisplay.hidden = !restActive;
     });
+    const activityPanel = document.getElementById('summaryActivity');
+    const activityLabel = document.getElementById('summaryActivityLabel');
+    const activityClock = document.getElementById('summaryActivityClock');
+    if (activityPanel && activityLabel && activityClock) {
+      activityPanel.hidden = !currentActivity;
+      activityPanel.classList.toggle('isResting', currentActivity?.kind === 'rest');
+      activityPanel.classList.toggle('isActive', currentActivity?.kind === 'active');
+      activityPanel.classList.toggle('isPreparing', currentActivity?.kind === 'preparing');
+      activityLabel.textContent = currentActivity?.label || '';
+      activityClock.textContent = currentActivity?.clock || '';
+    }
   };'''
 
 
@@ -852,7 +882,7 @@ def standardize_shared_session_contract(source: str) -> str:
             1,
         )
     source, timing_display_count = re.subn(
-        r"  const renderTimingDisplays = \(\) => \{.*?;\s*\};",
+        r"  const renderTimingDisplays = \(\) => \{.*?\n  \};(?=\n  // El cronómetro empieza|\n  const PREPARATION_MS)",
         REST_TIMING_DISPLAY_CONTRACT,
         source,
         count=1,
@@ -982,6 +1012,16 @@ def standardize_muscle_visuals(source: str) -> str:
     if 'data-enhancement="interaction-feedback-v1"' not in source:
         source = source.replace('</head>', INTERACTION_FEEDBACK_STYLE + '\n</head>', 1)
     source = standardize_shared_session_contract(source)
+    if 'id="summaryActivity"' not in source:
+        source, activity_markup_count = re.subn(
+            r'(<button type="button" class="summaryToggle" id="summaryToggle"[^>]*>.*?</button>)',
+            lambda match: f"{match.group(1)}\n{FLOATING_ACTIVITY_MARKUP}",
+            source,
+            count=1,
+            flags=re.S,
+        )
+        if activity_markup_count != 1:
+            raise ValueError("No se pudo integrar la actividad en el resumen flotante existente")
     next_index = 1
 
     def add_card_index(match: re.Match[str]) -> str:
