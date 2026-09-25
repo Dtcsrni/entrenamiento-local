@@ -187,12 +187,20 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
                 self.assertIn("button:not(:disabled):active", source)
                 self.assertNotIn("Number(item.performanceReps.value) > 0 ?", source)
 
-    def test_all_routines_use_five_second_preparation_before_timing(self) -> None:
+    def test_all_routines_use_persistent_fifteen_second_preparation_before_timing(self) -> None:
         for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
             source = path.read_text(encoding="utf-8")
             with self.subTest(path=path.name):
-                self.assertEqual(source.count("const PREPARATION_MS = 5000;"), 1)
+                self.assertEqual(source.count("const PREPARATION_MS = 15000;"), 1)
                 self.assertIn("warmup.phase = 'preparing'", source)
+                self.assertIn("warmup.preparationEndsAt = warmupPreparationEndsAt", source)
+                self.assertIn("timing.preparationEndsAt = endsAt", source)
+                self.assertIn("getWarmupTiming().phase === 'preparing' && getWarmupTiming().preparationEndsAt", source)
+                self.assertIn("Omitir ejercicio · mantén 10 s", source)
+                self.assertIn("setTimeout(() => { skipHoldTimer = 0", source)
+                self.assertIn("loadOutput.addEventListener('click'", source)
+                self.assertIn("performanceLoadDirect", source)
+                self.assertIn("--hold-progress", source)
                 self.assertIn("root.sessionStartedAt = timestamp", source)
                 self.assertIn("startSeriesPreparation(item);", source)
                 self.assertIn(
@@ -210,6 +218,29 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
                     "const preparing = isSeriesPreparing(item);",
                     source,
                 )
+
+    def test_all_routines_expose_direct_decimal_load_entry_and_hold_feedback(self) -> None:
+        for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
+            source = path.read_text(encoding="utf-8")
+            with self.subTest(path=path.name):
+                self.assertIn("loadOutput.addEventListener('click'", source)
+                self.assertIn("editor.step = '0.1'", source)
+                self.assertIn("entered <= Number(loadInput.max)", source)
+                self.assertIn("item.performanceLoadExact = Math.round(entered * 10) / 10", source)
+                self.assertIn("load: String(item.performanceLoadExact || 0)", source)
+                self.assertIn("queueMicrotask(() => finish(true))", source)
+                self.assertIn("startSeriesButton.style.setProperty('--hold-progress', '100%')", source)
+                self.assertIn("--hold-progress", source)
+                self.assertIn("}, 10000);", source)
+                self.assertIn("state.__skippedExercises[key] = true", source)
+                self.assertIn("row.skipped ? '↷ Omitido'", source)
+
+    def test_editable_load_value_persists_decimal_independently_of_slider_step(self) -> None:
+        source = (CANONICAL / "Rutina_Dia_1_Espalda_Biceps_V1.html").read_text(encoding="utf-8")
+        self.assertIn("item.performanceLoadExact = Math.round(entered * 10) / 10", source)
+        self.assertIn("load: String(item.performanceLoadExact || 0)", source)
+        self.assertIn("const loadValue = Number(item.performanceLoadExact)", source)
+        self.assertIn("editor.addEventListener('blur', () => queueMicrotask(() => finish(true))", source)
 
     def test_all_routines_share_the_canonical_page_layout_contract(self) -> None:
         expected_cards = {"Rutina_Dia_1_Espalda_Biceps_V1.html": 6, "Rutina_Dia_2_Pierna_Gluteo_V1.html": 6, "Rutina_Dia_3_Pecho_Hombro_Triceps_V1.html": 7, "Rutina_Dia_4_Pierna_Equilibrio_V1.html": 7}

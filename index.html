@@ -7,7 +7,7 @@
   <meta name="application-name" content="Gymratik">
   <meta name="apple-mobile-web-app-title" content="Gymratik">
   <meta name="description" content="Rutinas visuales para entrenar en el gimnasio con calentamiento, técnica y registro de series.">
-  <meta name="gymratik-resource-estimate" content='{"applicationBytes":"000000003993558","imageBytes":"000000017412094","totalBytes":"000000021405652"}'>
+  <meta name="gymratik-resource-estimate" content='{"applicationBytes":"000000004023278","imageBytes":"000000017412094","totalBytes":"000000021435372"}'>
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.png" type="image/png">
   <script src="./install-gate.js"></script>
@@ -457,7 +457,6 @@
     let activeProfile = null;
     let latestDashboard = null;
     let recentSessions = [];
-    let databaseResetNotice = false;
     let pageReloadRequested = false;
     const WEEKDAY_NAMES = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
 
@@ -485,7 +484,7 @@
         const totalSeries = boundedNumber(routine?.totalSeries, fallback.totalSeries);
         const doneSeries = boundedNumber(routine?.doneSeries, 0, totalSeries);
         const percent = boundedNumber(routine?.percent, 0, 100);
-        return { routineId: fallback.routineId, label: fallback.label, totalExercises: fallback.totalExercises, totalSeries, doneSeries, percent };
+        return { routineId: fallback.routineId, label: fallback.label, totalExercises: fallback.totalExercises, totalSeries, doneSeries, percent, updatedAt: boundedNumber(routine?.updatedAt), sessionStartedAt: boundedNumber(routine?.sessionStartedAt), sessionEndedAt: boundedNumber(routine?.sessionEndedAt) };
       });
       const relation = typeof source.temporal?.relation === 'string' ? source.temporal.relation : 'none';
       return { recordedSeries: boundedNumber(source.recordedSeries), todaySeries: boundedNumber(source.todaySeries), sessionsCompleted: boundedNumber(source.sessionsCompleted), currentPlanPercent: boundedNumber(source.currentPlanPercent, 0, 100), lastActivity: boundedNumber(source.lastActivity), activityDays: boundedNumber(source.activityDays), temporal: { relation, sameMinute: source.temporal?.sameMinute === true, sameHour: source.temporal?.sameHour === true, sameDay: source.temporal?.sameDay === true, otherDay: source.temporal?.otherDay === true }, routines };
@@ -673,11 +672,36 @@
       routineReminderText.textContent = 'Hoy suele ser uno de tus días de entrenamiento. Si te viene bien, elige cualquier sesión.';
     }
 
-    function renderNextSession(dashboard) {
-      const current = dashboard.routines.find((routine) => routine.doneSeries > 0 && routine.doneSeries < routine.totalSeries);
-      const next = current || dashboard.routines.find((routine) => routine.percent < 100) || dashboard.routines[0];
-      const catalog = routineCatalog.find((routine) => routine.routineId === next.routineId) || routineCatalog[0];
-      const continuing = Boolean(current);
+    function renderNextSession(dashboard, history = recentSessions) {
+      const now = new Date();
+      const sameLocalDay = timestamp => timestamp > 0 && new Date(timestamp).toDateString() === now.toDateString();
+      const byId = new Map(routineCatalog.map((routine, index) => [routine.routineId, index]));
+      const activeToday = history.find(session => session.status === 'active'
+        && sameLocalDay(Number(session.startedAt))
+        && Number(session.completedSeries) < Number(session.totalSeries)
+        && byId.has(session.routineId));
+      const latestSession = history.find(session => byId.has(session.routineId) && Number(session.startedAt) > 0);
+      const latestProgress = [...dashboard.routines]
+        .filter(routine => routine.doneSeries > 0 && byId.has(routine.routineId))
+        .sort((left, right) => right.updatedAt - left.updatedAt)[0];
+      const progressIsNewer = latestProgress && Number(latestProgress.updatedAt) > Number(latestSession?.startedAt || 0);
+      const latestRoutineId = progressIsNewer ? latestProgress.routineId : latestSession?.routineId;
+      let selectedIndex;
+      let continuing = false;
+      if (activeToday) {
+        selectedIndex = byId.get(activeToday.routineId);
+        continuing = true;
+      } else if (latestRoutineId && progressIsNewer) {
+        const hasSessionStartedToday = sameLocalDay(latestProgress.sessionStartedAt) && !latestProgress.sessionEndedAt;
+        selectedIndex = byId.get(latestProgress.routineId) + (hasSessionStartedToday ? 0 : 1);
+        selectedIndex %= routineCatalog.length;
+        continuing = hasSessionStartedToday;
+      } else if (latestRoutineId) {
+        selectedIndex = (byId.get(latestRoutineId) + 1) % routineCatalog.length;
+      } else {
+        selectedIndex = 0;
+      }
+      const catalog = routineCatalog[selectedIndex] || routineCatalog[0];
       nextSessionKicker.textContent = continuing ? 'Continúa donde te quedaste' : 'Siguiente en tu rotación';
       nextSessionTitle.textContent = `${catalog.day} · ${catalog.title}`;
       nextSessionSummary.textContent = catalog.summary;
@@ -695,7 +719,7 @@
       const dashboard = normalizeDashboard(rawDashboard);
       const temporal = dashboard.temporal;
       const activityDays = dashboard.activityDays || (dashboard.lastActivity ? 1 : 0);
-      renderNextSession(dashboard);
+      renderNextSession(dashboard, recentSessions);
       const motivation = motivationFor(dashboard);
       updateHomeMotivation(activeProfile?.displayName ? `${activeProfile.displayName}, ${motivation.charAt(0).toLowerCase()}${motivation.slice(1)}` : motivation);
       progressRecordedSeries.textContent = String(dashboard.recordedSeries);
@@ -710,7 +734,10 @@
     async function refreshProgress() {
       if (!window.GymratikInstallGate?.isInstalled()) return;
       if (!window.TrainingProgressStore) return;
-      renderProgress(await window.TrainingProgressStore.getDashboard());
+      const dashboard = await window.TrainingProgressStore.getDashboard();
+      const history = await window.TrainingProgressStore.getHistory(100);
+      recentSessions = history;
+      renderProgress(dashboard);
     }
 
     function formatUpdateTimestamp(timestamp) {
@@ -815,7 +842,6 @@
     });
     window.addEventListener('training-progress-updated', () => { refreshProgress(); refreshProfile(); });
     window.addEventListener('training-profile-updated', refreshProfile);
-    window.addEventListener('training-database-reset', () => { databaseResetNotice = true; });
     window.addEventListener('training-storage-error', event => {
       progressNote.textContent = 'No se pudo guardar el avance en este momento.';
     });
@@ -827,7 +853,6 @@
     let localDataReady = false;
     const localInitialization = Promise.all([refreshProgress(), refreshProfile()]).then(() => {
       localDataReady = true;
-      if (databaseResetNotice) progressNote.textContent = 'La base anterior se reinició en v3; el historial previo se eliminó.';
       return true;
     }).catch((error) => {
       splashTitle.textContent = 'No se pudo leer el avance local';

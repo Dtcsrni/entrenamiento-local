@@ -19,14 +19,15 @@ class ProgressStoreContractTests(unittest.TestCase):
         self.assertIn("DB_VERSION = 3", self.source)
         self.assertIn("PROFILE_SCHEMA_VERSION = 3", self.source)
         self.assertIn("payload.schemaVersion !== 3", self.source)
-        self.assertIn("event.oldVersion < DB_VERSION", self.source)
+        self.assertIn("previousDatabaseVersion < DB_VERSION", self.source)
         self.assertIn("PROFILE_STORE", self.source)
         self.assertIn("META_STORE", self.source)
 
-    def test_progress_store_uses_only_v3_and_discards_pre_v3_local_fallbacks(self):
+    def test_progress_store_uses_v3_without_deleting_preexisting_data(self):
         self.assertIn("entrenamiento-progress-fallback-v3", self.source)
-        self.assertIn("PRE_V3_FALLBACK_KEYS", self.source)
-        self.assertIn("deleteObjectStore", self.source)
+        self.assertNotIn("deleteObjectStore", self.source)
+        self.assertIn("preservedExistingStores: true", self.source)
+        self.assertIn("restoreMissingRoutineProgress", self.source)
         self.assertNotIn("migrateLegacyProgress", self.source)
         self.assertNotIn("UNSUPPORTED_DATABASE_VERSION", self.source)
 

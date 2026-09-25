@@ -40,6 +40,12 @@ Definir requisitos verificables para Gymratik: Rutinas y progreso. Este document
 - **FUN-TRN-007 · P1:** deberá soportar calentamiento, trabajo, drop set, fallo y series asistidas.
 - **FUN-TRN-008 · P1:** deberá calcular discos por lado y calentamientos sin alterar registros.
 - **FUN-TRN-009 · P1:** deberá detectar récords con fórmula y versión explícitas.
+- **FUN-TRN-010 · P0:** la preparación inicial y de cada serie durará al menos 15 s y la cuenta regresiva continuará correctamente tras recarga o actualización.
+  - Aceptación: se persiste el instante de vencimiento; tras reabrir se muestra el tiempo restante y la serie no se inicia antes del vencimiento.
+- **FUN-TRN-011 · P1:** durante el descanso mínimo, el usuario podrá omitirlo manteniendo pulsado 5 s el control de serie.
+  - Aceptación: el llenado/animación es visible mientras se mantiene; soltar antes cancela sin iniciar la serie; el descanso ya vencido no se marca como omitido.
+- **FUN-TRN-012 · P1:** el usuario podrá omitir un ejercicio manteniendo pulsado 10 s un control independiente.
+  - Aceptación: mostrar feedback de pulsación; registrar el ejercicio como omitido, no inventar series ni rendimiento, permitir deshacer y avanzar la sesión.
 
 ### 4.2 Rutinas y gimnasio
 
@@ -136,6 +142,12 @@ Definir requisitos verificables para Gymratik: Rutinas y progreso. Este document
 - **FUN-PRO-010 · P1:** el nombre visible podrá contextualizar la frase de la portada.
   - Aceptación: el texto se construye localmente y se representa como texto, sin interpolación HTML ni envío remoto.
 - **FUN-PRO-011 · P0:** el perfil y la lectura o escritura del avance solo estarán disponibles al usar Gymratik en modo de aplicación instalada.
+- **FUN-PRO-012 · P1:** la portada deberá proponer la sesión activa del día o el siguiente día de la rotación tras la actividad más reciente.
+  - Aceptación: conserva una sesión activa iniciada hoy; si la última sesión fue ayer, propone el día siguiente y envuelve al día 1 después del día 4.
+- **FUN-PRO-013 · P1:** el valor numérico de carga deberá poder editarse directamente además del deslizador.
+  - Aceptación: acepta decimales válidos en unidad seleccionada y sincroniza ambos controles; no afirma incrementos o rangos propios de una máquina no identificada.
+- **FUN-PWA-007 · P0:** una actualización local no deberá eliminar progreso de sesión ni almacenes IndexedDB existentes.
+  - Aceptación: actualizaciones añaden únicamente stores/índices requeridos; si falta el registro central, la portada recupera los snapshots locales de las cuatro rutinas antes de consultar historial.
   - Aceptación: al abrirse en una pestaña del navegador se muestra una invitación descartable para instalar; se pueden consultar las rutinas, pero la portada no expone perfil, historial ni estadísticas y las rutinas no restauran ni guardan progreso. En modo instalado, perfil e historial vuelven a estar disponibles sin cambiar los datos guardados.
 
 **Estabilidad de rutina:** el objetivo guardado en el perfil es informativo y no altera ejercicios, volumen ni frecuencia del plan. La rutina permanece estable mientras resulte tolerable y permita progresar; su revisión responde a estancamiento persistente, recuperación/adherencia insuficientes, dolor o cambios contextuales, no a una rotación automática por calendario.
