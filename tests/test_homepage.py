@@ -171,6 +171,14 @@ class HomepageContractTests(unittest.TestCase):
         self.assertIn('id="resetAllButton"', self.html)
         self.assertIn('clearAll()', self.html)
 
+    def test_homepage_selects_active_session_or_next_routine_from_latest_activity(self):
+        next_session = self.html.split('function renderNextSession', 1)[1].split('function renderProgress', 1)[0]
+        self.assertIn('activeToday', next_session)
+        self.assertIn('progressIsNewer', next_session)
+        self.assertIn('(byId.get(latestRoutineId) + 1) % routineCatalog.length', next_session)
+        self.assertIn('const dashboard = await window.TrainingProgressStore.getDashboard();', self.html)
+        self.assertIn('const history = await window.TrainingProgressStore.getHistory(100);', self.html)
+
     def test_homepage_exposes_local_profile_and_backup_controls(self):
         for marker in (
             'id="profile"',

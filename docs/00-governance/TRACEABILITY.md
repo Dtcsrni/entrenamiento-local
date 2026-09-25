@@ -7,6 +7,9 @@ La matriz crecerá con la implementación. `Planned` significa que no existe tod
 | FUN-TRN-001 | RISK-004 | ADR-003 | TST-TRN-001 | Planned |
 | FUN-TRN-003 | RISK-004 | ADR-003 | TST-TRN-002 | Planned |
 | FUN-TRN-005 | RISK-004 | ADR-003 | TST-TRN-003 | Planned |
+| FUN-TRN-010 | RISK-004 | ADR-015 | TST-TRN-010 | Partial |
+| FUN-TRN-011 | RISK-004 | ADR-014 | TST-TRN-011 | Partial |
+| FUN-TRN-012 | RISK-004 | ADR-014 | TST-TRN-012 | Partial |
 | FUN-GYM-001 | RISK-007, RISK-008 | ADR-012 | TST-GYM-001 | Planned |
 | FUN-NUT-001 | RISK-006 | ADR-007 | TST-NUT-001 | Planned |
 | FUN-NUT-002 | RISK-002, RISK-009 | ADR-006 | TST-NUT-002 | Planned |
@@ -30,6 +33,7 @@ La matriz crecerá con la implementación. `Planned` significa que no existe tod
 | FUN-PWA-004 | RISK-011 | ADR-016 | TST-PWA-004 | Partial |
 | FUN-PWA-005 | RISK-011 | ADR-016 | TST-PWA-005 | Partial |
 | FUN-PWA-006 | RISK-011 | ADR-016 | TST-PWA-006 | Partial |
+| FUN-PWA-007 | RISK-004 | ADR-015 | TST-PWA-029 | Partial |
 | FUN-PRO-001 | RISK-004 | ADR-013 | TST-PRO-001 | Partial |
 | FUN-PRO-002 | RISK-004, RISK-014 | ADR-015 | TST-PRO-002 | Partial |
 | FUN-PRO-003 | RISK-004 | ADR-013 | TST-PRO-003 | Partial |
@@ -41,6 +45,8 @@ La matriz crecerá con la implementación. `Planned` significa que no existe tod
 | FUN-PRO-009 | RISK-004 | ADR-014 | TST-PRO-009 | Partial |
 | FUN-PRO-010 | RISK-004 | ADR-014 | TST-PRO-010 | Partial |
 | FUN-PRO-011 | RISK-003 | ADR-013, ADR-015 | TST-PRO-011 | Partial |
+| FUN-PRO-012 | RISK-004 | ADR-014 | TST-PRO-012 | Partial |
+| FUN-PRO-013 | RISK-004 | ADR-014 | TST-PRO-013 | Partial |
 | NFR-REL-001 | RISK-004 | ADR-013, ADR-015 | TST-PWA-012 | Partial |
 | NFR-REL-002 | RISK-004 | ADR-013, ADR-015 | TST-PWA-013 | Partial |
 | NFR-AVA-001 | RISK-011 | ADR-016 | TST-PWA-014 | Partial; offline real pending |

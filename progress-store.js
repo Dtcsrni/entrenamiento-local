@@ -11,9 +11,6 @@
   const DEFAULT_PROFILE_ID = 'local-default';
   const PROFILE_SCHEMA_VERSION = 3;
   const FALLBACK_KEY = 'entrenamiento-progress-fallback-v3';
-  const PRE_V3_FALLBACK_KEYS = [
-    'entrenamiento-progress-fallback-v1',
-  ];
   const ROUTINES = {
     day1: { label: 'Día 1 · Espalda + Bíceps', totalExercises: 6, totalSeries: 20 },
     day2: { label: 'Día 2 · Pierna + Glúteo', totalExercises: 6, totalSeries: 20 },
@@ -118,9 +115,6 @@
       request.onupgradeneeded = (event) => {
         previousDatabaseVersion = event.oldVersion;
         const db = request.result;
-        if (event.oldVersion < DB_VERSION) {
-          Array.from(db.objectStoreNames).forEach((storeName) => db.deleteObjectStore(storeName));
-        }
         if (!db.objectStoreNames.contains(PROGRESS_STORE)) {
           const store = db.createObjectStore(PROGRESS_STORE, { keyPath: 'routineId' });
           store.createIndex('updatedAt', 'updatedAt');
@@ -171,13 +165,8 @@
       request.onsuccess = () => {
         const db = request.result;
         db.onversionchange = () => db.close();
-        try {
-          PRE_V3_FALLBACK_KEYS.forEach((key) => window.localStorage.removeItem(key));
-        } catch (error) {
-          emit('training-storage-error', { error, source: 'previous-data-cleanup' });
-        }
         if (previousDatabaseVersion > 0 && previousDatabaseVersion < DB_VERSION) {
-          emit('training-database-reset', { version: DB_VERSION, previousVersion: previousDatabaseVersion, clearedPreviousData: true });
+          emit('training-database-upgraded', { version: DB_VERSION, previousVersion: previousDatabaseVersion, preservedExistingStores: true });
         }
         resolve(db);
       };
@@ -272,7 +261,16 @@
       byExercise.get(exercise).push(state[key] === true);
     });
     const doneSeries = seriesKeys.reduce((sum, key) => sum + Number(state[key] === true), 0);
-    const completedExercises = [...byExercise.values()].filter((series) => series.length > 0 && series.every(Boolean)).length;
+    const skippedExercises = state?.__skippedExercises && typeof state.__skippedExercises === 'object' ? state.__skippedExercises : {};
+    const completedExerciseIds = new Set([...byExercise.entries()]
+      .filter(([, series]) => series.length > 0 && series.every(Boolean))
+      .map(([exerciseId]) => exerciseId));
+    Object.entries(skippedExercises).forEach(([exerciseId, skipped]) => {
+      const numericId = Number(exerciseId);
+      if (skipped === true && Number.isInteger(numericId) && numericId >= 1 && numericId <= routine.totalExercises) completedExerciseIds.add(exerciseId);
+    });
+    const completedExercises = completedExerciseIds.size;
+    const skippedExerciseCount = Object.entries(skippedExercises).filter(([exerciseId, skipped]) => skipped === true && Number.isInteger(Number(exerciseId)) && Number(exerciseId) >= 1 && Number(exerciseId) <= routine.totalExercises).length;
     const timing = state && state.__timing && typeof state.__timing === 'object' ? state.__timing : {};
     const warmupCompleted = timing.warmup?.phase === 'done';
     const sessionStartedAt = Number.isFinite(Number(timing.sessionStartedAt)) ? Number(timing.sessionStartedAt) : 0;
@@ -283,6 +281,7 @@
       doneSeries,
       warmupCompleted,
       completedExercises,
+      skippedExerciseCount,
       sessionStartedAt,
       sessionEndedAt,
       sessionId: sessionStartedAt ? `${routine.id}:${sessionStartedAt}` : null,
@@ -306,6 +305,7 @@
       doneSeries: metrics.doneSeries,
       warmupCompleted: metrics.warmupCompleted,
       completedExercises: metrics.completedExercises,
+      skippedExercises: metrics.skippedExerciseCount,
       sessionStartedAt: metrics.sessionStartedAt,
       sessionEndedAt: metrics.sessionEndedAt,
       sessionId,
@@ -336,6 +336,7 @@
       completedSeries: nonNegativeNumber(record.doneSeries),
       warmupCompleted: record.warmupCompleted === true,
       completedExercises: nonNegativeNumber(record.completedExercises),
+      skippedExercises: nonNegativeNumber(record.skippedExercises),
       totalSeries: nonNegativeNumber(record.totalSeries),
       updatedAt: record.updatedAt,
       performance: Array.isArray(record.performance) ? record.performance : [],
@@ -533,6 +534,7 @@
     }
     try {
       window.localStorage.removeItem(FALLBACK_KEY);
+      Object.keys(ROUTINES).forEach((routineId) => window.localStorage.removeItem(`fitlovers-${routineId}-series-v1`));
     } catch (error) {
       emit('training-storage-error', { error });
       throw error;
@@ -577,6 +579,7 @@
       Object.keys(fallback.sessions).forEach((key) => { if (fallback.sessions[key]?.routineId === routineId) delete fallback.sessions[key]; });
       Object.keys(fallback.activity).forEach((key) => { if (fallback.activity[key]?.routineId === routineId) delete fallback.activity[key]; });
       window.localStorage.setItem(FALLBACK_KEY, JSON.stringify(fallback));
+      window.localStorage.removeItem(`fitlovers-${routineId}-series-v1`);
     } catch (error) {
       emit('training-storage-error', { error });
       throw error;
@@ -691,14 +694,42 @@
           totalSeries: routine.totalSeries,
           doneSeries: nonNegativeNumber(record?.doneSeries),
           completedExercises: nonNegativeNumber(record?.completedExercises),
+          updatedAt: nonNegativeNumber(record?.updatedAt),
+          sessionStartedAt: nonNegativeNumber(record?.sessionStartedAt),
+          sessionEndedAt: nonNegativeNumber(record?.sessionEndedAt),
           percent: record ? Math.min(100, Math.round((nonNegativeNumber(record.doneSeries) / routine.totalSeries) * 100)) : 0,
         };
       }),
     };
   }
 
+  async function restoreMissingRoutineProgress() {
+    requireInstalledApp();
+    const existing = await readDatabase();
+    const knownRoutines = new Set(existing.progress.map((record) => record?.routineId));
+    let restored = 0;
+    for (const routineId of Object.keys(ROUTINES)) {
+      if (knownRoutines.has(routineId)) continue;
+      let state;
+      try {
+        state = JSON.parse(window.localStorage.getItem(`fitlovers-${routineId}-series-v1`) || 'null');
+      } catch (_) {
+        state = null;
+      }
+      if (!state || typeof state !== 'object' || Array.isArray(state)) continue;
+      const hasSavedProgress = Object.entries(state).some(([key, value]) => /^e\d+s\d+$/.test(key) && value === true)
+        || Number(state.__timing?.sessionStartedAt) > 0
+        || Number(state.__timing?.warmup?.preparationEndsAt) > 0;
+      if (!hasSavedProgress) continue;
+      await capture({ routineId, state });
+      restored += 1;
+    }
+    return restored;
+  }
+
   async function getDashboard() {
     requireInstalledApp();
+    await restoreMissingRoutineProgress();
     const data = await backfillActivity(await readDatabase());
     return dashboardFrom(data);
   }

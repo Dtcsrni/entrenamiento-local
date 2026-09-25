@@ -262,7 +262,7 @@ window.TrainingProgressStore.importData(payload).then(() => { throw new Error('S
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(result.stdout), {"ok": True})
 
-    def test_existing_indexeddb_v1_or_v2_is_reset_to_empty_v3(self):
+    def test_existing_indexeddb_v1_or_v2_is_upgraded_without_deleting_stores_or_local_routine_state(self):
         script = r"""
 const fs = require('fs');
 const vm = require('vm');
@@ -317,15 +317,55 @@ async function verify(oldVersion) {
   vm.runInNewContext(source, { window, CustomEvent: window.CustomEvent, localStorage: window.localStorage, navigator: {}, console, Date, setTimeout, clearTimeout });
   const dashboard = await window.TrainingProgressStore.getDashboard();
   assert.strictEqual(dashboard.routines.every(routine => routine.doneSeries === 0), true);
-  assert.deepStrictEqual([...deletedStores].sort(), ['oldProfile', 'oldProgress']);
-  assert.deepStrictEqual([...stores.keys()].sort(), ['activity', 'meta', 'profiles', 'routineProgress', 'sessions']);
-  assert.strictEqual(storage.has('entrenamiento-progress-fallback-v1'), false);
+  assert.deepStrictEqual(deletedStores, []);
+  assert.deepStrictEqual([...stores.keys()].sort(), ['activity', 'meta', 'oldProfile', 'oldProgress', 'profiles', 'routineProgress', 'sessions']);
+  assert.strictEqual(storage.has('entrenamiento-progress-fallback-v1'), true);
   for (let day = 1; day <= 4; day += 1) {
     assert.strictEqual(storage.get(`fitlovers-day${day}-series-v1`), `{"e${day}s1":true}`);
   }
-  assert.strictEqual(events.some(event => event.name === 'training-database-reset' && event.detail.previousVersion === oldVersion), true);
+  assert.strictEqual(events.some(event => event.name === 'training-database-upgraded' && event.detail.previousVersion === oldVersion && event.detail.preservedExistingStores === true), true);
 }
 (async () => { await verify(1); await verify(2); console.log(JSON.stringify({ ok: true })); })().catch(error => { console.error(error); process.exit(1); });
+"""
+        result = subprocess.run(
+            ["node", "-e", script, str(STORE)], cwd=ROOT, check=False, capture_output=True, text=True
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout), {"ok": True})
+
+    def test_missing_central_progress_is_recovered_from_local_routine_snapshot(self):
+        script = r"""
+const fs = require('fs');
+const vm = require('vm');
+const assert = require('assert');
+const source = fs.readFileSync(process.argv[1], 'utf8');
+const storage = new Map([['fitlovers-day1-series-v1', JSON.stringify({ e1s1: true, __timing: { sessionStartedAt: Date.now() - 120000, sessionEndedAt: 0, warmup: { phase: 'done' } } })]]);
+const window = { GymratikInstallGate: { isInstalled() { return true; } },
+  CustomEvent: class CustomEvent { constructor(name, init) { this.name = name; this.detail = init?.detail; } },
+  dispatchEvent() {}, localStorage: { getItem(key) { return storage.get(key) ?? null; }, setItem(key, value) { storage.set(key, value); }, removeItem(key) { storage.delete(key); } } };
+vm.runInNewContext(source, { window, CustomEvent: window.CustomEvent, localStorage: window.localStorage, navigator: {}, console, Date, setTimeout, clearTimeout });
+(async () => {
+  const dashboard = await window.TrainingProgressStore.getDashboard();
+  assert.strictEqual(dashboard.routines.find(row => row.routineId === 'day1').doneSeries, 1);
+  const sessions = await window.TrainingProgressStore.getHistory(10);
+  assert.strictEqual(sessions.filter(session => session.routineId === 'day1').length, 1);
+  assert.strictEqual(JSON.parse(storage.get('fitlovers-day1-series-v1')).e1s1, true);
+  console.log(JSON.stringify({ ok: true }));
+})().catch(error => { console.error(error); process.exit(1); });
+"""
+        result = subprocess.run(
+            ["node", "-e", script, str(STORE)], cwd=ROOT, check=False, capture_output=True, text=True
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout), {"ok": True})
+
+    def test_skipped_exercise_advances_completion_without_fabricating_sets(self):
+        script = r"""
+const fs = require('fs'); const vm = require('vm'); const assert = require('assert');
+const source = fs.readFileSync(process.argv[1], 'utf8'); const storage = new Map();
+const window = { GymratikInstallGate: { isInstalled() { return true; } }, CustomEvent: class CustomEvent { constructor(name, init) { this.name = name; this.detail = init?.detail; } }, dispatchEvent() {}, localStorage: { getItem(key) { return storage.get(key) ?? null; }, setItem(key, value) { storage.set(key, value); }, removeItem(key) { storage.delete(key); } } };
+vm.runInNewContext(source, { window, CustomEvent: window.CustomEvent, localStorage: window.localStorage, navigator: {}, console, Date, setTimeout, clearTimeout });
+(async () => { const started = Date.now() - 10000; await window.TrainingProgressStore.capture({ routineId: 'day1', state: { e1s1: false, __skippedExercises: { '1': true, '999': true }, __timing: { sessionStartedAt: started, warmup: { phase: 'done' } }, __performance: { '1': { e1s1: { reps: 10, load: 40 } } } } }); const data = await window.TrainingProgressStore.exportData(); const record = data.data.progress.find(item => item.routineId === 'day1'); const session = data.data.sessions.find(item => item.routineId === 'day1'); assert.strictEqual(record.doneSeries, 0); assert.strictEqual(record.completedExercises, 1); assert.strictEqual(record.skippedExercises, 1); assert.strictEqual(record.performance.length, 0); assert.strictEqual(session.completedSeries, 0); assert.strictEqual(session.skippedExercises, 1); console.log(JSON.stringify({ ok: true })); })().catch(error => { console.error(error); process.exit(1); });
 """
         result = subprocess.run(
             ["node", "-e", script, str(STORE)], cwd=ROOT, check=False, capture_output=True, text=True
