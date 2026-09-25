@@ -2718,6 +2718,17 @@ body::before,body::after{animation:none!important}
 .techStep{display:grid!important;grid-template-columns:minmax(0,1fr)!important;align-items:start!important;gap:4px!important}
 .techStepTitle,.techStepText{grid-column:1!important;min-width:0!important;overflow-wrap:anywhere!important}
 </style>
+<style data-enhancement="interaction-feedback-v1">
+button:not(:disabled):active,[role="button"]:not([aria-disabled="true"]):active{transform:scale(.97);filter:brightness(.9)}
+.performanceRepsControl{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;align-items:center;gap:.55rem;width:100%}
+.performanceRepsValue{display:grid;min-height:48px;place-items:center;padding:.4rem .55rem;border:1px solid rgba(101,242,221,.36);border-radius:.7rem;background:rgba(15,45,65,.72);color:#eaffff;font-size:clamp(1rem,3vw,1.3rem);font-weight:900;text-align:center;font-variant-numeric:tabular-nums}
+.performanceRepsNudge{display:grid;min-width:48px;min-height:48px;place-items:center;border:1px solid rgba(114,220,255,.48);border-radius:.7rem;background:rgba(38,104,137,.38);color:#f1ffff;font:inherit;font-size:1.45rem;font-weight:850;cursor:pointer;touch-action:manipulation;transition:transform .12s ease,filter .12s ease,background-color .12s ease}
+.performanceRepsNudge:disabled{opacity:.42;cursor:default}
+.performanceField .performanceReps{width:100%;min-height:28px;touch-action:pan-x}
+button:not(:disabled):focus-visible{outline:2px solid #fff;outline-offset:3px}
+@media(max-width:640px){.performanceRepsControl{grid-template-columns:52px minmax(0,1fr) 52px;gap:.65rem}.performanceRepsValue{min-height:52px}.performanceRepsNudge{min-width:52px;min-height:52px}}
+@media(prefers-reduced-motion:reduce){.performanceRepsNudge{transition:none}button:not(:disabled):active,[role="button"]:not([aria-disabled="true"]):active{transform:none;filter:none}}
+</style>
 <style data-fix="day4-static-and-gif-layout">
 .phaseRow .day4StaticFrame{object-fit:contain!important;background:#fff!important}.gifProof{margin-top:12px;padding:10px 12px;border:1px solid rgba(45,97,121,.55);border-radius:14px;background:rgba(12,24,34,.68)}.gifProofTitle{font-size:12px;font-weight:900;letter-spacing:.6px;color:#72D4F0;margin-bottom:7px}.gifPreview{max-width:240px;margin:0 auto;aspect-ratio:1/1}.gifPreview img.day4ExerciseGif{object-fit:contain!important}.gifProof .videoProof{margin-top:7px!important}@media(max-width:700px){.gifPreview{max-width:220px}}
 </style></style>
@@ -3230,7 +3241,7 @@ body::before,body::after{animation:none!important}
   const trackers = [...document.querySelectorAll('.exerciseTracker')];
   const completionPanel = document.getElementById('sessionCompletionPanel');
   const summaryList = document.getElementById('sessionSummaryList');
-  const exerciseCards = [...document.querySelectorAll('main.cards > article.card')];
+  const exerciseCards = [...document.querySelectorAll('article.card[data-exercise-index]')];
   exerciseCards.forEach((card, index) => { card.id = card.id || `exercise-${index + 1}`; });
   let summaryToggle = null;
   let summaryBody = null;
@@ -3304,7 +3315,11 @@ body::before,body::after{animation:none!important}
   const authorContextTopicOrder = ["bodybuilding", "powerlifting", "weightlifting", "boxing", "basketball", "football", "soccer", "tennis", "wrestling", "swimming", "swim", "cycling", "marathon", "sprint", "running", "skating", "surfing", "yoga", "pilates", "athlete", "sportsman", "athletic", "fitness", "workout", "training", "gym"];
   const fallbackAuthorContext = item => { const topic = authorContextTopicOrder.find(value => (item.topics || []).includes(value)); return topic ? `ámbito: ${topicLabels[topic]}` : "ámbito: entrenamiento y fitness"; };
   const motivationalQuotes = (fitnessQuotePayload.quotes || []).map(item => ({ content: item.quoteEs || item.quoteOriginal, author: item.author || "", context: item.authorContext || fallbackAuthorContext(item), portrait: item.portrait ? `../frases_fitness/${item.portrait}` : "" }));
-  if (!motivationalQuotes.length) motivationalQuotes.push({ content: 'La constancia convierte cada entrenamiento en progreso.', author: '', portrait: '' });
+  if (!motivationalQuotes.length) motivationalQuotes.push(
+    { content: 'La constancia convierte cada entrenamiento en progreso.', author: '', portrait: '' },
+    { content: 'Una serie bien hecha también cuenta.', author: '', portrait: '' },
+    { content: 'El avance se construye repetición a repetición.', author: '', portrait: '' }
+  );
   const quoteEl = document.getElementById('motivationMessage');
   const sourceEl = document.getElementById('motivationNote');
   const portraitEl = document.getElementById('motivationPortrait');
@@ -3366,11 +3381,15 @@ body::before,body::after{animation:none!important}
     const performancePanel = document.createElement('div');
     performancePanel.className = 'performanceEntry';
     const exerciseId = String(item.index + 1);
-    const repsLabel = document.createElement('label');
+    const repsLabel = document.createElement('div');
     repsLabel.className = 'performanceField';
     const repsTitle = document.createElement('span'); repsTitle.textContent = 'Repeticiones realizadas';
-    const repsOutput = document.createElement('output'); repsOutput.className = 'performanceRepsValue'; repsOutput.textContent = 'Desliza para elegir';
-    const repsInput = document.createElement('input'); repsInput.className = 'performanceReps'; repsInput.type = 'range'; repsInput.min = '0'; repsInput.max = '40'; repsInput.step = '1'; repsInput.value = '0'; repsInput.setAttribute('aria-label', `Repeticiones realizadas en ${item.title}`); repsLabel.append(repsTitle, repsOutput, repsInput);
+    const repsControl = document.createElement('div'); repsControl.className = 'performanceRepsControl';
+    const repsDown = document.createElement('button'); repsDown.type = 'button'; repsDown.className = 'performanceRepsNudge'; repsDown.setAttribute('aria-label', 'Bajar una repetición'); repsDown.textContent = '−';
+    const repsOutput = document.createElement('output'); repsOutput.className = 'performanceRepsValue'; repsOutput.setAttribute('aria-live', 'polite'); repsOutput.setAttribute('aria-atomic', 'true'); repsOutput.textContent = `Elige entre ${item.repMinimum} y ${item.repMaximum + 4}`;
+    const repsUp = document.createElement('button'); repsUp.type = 'button'; repsUp.className = 'performanceRepsNudge'; repsUp.setAttribute('aria-label', 'Subir una repetición'); repsUp.textContent = '+';
+    repsControl.append(repsDown, repsOutput, repsUp);
+    const repsInput = document.createElement('input'); repsInput.className = 'performanceReps'; repsInput.type = 'range'; repsInput.min = String(item.repMinimum); repsInput.max = String(item.repMaximum + 4); repsInput.step = '1'; repsInput.value = String(item.repMinimum); repsInput.dataset.selected = 'false'; repsInput.setAttribute('aria-label', `Repeticiones realizadas en ${item.title}`); repsLabel.append(repsTitle, repsControl, repsInput);
     const loadLabel = document.createElement('label');
     loadLabel.className = 'performanceField';
     const loadHead = document.createElement('span'); loadHead.className = 'performanceLoadHead';
@@ -3402,13 +3421,18 @@ body::before,body::after{animation:none!important}
     };
     const savePerformanceDraft = () => {
       if (!state.__performanceDraft) state.__performanceDraft = {};
-      state.__performanceDraft[exerciseId] = { reps: item.performanceReps.value, load: item.performanceLoad.value, loadUnit: item.performanceLoadUnit };
+      state.__performanceDraft[exerciseId] = { reps: item.performanceReps.dataset.selected === 'true' ? item.performanceReps.value : '0', load: item.performanceLoad.value, loadUnit: item.performanceLoadUnit };
       save();
     };
-    if (savedDraft) { item.performanceReps.value = savedDraft.reps || '0'; item.performanceLoad.value = savedDraft.load ?? '0'; }
-    item.performanceRepsOutput.textContent = Number(item.performanceReps.value) > 0 ? `${item.performanceReps.value} ${Number(item.performanceReps.value) === 1 ? 'repetición' : 'repeticiones'}` : 'Desliza para elegir';
+    const savedReps = Number(savedDraft?.reps); const savedRepsValid = Number.isInteger(savedReps) && savedReps >= item.repMinimum && savedReps <= item.repMaximum + 4; item.performanceReps.value = String(savedRepsValid ? savedReps : item.repMinimum); item.performanceReps.dataset.selected = String(savedRepsValid); if (savedDraft) item.performanceLoad.value = savedDraft.load ?? '0';
+    const renderPerformanceReps = () => { const selected = item.performanceReps.dataset.selected === 'true'; const value = Number(item.performanceReps.value); item.performanceRepsOutput.textContent = selected ? `${value} ${value === 1 ? 'repetición' : 'repeticiones'}` : `Elige entre ${item.repMinimum} y ${item.repMaximum + 4}`; repsDown.disabled = selected && value <= item.repMinimum; repsUp.disabled = selected && value >= item.repMaximum + 4; };
+    item.performanceRepsControl = repsControl;
+    const adjustPerformanceReps = delta => { const selected = item.performanceReps.dataset.selected === 'true'; const value = selected ? Number(item.performanceReps.value) + delta : item.repMinimum + Math.max(0, delta); item.performanceReps.value = String(Math.max(item.repMinimum, Math.min(item.repMaximum + 4, value))); item.performanceReps.dataset.selected = 'true'; renderPerformanceReps(); savePerformanceDraft(); };
+    repsDown.addEventListener('click', () => adjustPerformanceReps(-1));
+    repsUp.addEventListener('click', () => adjustPerformanceReps(1));
+    renderPerformanceReps();
     updateLoadControl();
-    item.performanceReps.addEventListener('input', () => { item.performanceRepsOutput.textContent = `${item.performanceReps.value} ${Number(item.performanceReps.value) === 1 ? 'repetición' : 'repeticiones'}`; savePerformanceDraft(); });
+    item.performanceReps.addEventListener('input', () => { item.performanceReps.dataset.selected = 'true'; renderPerformanceReps(); savePerformanceDraft(); });
     item.performanceLoad.addEventListener('input', () => { updateLoadControl(); savePerformanceDraft(); });
     loadUnitSelect.addEventListener('change', () => {
       const previousUnit = item.performanceLoadUnit;
@@ -3854,14 +3878,15 @@ body::before,body::after{animation:none!important}
       const loadUnit = item.performanceLoadUnit === 'lb' ? 'lb' : 'kg';
       const load = Number.isFinite(loadValue) && loadValue > 0 ? loadValue : null;
       const loadKg = load === null ? null : loadUnit === 'lb' ? load * 0.45359237 : load;
-      if (Number.isInteger(reps) && reps >= 1 && reps <= 40) {
+      if (item.performanceReps?.dataset.selected === 'true' && Number.isInteger(reps) && reps >= item.repMinimum && reps <= item.repMaximum + 4) {
         if (!state.__performance) state.__performance = {};
         if (!state.__performance[String(item.index + 1)]) state.__performance[String(item.index + 1)] = {};
         state.__performance[String(item.index + 1)][nextKey] = { title: item.title, reps, load, loadUnit, loadKg, updatedAt: completedAt };
       }
-      if (load !== null) loadOutput.textContent = loadUnit === 'lb' ? `${load} lb (${loadKg.toFixed(1)} kg)` : `${load} kg`;
-      item.performanceReps.value = '0';
-      item.performanceRepsOutput.textContent = 'Desliza para elegir';
+      if (load !== null && item.performanceLoadOutput) item.performanceLoadOutput.textContent = loadUnit === 'lb' ? `${load} lb (${loadKg.toFixed(1)} kg)` : `${load} kg`;
+      item.performanceReps.value = String(item.repMinimum);
+      item.performanceReps.dataset.selected = 'false';
+      item.performanceRepsOutput.textContent = `Elige entre ${item.repMinimum} y ${item.repMaximum + 4}`;
       if (state.__performanceDraft?.[String(item.index + 1)]) state.__performanceDraft[String(item.index + 1)].reps = '0';
       state[nextKey] = true;
       recordSeriesTime(item, seriesIndex, completedAt);
@@ -3881,7 +3906,7 @@ body::before,body::after{animation:none!important}
       updateSummary();
     });
     tracker.querySelector('.nextExerciseCue')?.addEventListener('click', event => {
-      const next = document.querySelectorAll('main.cards > article.card')[Number(event.currentTarget.dataset.next) - 1];
+      const next = document.querySelectorAll('article.card[data-exercise-index]')[Number(event.currentTarget.dataset.next) - 1];
       next?.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
     });
     updateTracker(tracker);
@@ -4033,7 +4058,7 @@ body{height:auto!important;min-height:100%!important;overflow-x:hidden!important
   const panel = document.getElementById('sessionGamification');
   if (!panel) return;
   const trackers = [...document.querySelectorAll('.exerciseTracker')];
-  const cards = [...document.querySelectorAll('main.cards > article.card')];
+  const cards = [...document.querySelectorAll('article.card[data-exercise-index]')];
   const warmupPhase = document.getElementById('warmupPhase');
   const xpEl = document.getElementById('gamificationXp');
   const seriesEl = document.getElementById('gamificationSeries');
@@ -4201,7 +4226,7 @@ body{height:auto!important;min-height:100%!important;overflow-x:hidden!important
   }
 
   function syncCompletedVeils(){
-    doc.querySelectorAll('main.cards > article.card').forEach(function(card){
+    doc.querySelectorAll('article.card[data-exercise-index]').forEach(function(card){
       var veil = Array.from(card.children).find(function(child){ return child.classList.contains('completedExerciseVeil'); });
       if (card.classList.contains('exerciseFinished')) {
         if (veil) return;

@@ -1,8 +1,9 @@
+import re
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from scripts.build_pwa_service_worker import fingerprint_content
+from scripts.build_pwa_service_worker import build_precache, fingerprint_content, render
 
 
 ROOT = Path(__file__).parents[1]
@@ -36,6 +37,19 @@ class ServiceWorkerContractTests(unittest.TestCase):
 
             self.assertEqual(fingerprint_content(text_asset), b"a\nb\nc")
             self.assertEqual(fingerprint_content(binary_asset), b"a\r\nb\rc")
+
+    def test_generated_worker_cache_fingerprint_matches_current_precache(self):
+        generated = render(build_precache())
+        generated_name = re.search(r"const CACHE_NAME = '([^']+)';", generated)
+        checked_in_name = re.search(r"const CACHE_NAME = '([^']+)';", self.service_worker)
+
+        self.assertIsNotNone(generated_name)
+        self.assertIsNotNone(checked_in_name)
+        self.assertEqual(
+            checked_in_name.group(1),
+            generated_name.group(1),
+            "sw.js está obsoleto: ejecuta python scripts/build_pwa_service_worker.py",
+        )
 
     def test_shared_routine_stylesheet_is_part_of_the_offline_precache(self):
         for source in (self.service_worker, self.generator):

@@ -160,6 +160,33 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
                 )
                 self.assertNotRegex(source, r"\bseriesPreparing\b")
 
+    def test_repetition_selector_uses_exercise_range_plus_four_without_defaulting(self) -> None:
+        for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
+            source = path.read_text(encoding="utf-8")
+            control = source[
+                source.index("const repsTitle"):source.index("const loadLabel")
+            ]
+            reps_logic = source[
+                source.index("const renderPerformanceReps"):source.index(
+                    "item.performanceLoad.addEventListener"
+                )
+            ]
+            with self.subTest(path=path.name):
+                self.assertIn("repsInput.min = String(item.repMinimum)", source)
+                self.assertIn("repsInput.max = String(item.repMaximum + 4)", source)
+                self.assertIn("repsInput.dataset.selected = 'false'", source)
+                self.assertIn("item.performanceReps.dataset.selected === 'true'", source)
+                self.assertIn("reps <= item.repMaximum + 4", source)
+                self.assertIn("performanceRepsNudge", control)
+                self.assertIn("Elige entre ${item.repMinimum} y ${item.repMaximum + 4}", control)
+                self.assertIn("aria-live', 'polite", control)
+                self.assertIn("Math.min(item.repMaximum + 4", reps_logic)
+                self.assertIn("Math.max(item.repMinimum", reps_logic)
+                self.assertIn("savePerformanceDraft()", reps_logic)
+                self.assertIn("data-enhancement=\"interaction-feedback-v1\"", source)
+                self.assertIn("button:not(:disabled):active", source)
+                self.assertNotIn("Number(item.performanceReps.value) > 0 ?", source)
+
     def test_all_routines_use_five_second_preparation_before_timing(self) -> None:
         for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
             source = path.read_text(encoding="utf-8")
@@ -195,6 +222,17 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
                 card_indexes = [int(value) for value in re.findall(r'<article class="card" data-exercise-index="(\d+)">', source)]
                 self.assertEqual(card_indexes, list(range(1, expected_cards[path.name] + 1)))
 
+    def test_routine_navigation_targets_every_exercise_card_in_the_document(self) -> None:
+        for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
+            source = path.read_text(encoding="utf-8")
+            with self.subTest(path=path.name):
+                self.assertNotIn("main.cards > article.card", source)
+                self.assertGreaterEqual(
+                    source.count("article.card[data-exercise-index]"), 4
+                )
+                self.assertIn("summaryExercise", source)
+                self.assertIn("nextExerciseCue", source)
+
     def test_all_routines_expose_accessible_segmented_warmup_and_series_progress(self) -> None:
         for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
             source = path.read_text(encoding="utf-8")
@@ -216,6 +254,27 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
                 self.assertIn("@keyframes progressPulse", source)
                 self.assertIn("@keyframes progressFinish", source)
                 self.assertIn("prefers-reduced-motion:reduce", source)
+
+    def test_load_slider_can_be_saved_when_completing_a_series(self) -> None:
+        for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
+            source = path.read_text(encoding="utf-8")
+            with self.subTest(path=path.name):
+                self.assertIn("item.performanceLoadOutput = loadOutput", source)
+                self.assertIn("item.performanceLoadOutput.textContent = loadUnit", source)
+                self.assertNotIn("loadOutput.textContent = loadUnit", source)
+
+    def test_motivation_button_has_multiple_offline_fallback_phrases(self) -> None:
+        fallback_phrases = (
+            "La constancia convierte cada entrenamiento en progreso.",
+            "Una serie bien hecha también cuenta.",
+            "El avance se construye repetición a repetición.",
+        )
+        for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
+            source = path.read_text(encoding="utf-8")
+            with self.subTest(path=path.name):
+                self.assertIn("if (!motivationalQuotes.length) motivationalQuotes.push(", source)
+                for phrase in fallback_phrases:
+                    self.assertIn(phrase, source)
 
     def test_all_routines_expose_access_to_homepage(self) -> None:
         for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
