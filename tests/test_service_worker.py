@@ -55,12 +55,13 @@ class ServiceWorkerContractTests(unittest.TestCase):
         for source in (self.service_worker, self.generator):
             self.assertIn("routine-liquid-glass-v13.css", source)
 
-    def test_worker_reports_incremental_download_and_defers_updates(self):
+    def test_worker_downloads_complete_package_before_activating_updates(self):
         for source in (self.service_worker, self.generator):
             with self.subTest(source=source[:40]):
                 self.assertIn("PRECACHE_PROGRESS", source)
                 self.assertIn("for (const path of PRECACHE)", source)
-                self.assertIn("self.skipWaiting()", source)
+                self.assertIn("await self.skipWaiting()", source)
+                self.assertLess(source.index("await cache.put(CACHE_COMPLETE_KEY"), source.index("await self.skipWaiting()"))
                 self.assertIn("ACTIVATE_UPDATE", source)
                 self.assertIn("self.clients.claim()", source)
                 self.assertIn("notifyClientsAppUpdated()", source)

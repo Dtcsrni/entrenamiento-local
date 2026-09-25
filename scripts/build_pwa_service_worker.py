@@ -220,9 +220,9 @@ self.addEventListener('install', (event) => {{
         await preserveOneCompleteCache();
       }}
     }}
-    // Solo la primera instalación toma control automáticamente. Las versiones
-    // posteriores esperan una confirmación explícita desde la portada.
-    if (!self.registration.active) await self.skipWaiting();
+    // Activar solo después de descargar y marcar completo todo el paquete.
+    // El progreso de entrenamiento vive en IndexedDB/localStorage, fuera de Cache API.
+    await self.skipWaiting();
   }})());
 }});
 

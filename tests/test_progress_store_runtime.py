@@ -388,21 +388,24 @@ const window = { GymratikInstallGate: { isInstalled() { return true; } },
 const context = { window, CustomEvent: window.CustomEvent, localStorage: window.localStorage, navigator: {}, console, Date, setTimeout, clearTimeout };
 vm.runInNewContext(source, context);
 const state = {
-  e1s1: true, e1s2: false,
+  e1s1: true, e1s2: true, e1s3: true,
   __timing: { sessionStartedAt: 123, sessionEndedAt: 0 },
   __performance: { '1': {
     e1s1: { title: 'Jalón al pecho', reps: 12, load: '88.1849049', loadUnit: 'lb', updatedAt: 124 },
-    e1s2: { title: 'Jalón al pecho', reps: 9, load: 'NaN', loadUnit: 'kg', updatedAt: 125 }
+    e1s2: { title: 'Jalón al pecho', reps: 9, load: null, loadUnit: 'kg', updatedAt: 125 },
+    e1s3: { title: 'Jalón al pecho', reps: 10, load: 0, loadUnit: 'kg', updatedAt: 126 }
   } }
 };
 window.TrainingProgressStore.capture({ routineId: 'day1', state }).then(() => window.TrainingProgressStore.getHistory()).then(history => {
   assert.strictEqual(history.length, 1);
-  assert.strictEqual(history[0].performance.length, 1);
+  assert.strictEqual(history[0].performance.length, 3);
   assert.strictEqual(history[0].performance[0].exerciseName, 'Jalón al pecho');
   assert.strictEqual(history[0].performance[0].reps, 12);
   assert.strictEqual(history[0].performance[0].load, 88.1849049);
   assert.strictEqual(history[0].performance[0].loadUnit, 'lb');
   assert.ok(Math.abs(history[0].performance[0].loadKg - 40) < 1e-7);
+  assert.strictEqual(history[0].performance.find(row => row.setKey === 'e1s2').load, null);
+  assert.strictEqual(history[0].performance.find(row => row.setKey === 'e1s3').load, 0);
   console.log(JSON.stringify({ ok: true }));
 }).catch(error => { console.error(error); process.exit(1); });
 """
