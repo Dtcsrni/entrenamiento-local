@@ -183,10 +183,23 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
                 self.assertIn("summaryButton.classList.toggle('isResting', restActive)", timing_display)
                 self.assertIn("summaryButton.classList.toggle('isSeriesActive', seriesActive)", timing_display)
                 self.assertIn("`● S${row.done + 1} activa · ${formatElapsed(now - timing.seriesStartedAt)}`", timing_display)
+                floating_summary = source[
+                    source.index('<aside class="floatingSessionSummary"') : source.index("</aside>")
+                ]
+                self.assertEqual(source.count('<aside class="floatingSessionSummary"'), 1)
+                self.assertIn('id="summaryActivity"', floating_summary)
+                self.assertIn('id="summaryActivityLabel"', floating_summary)
+                self.assertIn('id="summaryActivityClock"', floating_summary)
+                self.assertIn("let currentActivity = null", timing_display)
+                self.assertIn("Descanso listo · ${item.title}", timing_display)
+                self.assertIn("activityPanel.classList.toggle('isActive'", timing_display)
                 summary_style = re.search(
                     r'<style data-fix="rest-countdown-activity-v1">.*?</style>', source, re.S
                 )
                 self.assertIsNotNone(summary_style)
+                self.assertIn(".summaryActivity.isResting", summary_style.group(0))
+                self.assertIn(".summaryActivity.isActive", summary_style.group(0))
+                self.assertNotIn(".summaryActivity{position:fixed", summary_style.group(0))
                 self.assertIn(".summaryExercise.isSeriesActive .summaryExerciseState", summary_style.group(0))
                 self.assertIn("button.completeSetButton.is-resting", summary_style.group(0))
                 self.assertIn("animation:restSlowPulse 2.4s", summary_style.group(0))
