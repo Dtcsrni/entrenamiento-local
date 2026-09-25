@@ -160,6 +160,40 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
                 )
                 self.assertNotRegex(source, r"\bseriesPreparing\b")
 
+    def test_machine_series_rest_countdown_and_floating_activity_indicator(self) -> None:
+        for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
+            source = path.read_text(encoding="utf-8")
+            timing_display = source[
+                source.index("const renderTimingDisplays = () => {") : source.index(
+                    "// El cronómetro empieza después de una preparación explícita de 15 segundos."
+                )
+            ]
+            complete_button = source[
+                source.index("const updateCompleteButton = item => {") : source.index(
+                    "const updateSummary = () => {"
+                )
+            ]
+            with self.subTest(path=path.name):
+                self.assertIn("const restRemaining = Math.max(0, recommendation.minMs - restElapsed);", timing_display)
+                self.assertIn("Descanso restante: <strong>${formatCountdown(restRemaining)}</strong>", timing_display)
+                self.assertIn("item.restDisplay.hidden = !restActive", timing_display)
+                self.assertIn("if (!row.complete && timing?.restStartedAt) notifyRestReady(item, timing, restElapsed);", timing_display)
+                self.assertIn("button.classList.toggle('is-resting', resting && restRemaining > 0)", complete_button)
+                self.assertIn("button.classList.toggle('is-series-active', seriesActive && !preparing)", complete_button)
+                self.assertIn("summaryButton.classList.toggle('isResting', restActive)", timing_display)
+                self.assertIn("summaryButton.classList.toggle('isSeriesActive', seriesActive)", timing_display)
+                self.assertIn("`● S${row.done + 1} activa · ${formatElapsed(now - timing.seriesStartedAt)}`", timing_display)
+                summary_style = re.search(
+                    r'<style data-fix="rest-countdown-activity-v1">.*?</style>', source, re.S
+                )
+                self.assertIsNotNone(summary_style)
+                self.assertIn(".summaryExercise.isSeriesActive .summaryExerciseState", summary_style.group(0))
+                self.assertIn("button.completeSetButton.is-resting", summary_style.group(0))
+                self.assertIn("animation:restSlowPulse 2.4s", summary_style.group(0))
+                self.assertIn("animation:activityFastPulse .68s", summary_style.group(0))
+                self.assertIn(".exerciseTracker:has(.completeSetButton.is-series-active) .seriesProgressSegment.is-current", summary_style.group(0))
+                self.assertIn("@media(prefers-reduced-motion:reduce)", summary_style.group(0))
+
     def test_repetition_selector_uses_exercise_range_plus_four_without_defaulting(self) -> None:
         for path in sorted(CANONICAL.glob("Rutina_Dia_*_V1.html")):
             source = path.read_text(encoding="utf-8")
@@ -227,7 +261,10 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
                 self.assertIn("editor.step = '0.1'", source)
                 self.assertIn("entered <= Number(loadInput.max)", source)
                 self.assertIn("item.performanceLoadExact = Math.round(entered * 10) / 10", source)
-                self.assertIn("load: String(item.performanceLoadExact || 0)", source)
+                self.assertIn("load: item.performanceLoadSelected ? String(item.performanceLoadExact) : ''", source)
+                self.assertIn("loadSelected: item.performanceLoadSelected", source)
+                self.assertIn("item.tracker.append(performancePanel)", source)
+                self.assertIn("item.performanceLoadSelected && Number.isFinite(loadValue)", source)
                 self.assertIn("queueMicrotask(() => finish(true))", source)
                 self.assertIn("startSeriesButton.style.setProperty('--hold-progress', '100%')", source)
                 self.assertIn("--hold-progress", source)
@@ -238,7 +275,9 @@ class CanonicalRoutineValidationTests(unittest.TestCase):
     def test_editable_load_value_persists_decimal_independently_of_slider_step(self) -> None:
         source = (CANONICAL / "Rutina_Dia_1_Espalda_Biceps_V1.html").read_text(encoding="utf-8")
         self.assertIn("item.performanceLoadExact = Math.round(entered * 10) / 10", source)
-        self.assertIn("load: String(item.performanceLoadExact || 0)", source)
+        self.assertIn("load: item.performanceLoadSelected ? String(item.performanceLoadExact) : ''", source)
+        self.assertIn("item.performanceLoadSelected = true", source)
+        self.assertIn("item.performanceLoadSelected = false", source)
         self.assertIn("const loadValue = Number(item.performanceLoadExact)", source)
         self.assertIn("editor.addEventListener('blur', () => queueMicrotask(() => finish(true))", source)
 

@@ -22,6 +22,89 @@ button:not(:disabled):focus-visible{outline:2px solid #fff;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.performanceRepsNudge{transition:none}button:not(:disabled):active,[role="button"]:not([aria-disabled="true"]):active{transform:none;filter:none}}
 </style>'''
 
+REST_COUNTDOWN_STYLE = '''<style data-fix="rest-countdown-activity-v1">
+.summaryExercise.isResting .summaryExerciseState{color:#ffd277}
+.summaryExercise.isResting .summaryExerciseState{animation:restSlowPulse 2.4s ease-in-out infinite}
+.summaryExercise.isSeriesActive .summaryExerciseState{color:#65f2dd;animation:activityFastPulse .68s ease-in-out infinite}
+.summaryExercise.isPreparing .summaryExerciseState{color:#72dcff}
+button.completeSetButton.is-resting{border-color:#ffd277;background:linear-gradient(135deg,#9a6b17,#725019);color:#fff0bd;box-shadow:0 0 0 1px rgba(255,210,119,.2)}
+button.completeSetButton.is-series-active{border-color:#65f2dd;background:linear-gradient(135deg,#159d83,#146d5e);color:#eafff8;box-shadow:0 0 0 1px rgba(101,242,221,.2)}
+.exerciseTracker:has(.completeSetButton.is-resting){border-color:rgba(255,210,119,.82);box-shadow:0 0 18px rgba(255,210,119,.14)}
+.exerciseTracker:has(.completeSetButton.is-series-active){border-color:rgba(101,242,221,.76);box-shadow:0 0 18px rgba(101,242,221,.14)}
+.exerciseTracker:has(.completeSetButton.is-resting) .exerciseRest{border-color:#ffd277;background:rgba(112,79,21,.44);color:#ffe4a4;animation:restSlowPulse 2.4s ease-in-out infinite}
+.exerciseTracker:has(.completeSetButton.is-series-active) .seriesProgressSegment.is-current{border-color:#65f2dd;animation:activityFastPulse .68s ease-in-out infinite}
+.summaryExercise.isResting{border-color:rgba(255,210,119,.78);background:rgba(83,61,29,.5);animation:restSlowPulse 2.4s ease-in-out infinite}
+.summaryExercise.isSeriesActive{border-color:rgba(101,242,221,.78);background:rgba(19,73,72,.56)}
+@keyframes restSlowPulse{50%{opacity:.72;filter:brightness(1.2);box-shadow:0 0 12px rgba(255,210,119,.32)}}
+@keyframes activityFastPulse{50%{opacity:.7;filter:brightness(1.35);box-shadow:0 0 12px rgba(101,242,221,.38)}}
+@media(prefers-reduced-motion:reduce){.summaryExercise.isResting,.summaryExercise.isSeriesActive,.summaryExercise.isResting .summaryExerciseState,.summaryExercise.isSeriesActive .summaryExerciseState,button.completeSetButton.is-resting,button.completeSetButton.is-series-active,.exerciseTracker:has(.completeSetButton.is-resting) .exerciseRest,.exerciseTracker:has(.completeSetButton.is-series-active) .seriesProgressSegment.is-current{animation:none}}
+</style>'''
+
+REST_TIMING_DISPLAY_CONTRACT = '''  const renderTimingDisplays = () => {
+    const root = state.__timing;
+    const now = Date.now();
+    const total = document.getElementById('summaryElapsed');
+    if (total) {
+      const elapsed = root?.sessionStartedAt ? (root.sessionEndedAt || now) - root.sessionStartedAt : NaN;
+      total.textContent = `⏱ Total de rutina: ${formatElapsed(elapsed)}`;
+      total.classList.toggle('isLive', Boolean(root?.sessionStartedAt && !root.sessionEndedAt));
+    }
+    exerciseItems.forEach(item => {
+      const display = item.timingDisplay;
+      if (!display) return;
+      const timing = root?.exercises?.[String(item.index + 1)];
+      const row = snapshot(item);
+      const labels = [];
+      (timing?.seriesTimes || []).forEach((duration, index) => {
+        if (Number.isFinite(duration)) labels.push(`S${index + 1} ${formatElapsed(duration)}`);
+      });
+      (timing?.restTimes || []).forEach((duration, index) => {
+        if (Number.isFinite(duration)) labels.push(`D${index + 1} ${formatElapsed(duration)}`);
+      });
+      const preparing = isSeriesPreparing(item);
+      const preparation = seriesPreparation.get(item.index);
+      const restElapsed = timing?.restStartedAt ? Math.max(0, now - timing.restStartedAt) : 0;
+      const recommendation = getRestRecommendation(item);
+      const restRemaining = Math.max(0, recommendation.minMs - restElapsed);
+      const restActive = Boolean(!row.complete && timing?.restStartedAt && restRemaining > 0);
+      const seriesActive = Boolean(!row.complete && timing?.seriesStartedAt && !timing?.restStartedAt);
+      if (!row.complete && timing?.restStartedAt) notifyRestReady(item, timing, restElapsed);
+      const summaryButton = summaryList.querySelector(`[data-exercise="${item.index + 1}"]`);
+      const summaryState = summaryButton?.querySelector('.summaryExerciseState');
+      if (summaryButton && summaryState) {
+        summaryButton.classList.toggle('isResting', restActive);
+        summaryButton.classList.toggle('isSeriesActive', seriesActive);
+        summaryButton.classList.toggle('isPreparing', preparing);
+        if (row.skipped) summaryState.textContent = '↷ Omitido';
+        else if (row.complete) summaryState.textContent = '✓ Listo';
+        else if (restActive) summaryState.textContent = `Descanso · ${formatCountdown(restRemaining)}`;
+        else if (preparing) summaryState.textContent = `Preparación · ${formatCountdown(preparation ? preparation.endsAt - now : 0)}`;
+        else if (seriesActive) summaryState.textContent = `● S${row.done + 1} activa · ${formatElapsed(now - timing.seriesStartedAt)}`;
+        else summaryState.textContent = `${row.done}/${item.seriesKeys.length}`;
+      }
+      if (preparing) {
+        renderPreparationDisplay(item);
+        if (item.restDisplay) item.restDisplay.hidden = true;
+        return;
+      }
+      if (restActive) {
+        const phase = restPhase(restElapsed, recommendation);
+        labels.push(`Descanso ${formatCountdown(restRemaining)} restante`);
+        if (item.restDisplay) {
+          item.restDisplay.hidden = false;
+          item.restDisplay.className = `exerciseRest rest-${phase}`;
+          item.restDisplay.innerHTML = `⏳ Descanso restante: <strong>${formatCountdown(restRemaining)}</strong>`;
+        }
+      } else if (seriesActive) {
+        labels.push(`S${row.done + 1} ${formatElapsed(now - timing.seriesStartedAt)} activa`);
+      }
+      const exerciseElapsed = timing?.startedAt ? formatElapsed((timing.endedAt || now) - timing.startedAt) : '—';
+      const progressLabel = row.complete ? 'Completado' : 'Serie ' + (row.done + 1) + '/' + item.seriesKeys.length + ' —';
+      display.textContent = '⏱ ' + (labels.length ? labels.join(' · ') : progressLabel) + ' · Ejercicio ' + exerciseElapsed;
+      if (item.restDisplay) item.restDisplay.hidden = !restActive;
+    });
+  };'''
+
 
 MUSCLE_FOCUS = {
     "Dorsal ancho": {
@@ -641,7 +724,7 @@ def standardize_shared_session_contract(source: str) -> str:
     const button = item.tracker.querySelector('.completeSetButton');
     if (!button) return;
     const nextIndex = item.seriesKeys.findIndex(key => state[key] !== true);
-    const complete = nextIndex === -1;
+    const complete = snapshot(item).complete;
     const timing = state.__timing?.exercises?.[String(item.index + 1)];
     const globalWarmupComplete = getWarmupTiming().phase === 'done';
     const warmup = item.tracker.querySelector('.warmupSet');
@@ -649,9 +732,9 @@ def standardize_shared_session_contract(source: str) -> str:
     const preparing = isSeriesPreparing(item);
     const resting = Boolean(!complete && timing?.restStartedAt);
     const restRemaining = resting ? Math.max(0, getRestRecommendation(item).minMs - (Date.now() - timing.restStartedAt)) : 0;
-    const seriesActive = Boolean(timing?.seriesStartedAt && !timing?.restStartedAt);
+    const seriesActive = Boolean(!complete && timing?.seriesStartedAt && !timing?.restStartedAt);
     const preparation = seriesPreparation.get(item.index);
-    const label = complete ? '✓ Ejercicio completado'
+    const label = complete ? state.__skippedExercises?.[String(item.index + 1)] === true ? '↷ Ejercicio omitido' : '✓ Ejercicio completado'
       : !globalWarmupComplete ? 'Completa calentamiento'
       : !exerciseWarmupComplete ? 'Completa calentamiento del ejercicio'
       : preparing ? `⏳ Preparación · ${formatElapsed(preparation ? Math.max(0, preparation.endsAt - Date.now()) : 0)}`
@@ -662,6 +745,9 @@ def standardize_shared_session_contract(source: str) -> str:
     button.disabled = complete || !globalWarmupComplete || !exerciseWarmupComplete || preparing;
     button.textContent = label;
     button.setAttribute('aria-label', label);
+    button.classList.toggle('is-resting', resting && restRemaining > 0);
+    button.classList.toggle('is-series-active', seriesActive && !preparing);
+    if (item.skipExerciseButton) item.skipExerciseButton.disabled = !globalWarmupComplete || complete;
   };""",
         source,
         count=1,
@@ -759,6 +845,21 @@ def standardize_shared_session_contract(source: str) -> str:
         "const timingInterval = window.setInterval(() => { renderTimingDisplays(); renderWarmupTiming(); exerciseItems.forEach(updateCompleteButton); }, 1000);",
         1,
     )
+    if "const formatCountdown = milliseconds =>" not in source:
+        source = source.replace(
+            "const MAX_TIMING_MS = 24 * 60 * 60 * 1000;",
+            "const formatCountdown = milliseconds => formatElapsed(Math.ceil(Math.max(0, milliseconds) / 1000) * 1000);\n  const MAX_TIMING_MS = 24 * 60 * 60 * 1000;",
+            1,
+        )
+    source, timing_display_count = re.subn(
+        r"  const renderTimingDisplays = \(\) => \{.*?;\s*\};",
+        REST_TIMING_DISPLAY_CONTRACT,
+        source,
+        count=1,
+        flags=re.S,
+    )
+    if timing_display_count != 1:
+        raise ValueError("No se pudo aplicar el contrato de contador y actividad de descanso")
     return source
 
 
@@ -902,4 +1003,12 @@ def standardize_muscle_visuals(source: str) -> str:
         source = source.replace('</head>', CANONICAL_SHARED_STYLE + '\n</head>', 1)
     if 'data-enhancement="mobile-first-muscle-grid-v1"' not in source:
         source = source.replace('</body>', MOBILE_FIRST_MUSCLE_STYLE + '\n</body>', 1)
+    source = re.sub(
+        r'<style data-fix="rest-countdown-activity-v1">.*?</style>\s*',
+        "",
+        source,
+        count=1,
+        flags=re.S,
+    )
+    source = source.replace('</body>', REST_COUNTDOWN_STYLE + '\n</body>', 1)
     return source

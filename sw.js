@@ -1,5 +1,5 @@
-const CACHE_NAME = 'entrenamiento-pwa-c6e40a840fde';
-const PREVIOUS_CACHE_NAME = 'entrenamiento-pwa-5a5066f719ed';
+const CACHE_NAME = 'entrenamiento-pwa-3e01ac1e14cc';
+const PREVIOUS_CACHE_NAME = 'entrenamiento-pwa-6068255abc28';
 const PRECACHE = [
   './',
   './index.html',
@@ -107,10 +107,10 @@ const RESOURCE_BYTES = {
   './data/profile/mouse-female-effort.webp': 1212010,
   './data/profile/mouse-male-effort.webp': 1072538,
   './data/profile/gymratik-machine-sprite.webp': 1001880,
-  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html': 778034,
-  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_2_Pierna_Gluteo_V1.html': 2377807,
+  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_1_Espalda_Biceps_V1.html': 782499,
+  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_2_Pierna_Gluteo_V1.html': 2377561,
   './data/rutinas_autocontenidas/canonicas/Rutina_Dia_3_Pecho_Hombro_Triceps_V1.html': 349036,
-  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_4_Pierna_Equilibrio_V1.html': 352286,
+  './data/rutinas_autocontenidas/canonicas/Rutina_Dia_4_Pierna_Equilibrio_V1.html': 352415,
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0194-2IxROQ1-final.jpg': 4361,
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0194-2IxROQ1-machine-only.webp': 504122,
   './data/rutinas_autocontenidas/medios_publicados/ejercicios-compartido/images/0194-2IxROQ1-start.jpg': 4746,
@@ -256,9 +256,9 @@ self.addEventListener('install', (event) => {
         await preserveOneCompleteCache();
       }
     }
-    // Solo la primera instalación toma control automáticamente. Las versiones
-    // posteriores esperan una confirmación explícita desde la portada.
-    if (!self.registration.active) await self.skipWaiting();
+    // Activar solo después de descargar y marcar completo todo el paquete.
+    // El progreso de entrenamiento vive en IndexedDB/localStorage, fuera de Cache API.
+    await self.skipWaiting();
   })());
 });
 

@@ -3752,24 +3752,25 @@ button:not(:disabled):focus-visible{outline:2px solid #fff;outline-offset:3px}
     item.performanceLoadOutput = loadOutput;
     item.performanceLoadUnitSelect = loadUnitSelect;
     item.progressionCue = progressionCue;
-    item.tracker.after(performancePanel);
+    item.tracker.append(performancePanel);
     const savedDraft = state.__performanceDraft?.[String(item.index + 1)];
     item.performanceLoadUnit = savedDraft?.loadUnit === 'lb' ? 'lb' : 'kg';
     item.performanceLoadExact = Number(savedDraft?.load) || 0;
+    item.performanceLoadSelected = savedDraft?.loadSelected === true || Number(savedDraft?.load) > 0;
     const updateLoadControl = () => {
       const pounds = item.performanceLoadUnit === 'lb';
       loadInput.max = pounds ? '2200' : '1000';
       loadInput.step = pounds ? '5' : '2.5';
       loadUnitSelect.value = item.performanceLoadUnit;
       const value = Number(item.performanceLoadExact) || 0;
-      loadOutput.textContent = value > 0 ? `${Number.isInteger(value) ? value : value.toFixed(1)} ${item.performanceLoadUnit}` : 'Tocar para introducir carga';
+      loadOutput.textContent = item.performanceLoadSelected ? `${Number.isInteger(value) ? value : value.toFixed(1)} ${item.performanceLoadUnit}` : 'Sin registrar · tocar para introducir';
     };
     const savePerformanceDraft = () => {
       if (!state.__performanceDraft) state.__performanceDraft = {};
-      state.__performanceDraft[exerciseId] = { reps: item.performanceReps.dataset.selected === 'true' ? item.performanceReps.value : '0', load: String(item.performanceLoadExact || 0), loadUnit: item.performanceLoadUnit };
+      state.__performanceDraft[exerciseId] = { reps: item.performanceReps.dataset.selected === 'true' ? item.performanceReps.value : '0', load: item.performanceLoadSelected ? String(item.performanceLoadExact) : '', loadSelected: item.performanceLoadSelected, loadUnit: item.performanceLoadUnit };
       save();
     };
-    const savedReps = Number(savedDraft?.reps); const savedRepsValid = Number.isInteger(savedReps) && savedReps >= item.repMinimum && savedReps <= item.repMaximum + 4; item.performanceReps.value = String(savedRepsValid ? savedReps : item.repMinimum); item.performanceReps.dataset.selected = String(savedRepsValid); if (savedDraft) item.performanceLoad.value = savedDraft.load ?? '0';
+    const savedReps = Number(savedDraft?.reps); const savedRepsValid = Number.isInteger(savedReps) && savedReps >= item.repMinimum && savedReps <= item.repMaximum + 4; item.performanceReps.value = String(savedRepsValid ? savedReps : item.repMinimum); item.performanceReps.dataset.selected = String(savedRepsValid); if (item.performanceLoadSelected) item.performanceLoad.value = savedDraft.load;
     const renderPerformanceReps = () => { const selected = item.performanceReps.dataset.selected === 'true'; const value = Number(item.performanceReps.value); item.performanceRepsOutput.textContent = selected ? `${value} ${value === 1 ? 'repetición' : 'repeticiones'}` : `Elige entre ${item.repMinimum} y ${item.repMaximum + 4}`; repsDown.disabled = selected && value <= item.repMinimum; repsUp.disabled = selected && value >= item.repMaximum + 4; };
     item.performanceRepsControl = repsControl;
     const adjustPerformanceReps = delta => { const selected = item.performanceReps.dataset.selected === 'true'; const value = selected ? Number(item.performanceReps.value) + delta : item.repMinimum + Math.max(0, delta); item.performanceReps.value = String(Math.max(item.repMinimum, Math.min(item.repMaximum + 4, value))); item.performanceReps.dataset.selected = 'true'; renderPerformanceReps(); savePerformanceDraft(); };
@@ -3778,11 +3779,11 @@ button:not(:disabled):focus-visible{outline:2px solid #fff;outline-offset:3px}
     renderPerformanceReps();
     updateLoadControl();
     item.performanceReps.addEventListener('input', () => { item.performanceReps.dataset.selected = 'true'; renderPerformanceReps(); savePerformanceDraft(); });
-    item.performanceLoad.addEventListener('input', () => { item.performanceLoadExact = Number(item.performanceLoad.value) || 0; updateLoadControl(); savePerformanceDraft(); });
+    item.performanceLoad.addEventListener('input', () => { item.performanceLoadExact = Number(item.performanceLoad.value) || 0; item.performanceLoadSelected = true; updateLoadControl(); savePerformanceDraft(); });
     loadOutput.addEventListener('click', () => {
       if (loadLabel.querySelector('.performanceLoadDirect')) return;
       const editor = document.createElement('input'); editor.type = 'number'; editor.inputMode = 'decimal'; editor.min = '0'; editor.max = loadInput.max; editor.step = '0.1'; editor.className = 'performanceLoadDirect'; editor.setAttribute('aria-label', `Introducir carga exacta en ${item.performanceLoadUnit}`); editor.value = Number(item.performanceLoadExact) > 0 ? String(item.performanceLoadExact) : ''; loadOutput.replaceWith(editor); editor.focus(); editor.select();
-      const finish = commit => { if (!editor.isConnected) return; if (commit && editor.value !== '') { const entered = Number(editor.value); if (Number.isFinite(entered) && entered >= 0 && entered <= Number(loadInput.max)) { item.performanceLoadExact = Math.round(entered * 10) / 10; loadInput.value = String(item.performanceLoadExact); } } editor.replaceWith(loadOutput); updateLoadControl(); savePerformanceDraft(); };
+      const finish = commit => { if (!editor.isConnected) return; if (commit && editor.value === '') { item.performanceLoadSelected = false; item.performanceLoadExact = 0; loadInput.value = '0'; } else if (commit) { const entered = Number(editor.value); if (Number.isFinite(entered) && entered >= 0 && entered <= Number(loadInput.max)) { item.performanceLoadExact = Math.round(entered * 10) / 10; item.performanceLoadSelected = true; loadInput.value = String(item.performanceLoadExact); } } editor.replaceWith(loadOutput); updateLoadControl(); savePerformanceDraft(); };
       editor.addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); finish(true); } if (event.key === 'Escape') { event.preventDefault(); finish(false); } });
       editor.addEventListener('blur', () => queueMicrotask(() => finish(true)), { once: true });
     });
@@ -3847,6 +3848,7 @@ button:not(:disabled):focus-visible{outline:2px solid #fff;outline-offset:3px}
     else setButtons?.prepend(startSeriesButton);
   });
   const formatElapsed = milliseconds => { if (!Number.isFinite(milliseconds)) return '—'; const seconds = Math.max(0, Math.floor(milliseconds / 1000)); const hours = Math.floor(seconds / 3600); const minutes = Math.floor((seconds % 3600) / 60); const remainder = seconds % 60; return hours ? `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainder).padStart(2, '0')}` : `${String(minutes).padStart(2, '0')}:${String(remainder).padStart(2, '0')}`; };
+  const formatCountdown = milliseconds => formatElapsed(Math.ceil(Math.max(0, milliseconds) / 1000) * 1000);
   const MAX_TIMING_MS = 24 * 60 * 60 * 1000;
   const getRestRecommendation = item => {
     const text = item.tracker.closest('article.card')?.querySelector('.metric.rest .timeCue')?.textContent || '';
@@ -3872,7 +3874,70 @@ button:not(:disabled):focus-visible{outline:2px solid #fff;outline-offset:3px}
   const beginSeries = (item, timestamp = Date.now()) => { const timing = startTiming(item, timestamp, true); const nextIndex = item.seriesKeys.findIndex(key => state[key] !== true); if (nextIndex < 0) return timing; if (nextIndex > 0 && timing.restStartedAt) timing.restTimes[nextIndex - 1] = Math.min(MAX_TIMING_MS, Math.max(0, timestamp - timing.restStartedAt)); timing.restStartedAt = 0; timing.restNotifiedAt = 0; timing.restReminderNotifiedAt = 0;timing.seriesStartedAt = timestamp; timing.endedAt = 0; save(); return timing; };
   const recordSeriesTime = (item, seriesIndex, timestamp = Date.now()) => { const root = getTimingState(); const timing = getExerciseTiming(item); if (!timing.startedAt) startTiming(item, timestamp); if (seriesIndex > 0 && timing.restStartedAt) timing.restTimes[seriesIndex - 1] = Math.min(MAX_TIMING_MS, Math.max(0, timestamp - timing.restStartedAt)); timing.restStartedAt = 0; timing.restNotifiedAt = 0; timing.restReminderNotifiedAt = 0;if (timing.seriesTimes[seriesIndex] == null) timing.seriesTimes[seriesIndex] = Math.min(MAX_TIMING_MS, Math.max(0, timestamp - (timing.seriesStartedAt || timestamp))); timing.seriesStartedAt = 0; if (seriesIndex + 1 < item.seriesKeys.length) timing.restStartedAt = timestamp; else timing.endedAt = timestamp; if (exerciseItems.every(entry => snapshot(entry).complete) && !root.sessionEndedAt) root.sessionEndedAt = timestamp; save(); };
   exerciseItems.forEach(item => { const display = document.createElement('div'); display.className = 'exerciseTiming'; display.setAttribute('aria-live', 'polite'); display.textContent = '⏱ Serie — · Ejercicio —'; item.timingDisplay = display; const restDisplay = document.createElement('div'); restDisplay.className = 'exerciseRest'; restDisplay.setAttribute('role', 'status'); restDisplay.setAttribute('aria-live', 'polite'); restDisplay.hidden = true; restDisplay.textContent = '⏳ Descanso en curso: 00:00'; item.restDisplay = restDisplay; item.tracker.querySelector('.exerciseTrackerHead')?.after(display); display.after(restDisplay); });
-  const renderTimingDisplays = () => { const root = state.__timing; const now = Date.now(); const total = document.getElementById('summaryElapsed'); if (total) { const elapsed = root?.sessionStartedAt ? (root.sessionEndedAt || now) - root.sessionStartedAt : NaN; total.textContent = `⏱ Total de rutina: ${formatElapsed(elapsed)}`; total.classList.toggle('isLive', Boolean(root?.sessionStartedAt && !root.sessionEndedAt)); } exerciseItems.forEach(item => { const display = item.timingDisplay; if (!display) return; const timing = root?.exercises?.[String(item.index + 1)]; const row = snapshot(item); const labels = []; (timing?.seriesTimes || []).forEach((duration, index) => { if (Number.isFinite(duration)) labels.push(`S${index + 1} ${formatElapsed(duration)}`); }); (timing?.restTimes || []).forEach((duration, index) => { if (Number.isFinite(duration)) labels.push(`D${index + 1} ${formatElapsed(duration)}`); }); const preparing = isSeriesPreparing(item); if (preparing) { renderPreparationDisplay(item); if (item.restDisplay) item.restDisplay.hidden = true; return; } const restActive = Boolean(!row.complete && timing?.restStartedAt); if (restActive) { const elapsed = Math.max(0, now - timing.restStartedAt); const recommendation = getRestRecommendation(item); const phase = restPhase(elapsed, recommendation); notifyRestReady(item, timing, elapsed); labels.push(`Descanso ${formatElapsed(elapsed)} · ${phase === 'short' ? 'poco' : phase === 'ready' ? 'suficiente' : 'de más'}`); if (item.restDisplay) { item.restDisplay.hidden = false; item.restDisplay.className = `exerciseRest rest-${phase}`; item.restDisplay.innerHTML = `⏳ Descanso: <strong>${formatElapsed(elapsed)}</strong> · ${phase === 'short' ? 'poco' : phase === 'ready' ? 'tiempo suficiente' : 'de más'}`; } } else if (!row.complete && timing?.seriesStartedAt) labels.push(`S${row.done + 1} ${formatElapsed(now - timing.seriesStartedAt)}`); const exerciseElapsed = timing?.startedAt ? formatElapsed((timing.endedAt || now) - timing.startedAt) : '—'; const progressLabel = row.complete ? 'Completado' : 'Serie ' + (row.done + 1) + '/' + item.seriesKeys.length + ' —'; display.textContent = '⏱ ' + (labels.length ? labels.join(' · ') : progressLabel) + ' · Ejercicio ' + exerciseElapsed; if (item.restDisplay && !restActive) item.restDisplay.hidden = true; }); };
+  const renderTimingDisplays = () => {
+    const root = state.__timing;
+    const now = Date.now();
+    const total = document.getElementById('summaryElapsed');
+    if (total) {
+      const elapsed = root?.sessionStartedAt ? (root.sessionEndedAt || now) - root.sessionStartedAt : NaN;
+      total.textContent = `⏱ Total de rutina: ${formatElapsed(elapsed)}`;
+      total.classList.toggle('isLive', Boolean(root?.sessionStartedAt && !root.sessionEndedAt));
+    }
+    exerciseItems.forEach(item => {
+      const display = item.timingDisplay;
+      if (!display) return;
+      const timing = root?.exercises?.[String(item.index + 1)];
+      const row = snapshot(item);
+      const labels = [];
+      (timing?.seriesTimes || []).forEach((duration, index) => {
+        if (Number.isFinite(duration)) labels.push(`S${index + 1} ${formatElapsed(duration)}`);
+      });
+      (timing?.restTimes || []).forEach((duration, index) => {
+        if (Number.isFinite(duration)) labels.push(`D${index + 1} ${formatElapsed(duration)}`);
+      });
+      const preparing = isSeriesPreparing(item);
+      const preparation = seriesPreparation.get(item.index);
+      const restElapsed = timing?.restStartedAt ? Math.max(0, now - timing.restStartedAt) : 0;
+      const recommendation = getRestRecommendation(item);
+      const restRemaining = Math.max(0, recommendation.minMs - restElapsed);
+      const restActive = Boolean(!row.complete && timing?.restStartedAt && restRemaining > 0);
+      const seriesActive = Boolean(!row.complete && timing?.seriesStartedAt && !timing?.restStartedAt);
+      if (!row.complete && timing?.restStartedAt) notifyRestReady(item, timing, restElapsed);
+      const summaryButton = summaryList.querySelector(`[data-exercise="${item.index + 1}"]`);
+      const summaryState = summaryButton?.querySelector('.summaryExerciseState');
+      if (summaryButton && summaryState) {
+        summaryButton.classList.toggle('isResting', restActive);
+        summaryButton.classList.toggle('isSeriesActive', seriesActive);
+        summaryButton.classList.toggle('isPreparing', preparing);
+        if (row.skipped) summaryState.textContent = '↷ Omitido';
+        else if (row.complete) summaryState.textContent = '✓ Listo';
+        else if (restActive) summaryState.textContent = `Descanso · ${formatCountdown(restRemaining)}`;
+        else if (preparing) summaryState.textContent = `Preparación · ${formatCountdown(preparation ? preparation.endsAt - now : 0)}`;
+        else if (seriesActive) summaryState.textContent = `● S${row.done + 1} activa · ${formatElapsed(now - timing.seriesStartedAt)}`;
+        else summaryState.textContent = `${row.done}/${item.seriesKeys.length}`;
+      }
+      if (preparing) {
+        renderPreparationDisplay(item);
+        if (item.restDisplay) item.restDisplay.hidden = true;
+        return;
+      }
+      if (restActive) {
+        const phase = restPhase(restElapsed, recommendation);
+        labels.push(`Descanso ${formatCountdown(restRemaining)} restante`);
+        if (item.restDisplay) {
+          item.restDisplay.hidden = false;
+          item.restDisplay.className = `exerciseRest rest-${phase}`;
+          item.restDisplay.innerHTML = `⏳ Descanso restante: <strong>${formatCountdown(restRemaining)}</strong>`;
+        }
+      } else if (seriesActive) {
+        labels.push(`S${row.done + 1} ${formatElapsed(now - timing.seriesStartedAt)} activa`);
+      }
+      const exerciseElapsed = timing?.startedAt ? formatElapsed((timing.endedAt || now) - timing.startedAt) : '—';
+      const progressLabel = row.complete ? 'Completado' : 'Serie ' + (row.done + 1) + '/' + item.seriesKeys.length + ' —';
+      display.textContent = '⏱ ' + (labels.length ? labels.join(' · ') : progressLabel) + ' · Ejercicio ' + exerciseElapsed;
+      if (item.restDisplay) item.restDisplay.hidden = !restActive;
+    });
+  };
   // El cronómetro empieza después de una preparación explícita de 15 segundos.
   const PREPARATION_MS = 15000;
   let warmupPreparationTimer = 0;
@@ -4073,7 +4138,7 @@ button:not(:disabled):focus-visible{outline:2px solid #fff;outline-offset:3px}
     const button = item.tracker.querySelector('.completeSetButton');
     if (!button) return;
     const nextIndex = item.seriesKeys.findIndex(key => state[key] !== true);
-    const complete = nextIndex === -1;
+    const complete = snapshot(item).complete;
     const timing = state.__timing?.exercises?.[String(item.index + 1)];
     const globalWarmupComplete = getWarmupTiming().phase === 'done';
     const warmup = item.tracker.querySelector('.warmupSet');
@@ -4081,9 +4146,9 @@ button:not(:disabled):focus-visible{outline:2px solid #fff;outline-offset:3px}
     const preparing = isSeriesPreparing(item);
     const resting = Boolean(!complete && timing?.restStartedAt);
     const restRemaining = resting ? Math.max(0, getRestRecommendation(item).minMs - (Date.now() - timing.restStartedAt)) : 0;
-    const seriesActive = Boolean(timing?.seriesStartedAt && !timing?.restStartedAt);
+    const seriesActive = Boolean(!complete && timing?.seriesStartedAt && !timing?.restStartedAt);
     const preparation = seriesPreparation.get(item.index);
-    const label = complete ? '✓ Ejercicio completado'
+    const label = complete ? state.__skippedExercises?.[String(item.index + 1)] === true ? '↷ Ejercicio omitido' : '✓ Ejercicio completado'
       : !globalWarmupComplete ? 'Completa calentamiento'
       : !exerciseWarmupComplete ? 'Completa calentamiento del ejercicio'
       : preparing ? `⏳ Preparación · ${formatElapsed(preparation ? Math.max(0, preparation.endsAt - Date.now()) : 0)}`
@@ -4094,6 +4159,9 @@ button:not(:disabled):focus-visible{outline:2px solid #fff;outline-offset:3px}
     button.disabled = complete || !globalWarmupComplete || !exerciseWarmupComplete || preparing;
     button.textContent = label;
     button.setAttribute('aria-label', label);
+    button.classList.toggle('is-resting', resting && restRemaining > 0);
+    button.classList.toggle('is-series-active', seriesActive && !preparing);
+    if (item.skipExerciseButton) item.skipExerciseButton.disabled = !globalWarmupComplete || complete;
   };
   const updateSummary = () => {
     const rows = exerciseItems.map(snapshot);
@@ -4273,7 +4341,7 @@ button:not(:disabled):focus-visible{outline:2px solid #fff;outline-offset:3px}
       const reps = Number(item.performanceReps?.value);
       const loadValue = Number(item.performanceLoadExact);
       const loadUnit = item.performanceLoadUnit === 'lb' ? 'lb' : 'kg';
-      const load = Number.isFinite(loadValue) && loadValue > 0 ? loadValue : null;
+      const load = item.performanceLoadSelected && Number.isFinite(loadValue) && loadValue >= 0 ? loadValue : null;
       const loadKg = load === null ? null : loadUnit === 'lb' ? load * 0.45359237 : load;
       if (item.performanceReps?.dataset.selected === 'true' && Number.isInteger(reps) && reps >= item.repMinimum && reps <= item.repMaximum + 4) {
         if (!state.__performance) state.__performance = {};
@@ -4939,7 +5007,23 @@ body{height:auto!important;min-height:100%!important;overflow-x:hidden!important
 @keyframes holdPressPulse{from{box-shadow:0 0 0 0 rgba(101,242,221,.12)}to{box-shadow:0 0 0 4px rgba(101,242,221,.28)}}
 @media(prefers-reduced-motion:reduce){.completeSetButton.is-holding,.skipExerciseButton.is-holding{animation:none}}
 </style>
-
 <!-- canonical media contract references: 1350-7I6LNUG.jpg · 1350-7I6LNUG-final.png -->
+<style data-fix="rest-countdown-activity-v1">
+.summaryExercise.isResting .summaryExerciseState{color:#ffd277}
+.summaryExercise.isResting .summaryExerciseState{animation:restSlowPulse 2.4s ease-in-out infinite}
+.summaryExercise.isSeriesActive .summaryExerciseState{color:#65f2dd;animation:activityFastPulse .68s ease-in-out infinite}
+.summaryExercise.isPreparing .summaryExerciseState{color:#72dcff}
+button.completeSetButton.is-resting{border-color:#ffd277;background:linear-gradient(135deg,#9a6b17,#725019);color:#fff0bd;box-shadow:0 0 0 1px rgba(255,210,119,.2)}
+button.completeSetButton.is-series-active{border-color:#65f2dd;background:linear-gradient(135deg,#159d83,#146d5e);color:#eafff8;box-shadow:0 0 0 1px rgba(101,242,221,.2)}
+.exerciseTracker:has(.completeSetButton.is-resting){border-color:rgba(255,210,119,.82);box-shadow:0 0 18px rgba(255,210,119,.14)}
+.exerciseTracker:has(.completeSetButton.is-series-active){border-color:rgba(101,242,221,.76);box-shadow:0 0 18px rgba(101,242,221,.14)}
+.exerciseTracker:has(.completeSetButton.is-resting) .exerciseRest{border-color:#ffd277;background:rgba(112,79,21,.44);color:#ffe4a4;animation:restSlowPulse 2.4s ease-in-out infinite}
+.exerciseTracker:has(.completeSetButton.is-series-active) .seriesProgressSegment.is-current{border-color:#65f2dd;animation:activityFastPulse .68s ease-in-out infinite}
+.summaryExercise.isResting{border-color:rgba(255,210,119,.78);background:rgba(83,61,29,.5);animation:restSlowPulse 2.4s ease-in-out infinite}
+.summaryExercise.isSeriesActive{border-color:rgba(101,242,221,.78);background:rgba(19,73,72,.56)}
+@keyframes restSlowPulse{50%{opacity:.72;filter:brightness(1.2);box-shadow:0 0 12px rgba(255,210,119,.32)}}
+@keyframes activityFastPulse{50%{opacity:.7;filter:brightness(1.35);box-shadow:0 0 12px rgba(101,242,221,.38)}}
+@media(prefers-reduced-motion:reduce){.summaryExercise.isResting,.summaryExercise.isSeriesActive,.summaryExercise.isResting .summaryExerciseState,.summaryExercise.isSeriesActive .summaryExerciseState,button.completeSetButton.is-resting,button.completeSetButton.is-series-active,.exerciseTracker:has(.completeSetButton.is-resting) .exerciseRest,.exerciseTracker:has(.completeSetButton.is-series-active) .seriesProgressSegment.is-current{animation:none}}
+</style>
 </body>
 </html>
